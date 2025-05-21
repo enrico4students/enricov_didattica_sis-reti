@@ -1,0 +1,31 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "TCP Receiver",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/tcp/tcp_receiver.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/tcp",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb"
+        },
+        {
+            "name": "UDP Receiver",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/udp/udp_receiver.exe",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/udp",
+            "environment": [],
+            "externalConsole": true,
+            "MIMode": "gdb",
+            "miDebuggerPath": "gdb"
+        }
+    ]
+}

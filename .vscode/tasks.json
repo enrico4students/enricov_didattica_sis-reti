@@ -1,0 +1,33 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "build TCP",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "tcp_sender.cpp",
+                "-o",
+                "tcp_sender.exe",
+                "-lws2_32"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/tcp"
+            }
+        },
+        {
+            "label": "build UDP",
+            "type": "shell",
+            "command": "g++",
+            "args": [
+                "udp_sender.cpp",
+                "-o",
+                "udp_sender.exe",
+                "-lws2_32"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/udp"
+            }
+        }
+    ]
+}

@@ -1,0 +1,34 @@
+# File eseguibili Windows
+*.exe
+
+# Oggetti di compilazione
+*.o
+*.obj
+
+# File temporanei e backup
+*~
+*.bak
+*.swp
+*.swo
+
+# Output dei compilatori
+*.out
+
+# Script temporanei
+check_link.cpp
+
+# VS Code
+.vscode/
+
+# Python cache
+__pycache__/
+*.pyc
+
+# Archivi
+*.zip
+
+# Log
+*.log
+
+# Directory specifiche di build (opzionale)
+build/

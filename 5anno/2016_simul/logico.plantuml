@@ -1,0 +1,80 @@
+@startuml
+skinparam linetype ortho
+hide methods
+hide stereotypes
+
+class users {
+    +PK user_id : int
+    email : varchar (unique)
+    password_hash : varchar
+    full_name : varchar
+    status : varchar
+    created_at : datetime
+    last_login_at : datetime
+}
+
+class roles {
+    +PK role_id : int
+    name : varchar (unique)
+    description : varchar
+}
+
+class user_roles {
+    +PK,FK user_id : int
+    +PK,FK role_id : int
+    assigned_at : datetime
+}
+
+class subscriptions {
+    +PK subscription_id : int
+    +FK user_id : int
+    start_date : date
+    end_date : date
+    status : varchar
+    payment_ref : varchar
+}
+
+class issues {
+    +PK issue_id : int
+    week_start : date
+    publish_date : date
+    title : varchar
+    status : varchar
+}
+
+class articles {
+    +PK article_id : int
+    +FK issue_id : int
+    title : varchar
+    summary : text
+    body : text
+    status : varchar
+    created_at : datetime
+    updated_at : datetime
+    published_at : datetime
+}
+
+class media {
+    +PK media_id : int
+    media_type : varchar
+    url : varchar
+    mime_type : varchar
+    size_bytes : bigint
+    created_at : datetime
+}
+
+class article_media {
+    +PK,FK article_id : int
+    +PK,FK media_id : int
+    position : int
+    is_cover : boolean
+}
+
+users "1" -- "0..*" subscriptions
+users "1" -- "0..*" user_roles
+roles "1" -- "0..*" user_roles
+issues "1" -- "0..*" articles
+articles "1" -- "0..*" article_media
+media "1" -- "0..*" article_media
+
+@enduml

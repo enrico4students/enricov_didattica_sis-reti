@@ -1,259 +1,270 @@
+## Proxy Overview
 
-### Architetture reverse proxy 
+1. Definizione  
 
-#### 1️⃣ Scenario più comune (architettura corretta in ambito aziendale)
+Un proxy è un sistema intermedio che riceve una richiesta di rete da un client e la inoltra verso la destinazione per suo conto.  
 
-##### Posizione logica
+Il flusso diventa:  
 
-Internet
-→ Firewall
-→ **DMZ (Reverse Proxy)**
-→ Firewall (regole interne)
-→ **LAN / Rete server interna (Application Server)**
+Client  
+→ Proxy  
+→ Server di destinazione  
 
-##### Spiegazione
-
-* Il **reverse proxy** è collocato nella **DMZ**.
-* Il **server applicativo reale** è nella **rete interna** (non direttamente esposto).
-* Il firewall consente:
-
-  * Da Internet → solo 443 verso reverse proxy.
-  * Dal reverse proxy → solo le porte necessarie verso il server interno (es. 8080 o 8000).
-  * Nessun accesso diretto Internet → server interno.
-
-##### Perché è corretto
-
-* Se il reverse proxy viene compromesso, l’attaccante non è automaticamente nella LAN.
-* La DMZ è una zona “cuscinetto” tra Internet e rete interna.
-* Separazione dei livelli di rischio.
+Il server vede come sorgente il proxy, non il client originale (salvo header specifici come X-Forwarded-For).  
 
 ---
 
-#### 2️⃣ Variante con doppia DMZ (architettura più strutturata)
+2. A cosa serve  
+
+Un proxy può:  
+
+* Controllare e filtrare traffico  
+* Registrare accessi (logging)  
+* Applicare policy (es. blocco categorie web)  
+* Fare caching  
+* Terminare TLS  
+* Proteggere server interni  
+* Nascondere la rete interna  
+
+---
+
+3. Tipologie principali
+
+3.1 Forward Proxy (proxy “classico”)
+
+Si trova tra client interni e Internet.
+
+LAN
+→ Forward Proxy
+→ Internet
+
+Funzioni tipiche:  
+* Controllo navigazione web
+* Autenticazione utenti
+* Filtro URL
+* Logging
+
+Il server remoto non vede direttamente il client.
+
+Uso tipico: controllo traffico web aziendale.
+
+---
+
+3.2 Reverse Proxy
+
+Si trova davanti a server interni esposti.
 
 Internet
-→ Firewall esterno
-→ DMZ pubblica (Reverse Proxy / WAF)
+→ Reverse Proxy
+→ Web server interno
+
+Funzioni tipiche:
+
+* Terminazione TLS
+* Load balancing
+* Rate limiting
+* Protezione applicativa
+* Nascondere IP reali dei server
+
+Uso tipico: pubblicazione sicura di servizi web.
+
+---
+
+3.3 Transparent Proxy
+
+Il client non è configurato manualmente.
+Il traffico viene intercettato a livello di rete (es. tramite firewall o switch).
+
+Vantaggio: nessuna configurazione sui client.
+Svantaggio: più complesso da implementare correttamente.
+
+---
+
+3.4 Proxy applicativi specifici
+
+* HTTP/HTTPS proxy
+* SMTP relay
+* DNS proxy
+* SOCKS proxy
+
+Ogni proxy può operare a livello applicativo (Layer 7).
+
+---
+
+4. Relazione con altri componenti di rete
+
+4.1 Con il firewall
+
+Il firewall:
+
+* controlla traffico tra zone
+* decide cosa può passare
+
+Il proxy:
+
+* intermedia e comprende il contenuto applicativo
+
+Spesso:
+
+Client → Proxy → Firewall → Internet
+
+Oppure il proxy è integrato nel firewall (NGFW con web proxy integrato).
+
+---
+
+4.2 Con il router
+
+Il router:
+
+* decide il percorso del traffico (routing IP)
+
+Il proxy:
+
+* non fa routing di rete
+* opera sopra il livello IP
+
+Il router non sostituisce il proxy.
+
+---
+
+4.3 Con il WAF
+
+Il WAF è un tipo specializzato di reverse proxy focalizzato sulla sicurezza applicativa web.
+
+Reverse proxy generico: bilanciamento, TLS, caching
+WAF: protezione da SQL injection, XSS, attacchi HTTP
+
+---
+
+4.4 Con il load balancer
+
+Molti reverse proxy moderni includono load balancing.
+
+Reverse proxy = può essere anche load balancer
+Load balancer puro = può non fare ispezione applicativa
+
+---
+
+5. Modalità tipiche di deployment in azienda
+
+5.1 Forward proxy centralizzato
+
+LAN
+→ Proxy server (dedicato o virtuale)
+→ Firewall
+→ Internet
+
+Tipico per controllo navigazione dipendenti.
+
+Può essere:
+
+* Appliance dedicata
+* VM
+* Servizio cloud (Secure Web Gateway)
+
+---
+
+5.2 Reverse proxy in DMZ
+
+Internet
+→ Firewall
+→ DMZ
+→ Reverse proxy
+→ Web server interno
+
+Oppure:
+
+Internet
+→ Reverse proxy (in DMZ)
 → Firewall interno
-→ DMZ applicativa (Application Server)
-→ Firewall interno
-→ LAN server (DB, servizi interni)
+→ Server
 
-Qui si segmentano ulteriormente i livelli:
-
-* Reverse proxy più esposto.
-* Server applicativo meno esposto.
-* Database ancora più protetto.
+Protegge applicazioni pubblicate.
 
 ---
 
-#### 3️⃣ Configurazione meno sicura (piccole realtà)
+5.3 Proxy integrato nel firewall NGFW
 
-Internet
-→ Firewall
-→ Reverse proxy + server applicativo nella stessa DMZ
+Molti NGFW includono:
 
-In questo caso:
+* Web proxy
+* SSL inspection
+* URL filtering
 
-* Reverse proxy e server web stanno nella stessa rete DMZ.
-* È accettabile in contesti piccoli, ma meno sicuro rispetto alla separazione.
-
----
-
-#### 4️⃣ Configurazione sconsigliata
-
-Internet
-→ Firewall
-→ LAN
-→ Reverse proxy + server nella LAN
-
-Qui non esiste DMZ.
-
-* Il reverse proxy è direttamente nella LAN.
-* Se compromesso, l’attaccante è già dentro la rete interna.
-* Non è buona pratica in ambito professionale.
+In questo caso non esiste un proxy separato.
 
 ---
 
-#### Riassunto sintetico delle posizioni corrette
+5.4 Proxy cloud (Secure Web Gateway)
 
-Reverse Proxy:
+Client
+→ Internet
+→ Proxy cloud del provider sicurezza
+→ Destinazione
 
-* Sta tra Internet e server applicativo.
-* Di norma in **DMZ**.
-* È il primo punto di contatto con l’esterno.
+Molto usato in ambienti con smart working.
 
-Server applicativo:
+---
 
-* Sta dietro al reverse proxy.
-* Preferibilmente in **rete interna separata** dalla DMZ.
-* Non deve essere raggiungibile direttamente da Internet.
+6. Tipologie oggi in uso in azienda
+
+6.1 Forward Proxy / Secure Web Gateway
+
+* Appliance on-premise
+* VM in data center
+* Servizio cloud (es. SWG)
+
+Usato per controllo navigazione, DLP, controllo utenti.
+
+---
+
+6.2 Reverse Proxy / Application Delivery Controller
+
+Usato per:
+
+* Pubblicazione web
+* Bilanciamento carico
+* Terminazione TLS
+* Zero trust access
+
+---
+
+6.3 WAF (come reverse proxy specializzato)
+
+Usato per protezione applicazioni web pubbliche.
+
+---
+
+7. Differenza chiave tra proxy e firewall
 
 Firewall:
 
-* Sta tra Internet e DMZ.
-* Deve anche filtrare il traffico tra DMZ e LAN.
+* decide se il traffico può passare tra reti.
+
+Proxy:
+
+* si interpone nella comunicazione applicativa e parla al posto del client o del server.
+
+Il firewall controlla il traffico.
+Il proxy lo termina e lo rigenera.
 
 ---
 
-#### Regola progettuale fondamentale
+8. Sintesi concettuale finale
 
-Internet non deve mai poter raggiungere direttamente:
+Un proxy è un intermediario applicativo.
 
-* server applicativo
-* database
-* rete utenti
+Può operare:
 
-Il reverse proxy è il “filtro controllato” esposto, non il server reale.
+* in uscita (forward proxy)
+* in ingresso (reverse proxy)
+* in modo trasparente o esplicito
+* on-premise o cloud
 
+In azienda moderna è spesso:
 
+* integrato in un NGFW
+* usato come reverse proxy davanti ai servizi web
+* erogato come servizio cloud per controllo navigazione
 
-### Proxy (forward proxy)
-
-Un **proxy** “classico” (forward proxy) si mette tra **client interni** e Internet.
-
-Schema logico:
-
-Client → Proxy → Internet → Server esterno
-
-Caratteristiche principali:
-
-* I client sanno di usare il proxy (lo configurano nel browser o nel sistema).
-* Il proxy rappresenta i client verso l’esterno.
-* Serve per:
-
-  * filtrare la navigazione web
-  * controllare accessi e log
-  * fare caching di contenuti
-  * nascondere l’IP reale dei client
-
-Esempio tipico:
-In un’azienda, tutti i PC navigano tramite un proxy che blocca siti non autorizzati e registra il traffico.
-
-
-
-
-
-### Reverse proxy
-
-Un **reverse proxy** è un server che si mette “davanti” al vero server web.
-si mette tra **Internet** e uno o più server interni.
-
-Schema logico:
-
-Client Internet → Reverse Proxy → Server interno
-
-Caratteristiche principali:
-
-* I client esterni non sanno che esiste.
-* Il reverse proxy rappresenta i server interni.
-* Serve per:
-
-  * proteggere il server reale
-  * gestire HTTPS (terminazione TLS)
-  * bilanciare il carico tra più server
-  * applicare rate limiting e regole di sicurezza (WAF)
-
-Esempio tipico:
-Un sito web pubblico espone solo il reverse proxy; il vero server applicativo resta in rete interna.
-
-In pratica:
-
-* Il client (browser) non parla direttamente con il server applicativo.
-* Parla con il reverse proxy.
-* Il reverse proxy riceve la richiesta, la controlla e poi la inoltra al server interno.
-
-Perché si usa:
-
-* Nasconde il server reale (non è esposto direttamente su Internet).
-* Permette di controllare e filtrare il traffico.
-* Può distribuire il carico su più server (bilanciamento).
-
----
-
-### Proxy differenza fra forward e reverse
-
-* Il **proxy (forward)** protegge e controlla i client.
-* Il **reverse proxy** protegge e controlla i server.
-
-Oppure, in modo ancora più sintetico:
-
-* Forward proxy: sta “davanti ai client”.
-* Reverse proxy: sta “davanti ai server”.
-
----
-
-## Differenze operative
-
-Configurazione:
-
-* Forward proxy → configurato sui client.
-* Reverse proxy → configurato lato server/infrastruttura.
-
-Visibilità IP:
-
-* Forward proxy nasconde gli IP dei client verso Internet.
-* Reverse proxy nasconde gli IP dei server verso Internet.
-
-Scopo principale:
-
-* Forward proxy → controllo e filtraggio della navigazione.
-* Reverse proxy → protezione, sicurezza e gestione del traffico verso un servizio web.
-
-
-
-### Terminazione TLS
-
-“Terminazione TLS” significa che:
-
-* La connessione HTTPS cifrata viene decifrata dal reverse proxy.
-* Il traffico tra proxy e server interno può essere in chiaro (se rete interna sicura) o ancora cifrato.
-
-Vantaggio:
-
-* Si centralizza la gestione dei certificati.
-* Si alleggerisce il carico del server applicativo.
-
----
-
-### WAF (Web Application Firewall)
-
-Un **WAF** è un firewall specializzato per proteggere applicazioni web.
-
-Non lavora solo su IP e porte, ma analizza il contenuto delle richieste HTTP.
-
-Serve per bloccare attacchi come:
-
-* SQL injection
-* Cross-Site Scripting (XSS)
-* Tentativi di accesso anomali
-* Upload di file malevoli
-
----
-
-### Rate limiting
-
-Il **rate limiting** limita il numero di richieste che un utente può fare in un certo intervallo di tempo.
-
-Esempio:
-
-* Massimo 100 richieste al minuto per IP.
-
-Serve per:
-
-* Ridurre attacchi di tipo brute force (es. tentativi di login ripetuti).
-* Mitigare attacchi di tipo DoS leggeri.
-* Evitare sovraccarichi accidentali.
-
----
-
-### In sintesi molto semplice
-
-Reverse proxy + WAF = “filtro intelligente” davanti al sito.
-
-* Riceve le richieste.
-* Le controlla.
-* Blocca quelle sospette.
-* Protegge il server vero.
-* Gestisce HTTPS e certificati.
-* Limita abusi e attacchi comuni.
+È un componente di sicurezza e controllo, non un sostituto del routing e non equivalente a un firewall, anche se talvolta le funzioni possono coesistere nello stesso apparato.

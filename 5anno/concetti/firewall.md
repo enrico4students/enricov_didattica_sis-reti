@@ -1,19 +1,22 @@
 # firewall
 
-1. Che cos’è un firewall
-   Un firewall è un sistema di sicurezza che controlla e filtra il traffico di rete tra due o più zone con diverso livello di fiducia (per esempio Internet e LAN aziendale, oppure tra VLAN interne).
-   Applica regole basate su indirizzi IP, porte, protocolli, stato della connessione e, nei firewall moderni, anche su applicazioni e identità utente.
+Un firewall è un sistema di sicurezza che controlla e filtra il traffico di rete tra due o più zone con diverso livello di fiducia (per esempio Internet e LAN aziendale, oppure tra VLAN interne).
+Applica regole basate su indirizzi IP, porte, protocolli, stato della connessione e, nei firewall moderni, anche su applicazioni e identità utente.
 
-2. È un dispositivo fisico o logico?  
-   Il firewall è una funzione logica (motore di ispezione + policy), ma può essere implementato come:
+Il firewall è una funzione logica (motore di ispezione + policy), ma può essere implementato come:
 
 * Appliance hardware dedicata (dispositivo fisico standalone).
 * Firewall virtuale (VM su hypervisor).
 * Firewall cloud (servizio gestito all’interno di una VPC/VNet).
 * Firewall host-based (software installato su server o endpoint).
 
-3. È un dispositivo pass-through?
-   Dipende dall’architettura.
+
+CPE (Customer Premises Equipment)  
+È l’apparato di telecomunicazione installato presso la sede del cliente e collegato alla rete dell’operatore.  
+
+
+### Modalità
+dipende dall’architettura.
 
 Modalità tipiche:
 
@@ -24,7 +27,7 @@ Il traffico viene instradato attraverso di esso. In questo caso:
 * Non è un semplice bridge trasparente.
 * È un punto di transito obbligato.
 * Ogni zona ha una subnet diversa.
-* Il firewall è il default gateway della LAN.
+* Il firewall **è il default gateway** della LAN.
 
 Collegamento tipico (perimetro aziendale):
 
@@ -186,7 +189,7 @@ Il firewall non è semplicemente “un filtro”, ma un punto di controllo centr
 * Registra e monitora traffico.
 * Riduce superficie di attacco.
 
-Nell’IT aziendale moderno il modello dominante è NGFW in modalità routed, collegato point-to-point al CPE dell’operatore lato WAN e allo switch core lato LAN, con eventuali interfacce dedicate per DMZ o segmentazione interna.
+**Nell’IT aziendale moderno il modello dominante è NGFW in modalità routed, collegato point-to-point al CPE dell’operatore lato WAN e allo switch core lato LAN, con eventuali interfacce dedicate per DMZ o segmentazione interna.**
 
 
 <hr/>
@@ -258,7 +261,7 @@ Conclusione netta:
 
 Se router e firewall sono separati → il pacchetto passa prima dal router, poi dal firewall.
 
-Se sono integrati si possono vedere affermazioni errate (ad esempio da chatGPT) tipo "il firewall è il primo apparato aziendale che lo riceve."
-Se routing e firewall sono integrati, il dispositivo unico, chiamato firewall per semplicità, è il primo apparato aziendale che riceve il traffico; al suo interno la decisione di instradamento precede l’applicazione della policy di sicurezza quindi il routing anche in questo caso è prima del firewall
+Sui firewalls integrati con il router in un unico dispositivo si possono vedere affermazioni letteralmente **errate** (ad esempio da chatGPT) tipo "il firewall è il primo apparato aziendale che lo riceve."
+Se routing e firewall sono integrati, il dispositivo unico, chiamato firewall per semplicità, è il primo apparato aziendale che riceve il traffico; al suo interno la decisione/funzionalità di instradamento precede l’applicazione della policy di sicurezza (cioè la funzionalità di firewall) quindi il routing anche in questo caso è prima del firewall
 
 

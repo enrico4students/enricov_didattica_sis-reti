@@ -1,17 +1,24 @@
 ## Certificato digitale – concetto generale
 
-![Image](https://www.researchgate.net/publication/322926088/figure/fig5/AS%3A631614061158460%401527599935434/Format-of-X-509-Certificate.png)
-&nbsp;
 
-![Image](https://knowledge.digicert.com/content/dam/kb/attachments/ssl-tls-certificates/certificate-chain/figure-chain.jpg)
+<div style="background-color: white; display: inline-block; padding: 10px;">
+    <img src="https://knowledge.digicert.com/content/dam/kb/attachments/ssl-tls-certificates/certificate-chain/figure-chain.jpg">
+</div>
 &nbsp;
+<br/>
+<br/>
+
+<div style="background-color: white; display: inline-block; padding: 10px;">
+    <img src="https://cf-assets.www.cloudflare.com/slt3lc6tev37/5aYOr5erfyNBq20X5djTco/3c859532c91f25d961b2884bf521c1eb/tls-ssl-handshake.png">
+</div>
+&nbsp;<br/>
 
 
-![Image](https://cf-assets.www.cloudflare.com/slt3lc6tev37/5aYOr5erfyNBq20X5djTco/3c859532c91f25d961b2884bf521c1eb/tls-ssl-handshake.png)
+<div style="background-color: white; display: inline-block; padding: 10px;">
+    <img src="https://hpbn.co/assets/diagrams/b83b75dbbf5b7e4be31c8000f91fc1a8.svg">
+</div>
 &nbsp;
-
-![Image](https://hpbn.co/assets/diagrams/b83b75dbbf5b7e4be31c8000f91fc1a8.svg)
-&nbsp;
+<br/>
 
 ---
 
@@ -304,6 +311,181 @@ Limiti del certificato creato nel LAB:
 * ambienti didattici
 
 ---
+
+## esaminare un certificato
+
+Sì. È assolutamente possibile scaricare il certificato pubblico di un web server per esaminarlo a fini didattici.
+Il certificato TLS del server è pubblico per definizione: viene inviato dal server durante il TLS handshake.
+
+Non è necessario alcun permesso speciale.
+
+---
+
+### 1. Modalità semplici per scaricare un certificato
+
+#### Metodo 1 – Browser (Chrome / Edge / Firefox)
+
+Procedura tipica:
+
+1. Aprire un sito HTTPS (es. [https://www.google.com](https://www.google.com)).
+2. Cliccare sull’icona del lucchetto nella barra degli indirizzi.
+3. Visualizzare certificato.
+4. Esportare il certificato in formato .crt o .pem.
+
+Si ottiene il certificato del server oppure l’intera catena (server + intermediate).
+
+---
+
+#### Metodo 2 – OpenSSL (più didattico)
+
+Da terminale:
+
+```
+openssl s_client -connect www.google.com:443 -showcerts
+```
+
+Questo comando:
+
+* apre una connessione TLS
+* stampa tutti i certificati della catena
+* mostra handshake e parametri crittografici
+
+Per salvare solo il certificato server:
+
+```
+openssl s_client -connect www.google.com:443 -showcerts </dev/null 2>/dev/null | openssl x509 -outform PEM > server.pem
+```
+
+Questo è il metodo migliore a fini didattici perché permette di:
+
+* analizzare Subject
+* Issuer
+* validità
+* SAN (Subject Alternative Name)
+* algoritmo di firma
+* chiave pubblica
+* estensioni
+
+---
+
+#### Metodo 3 – Siti di analisi TLS (molto utili didatticamente)
+
+Un riferimento eccellente è:
+
+SSL Labs – SSL Server Test
+[https://www.ssllabs.com/ssltest/](https://www.ssllabs.com/ssltest/)
+
+Permette di:
+
+* analizzare qualsiasi dominio
+* vedere la catena completa
+* controllare versioni TLS abilitate
+* verificare cipher suite
+* analizzare configurazioni errate
+
+È uno strumento didatticamente molto utile.
+
+---
+
+### 2. Certificati consigliabili per uso didattico
+
+Conviene scegliere siti con caratteristiche diverse.
+
+#### 1) [www.google.com](http://www.google.com)
+
+Ottimo per:
+
+* vedere certificati con SAN multipli
+* osservare catene complesse
+* analizzare firme moderne (RSA/ECDSA)
+
+---
+
+#### 2) badssl.com
+
+[https://badssl.com/](https://badssl.com/)
+
+Questo sito è specificamente progettato per test didattici su TLS.
+
+Offre:
+
+* certificati scaduti
+* self-signed
+* SHA1
+* hostname errato
+* chain incomplete
+* TLS vecchie versioni
+
+È probabilmente il migliore in assoluto per laboratorio.
+
+---
+
+#### 3) un sito con certificato Let's Encrypt
+
+Esempio:
+
+[https://letsencrypt.org/](https://letsencrypt.org/)
+
+Utile per mostrare:
+
+* certificati DV (Domain Validation)
+* catena Let's Encrypt
+* ACME ecosystem
+
+---
+
+### 3. Cosa analizzare didatticamente nel certificato
+
+Durante l’analisi è utile osservare:
+
+* Versione X.509
+* Subject (CN)
+* SAN (Subject Alternative Names)
+* Issuer
+* Validità (Not Before / Not After)
+* Key Usage
+* Extended Key Usage
+* Signature Algorithm
+* Public Key Algorithm (RSA o ECDSA)
+* Lunghezza chiave (es. 2048 bit)
+
+Utile collegare tutto al TLS handshake illustrato in precedenza.
+
+---
+
+### 4. Collegamento con HTTPS e TLS
+
+Durante il TLS handshake:
+
+```
+Server → Client : Certificate
+```
+
+Il certificato viene inviato in chiaro (non cifrato), ma l’integrità è garantita dal protocollo TLS.
+
+Il client:
+
+* verifica la firma
+* controlla la catena di fiducia
+* verifica che il dominio richiesto sia presente nel SAN
+
+Solo dopo procede con la generazione delle chiavi di sessione.
+
+---
+
+### 5. Conclusione
+
+Sì, è sempre possibile scaricare e analizzare il certificato di un web server HTTPS.
+
+Per uso didattico si consiglia:
+
+* badssl.com per casi di errore e test
+* google.com per esempi reali complessi
+* un dominio con Let's Encrypt per catene semplici e moderne
+* SSL Labs per analisi approfondita della configurazione TLS
+
+
+<hr/>
 
 ## Conclusione
 

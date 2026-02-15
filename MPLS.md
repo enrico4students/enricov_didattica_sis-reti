@@ -209,4 +209,177 @@ Se serve:
 
 ---
 
-Se si desidera, è possibile aggiungere una sezione su come SD-WAN combina concetti MPLS e IPsec e perché oggi viene considerata l’evoluzione architetturale delle WAN aziendali.
+# cosa risolve MPS?Cosa si può fare con MPLS che non si può fare con lo stack TCP/IP +IPSEC ?
+
+Domanda corretta e tecnica.
+Risposta diretta: **MPLS risolve problemi di controllo del forwarding e di ingegneria del traffico che TCP/IP + IPsec non possono risolvere quando la rete sottostante non è controllata.**
+
+Separiamo i piani.
+
+---
+
+# 1. Cosa risolve MPLS
+
+MPLS nasce per risolvere tre problemi fondamentali nelle reti di grandi dimensioni:
+
+1. Scalabilità del forwarding
+2. Traffic engineering (controllo esplicito del percorso)
+3. Separazione logica massiva (VPN carrier-grade)
+
+Non nasce per cifrare.
+
+---
+
+# 2. Cosa si può fare con MPLS che non si può fare con TCP/IP + IPsec su Internet
+
+La differenza chiave è questa:
+
+IPsec lavora sopra una rete che non controlla.
+MPLS è parte dell’infrastruttura di rete.
+
+Vediamo i casi concreti.
+
+---
+
+## 2.1 Controllo deterministico del percorso (Traffic Engineering)
+
+Con MPLS è possibile:
+
+* Definire LSP (Label Switched Path) espliciti
+* Forzare il traffico su un percorso specifico
+* Evitare link congestionati
+* Separare traffico critico su percorsi dedicati
+
+Con IPsec su Internet:
+
+* Il percorso è deciso dal routing BGP globale
+* Non si può imporre il cammino
+* Non si può evitare una dorsale congestionata
+* Non si può garantire latenza costante
+
+Questo è un limite strutturale.
+
+---
+
+## 2.2 QoS reale end-to-end
+
+In una rete MPLS il provider può:
+
+* Applicare classi di servizio
+* Riservare banda
+* Garantire priorità al VoIP
+* Limitare jitter
+* Applicare policing coerente su tutta la rete
+
+Con Internet + IPsec:
+
+* Il traffico è best effort
+* Il DSCP può essere ignorato dai provider
+* Nessuna garanzia contrattuale su jitter o perdita
+
+IPsec cifra, ma non può imporre QoS globale.
+
+---
+
+## 2.3 SLA garantiti
+
+Con MPLS il provider può contrattualmente garantire:
+
+* Latenza massima tra sedi
+* Jitter massimo
+* Packet loss massimo
+* Disponibilità percentuale
+
+Internet non fornisce SLA equivalenti su scala geografica ampia.
+
+IPsec non può trasformare Internet in rete deterministica.
+
+---
+
+## 2.4 VPN su larga scala (Carrier-grade L3 VPN)
+
+MPLS + BGP permette:
+
+* VRF separate per migliaia di clienti
+* Isolamento completo delle routing table
+* Scalabilità molto alta
+
+Un ISP può gestire decine di migliaia di VPN.
+
+IPsec classico:
+
+* Richiede tunnel
+* Richiede gestione chiavi
+* Cresce in complessità con il numero di siti
+* Non è progettato per carrier multi-tenant massivi
+
+---
+
+## 2.5 Fast Reroute (convergenza rapidissima)
+
+Con MPLS Fast Reroute:
+
+* Ripristino in decine di millisecondi
+* Inferiore a molte convergenze IP tradizionali
+
+Internet + IPsec:
+
+* Dipende dalla convergenza BGP
+* Può richiedere secondi
+* Non è deterministico
+
+In ambienti finanziari questo è critico.
+
+---
+
+# 3. Cosa MPLS NON può fare
+
+MPLS non può:
+
+* Cifrare traffico
+* Garantire riservatezza
+* Sostituire IPsec per sicurezza crittografica
+
+Se serve cifratura, serve IPsec o TLS sopra MPLS.
+
+---
+
+# 4. Sintesi tecnica netta
+
+TCP/IP + IPsec può:
+
+* Cifrare
+* Autenticare
+* Funzionare ovunque ci sia IP
+
+Ma non può:
+
+* Controllare il percorso Internet
+* Garantire QoS geografica
+* Offrire SLA deterministici
+* Gestire separazione massiva carrier-grade
+* Applicare traffic engineering core-network
+
+MPLS può fare queste cose perché è dentro la rete.
+
+---
+
+# 5. Conclusione precisa
+
+MPLS risolve problemi di:
+
+* Ingegneria del traffico
+* Scalabilità operatore
+* Prestazioni deterministiche
+* Isolamento multi-tenant su larga scala
+
+IPsec risolve problemi di:
+
+* Sicurezza crittografica
+
+Non sono alternative.
+Sono strumenti per livelli diversi del problema.
+
+Se la rete è solo Internet pubblica, MPLS non è applicabile.
+Se si gestisce un backbone o una WAN carrier-grade, TCP/IP + IPsec non è sufficiente per gli stessi obiettivi.
+

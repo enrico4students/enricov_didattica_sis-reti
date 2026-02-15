@@ -98,8 +98,6 @@ Per ogni sottorete determinare:
 
 ## Richiami su procedimento per soluzione
 
-Spiegazione da inserire prima delle soluzioni degli esercizi: come creare un piano di indirizzamento (Classful, CIDR, VLSM)
-
 Obiettivo
 Definire, per ogni rete o sottorete, tutti i parametri necessari all’assegnazione coerente degli indirizzi:
 
@@ -110,17 +108,25 @@ Definire, per ogni rete o sottorete, tutti i parametri necessari all’assegnazi
 * Intervallo host assegnabile ai client
 * Broadcast
 
-Regola generale
-Lavorare sempre in modo “deterministico”, cioè con regole ripetibili:
+### Regole generali
 
+#### Lavorare sempre in modo “deterministico”, cioè con regole ripetibili:
 * scegliere un criterio fisso per il gateway (spesso ultimo host utilizzabile oppure primo host utilizzabile)
-* scegliere un criterio fisso per server (spesso primo host utilizzabile, o un blocco iniziale dedicato)
+* scegliere un criterio fisso per i servers (spesso primo host utilizzabile, o un blocco iniziale dedicato)
 * definire chiaramente quali indirizzi si riservano (router, server, stampanti, AP, switch management, ecc.)
 
-1. Piano di indirizzamento classful
+#### Tenere conto del reale numero di dispositivi  
+Il numero reale di dispositivi, cioè di indirizzi IP da includere in una sottorete è quindi:
+numero PC + 1 (broadcast) + 1 (indirizzo di rete) 
++ 1 (router)  (non sempre)
++ N servers
++ M stampanti
++ eventuale crescita degli utenti 
 
-Quando si usa
-Quando si considera la rete secondo la maschera “di default” della classe (A=/8, B=/16, C=/24), senza subnetting aggiuntivo.
+
+### 1. Piano di indirizzamento classful
+
+Si usa quando si considera la rete secondo la maschera “di default” della classe (A=/8, B=/16, C=/24), senza subnetting aggiuntivo.
 
 Procedura
 
@@ -141,10 +147,9 @@ Procedura
 Risultato atteso
 Una singola riga (o poche righe) di tabella per ogni rete classful.
 
-2. Piano di indirizzamento CIDR (subnetting “a taglia unica”)
+#### 2. Piano di indirizzamento CIDR (subnetting “a taglia unica”)
 
-Quando si usa
-Quando si sceglie un prefisso /n e lo si applica in modo uniforme (tutte le sottoreti hanno la stessa dimensione). È tipico quando si divide una rete in N sottoreti uguali.
+Si usa quando si sceglie un prefisso /n e lo si applica in modo uniforme (tutte le sottoreti hanno la stessa dimensione). È tipico quando si divide una rete in N sottoreti uguali.
 
 Procedura
 
@@ -173,18 +178,16 @@ Procedura
 Risultato atteso
 Una tabella con una riga per ogni sottorete richiesta.
 
-3. Piano di indirizzamento VLSM (subnetting “a taglia variabile”)
+#### 3. Piano di indirizzamento VLSM (subnetting “a taglia variabile”)
 
-Quando si usa
-Quando le sottoreti devono avere dimensioni diverse (reale progettazione: reparti, VLAN diverse, link punto-punto, DMZ, Wi-Fi guest, ecc.).
+Si usa quando le sottoreti devono avere dimensioni diverse (reale progettazione: reparti, VLAN diverse, link punto-punto, DMZ, Wi-Fi guest, ecc.).
 
 Procedura
 
-1. Elencare i fabbisogni reali:
-
+1. Elencare i fabbisogni reali:  
    * per ogni sottorete: numero di host richiesti
    * includere eventuali riserve (router, server, dispositivi di rete)
-2. Ordinare i fabbisogni in ordine decrescente (sempre).
+2. Ordinare i fabbisogni in ordine **decrescente** (**sempre**).
 3. Per ogni fabbisogno scegliere la sottorete minima sufficiente:
 
    * trovare il più piccolo blocco 2^k tale che (2^k - 2) >= host_richiesti

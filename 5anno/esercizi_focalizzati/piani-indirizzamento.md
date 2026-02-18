@@ -61,7 +61,7 @@ Indirizzo/prefisso
 Esempio:
 192.168.10.0/27
 
-Significa che i primi 27 bit identificano la rete.
+Significa che i primi 27 bit identificano la rete in questo esempio.
 
 Vantaggi:
 

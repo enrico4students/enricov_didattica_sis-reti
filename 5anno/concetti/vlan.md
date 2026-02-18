@@ -113,13 +113,10 @@ Spostare un utente di reparto richiede solo cambiare VLAN sulla porta, non il ca
 
 ## 4. Differenza rispetto al subnetting
 
-VLAN = separazione a livello 2
-Subnet = separazione a livello 3
+- VLAN = separazione a livello 2  
+- Subnet = separazione a livello 3  
 
-Spesso:
-1 VLAN = 1 subnet
-
-Ma sono concetti distinti.
+Spesso: 1 VLAN = 1 subnet **ma sono concetti distinti**.
 
 Senza VLAN ma con subnet:
 

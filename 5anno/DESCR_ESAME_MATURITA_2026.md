@@ -1,3 +1,13 @@
+## Tipi di sessione
+
+* Ordinaria → sessione normale per tutti.
+* Suppletiva → recupero per assenza giustificata.
+* Straordinaria → ulteriore recupero per casi eccezionali.
+
+
+
+# Esame 2026
+
 L’Esame di Stato Italia **a.s. 2025–2026 (Esame di maturità 2026)** presenta **una riforma significativa**, con modifiche rispetto agli anni precedenti che riguardano la struttura dell’esame e la funzione delle prove, pur mantenendo alcuni elementi storici del sistema di valutazione dell’istruzione superiore. Le informazioni seguenti sono basate sulle normative e sulle comunicazioni ministeriali ufficiali disponibili.([Istruzione][1])
 
 ## Cambiamenti principali rispetto agli anni precedenti
@@ -63,3 +73,5 @@ Queste modifiche rendono l’esame di Stato 2026 più coerente con le competenze
 [3]: https://www.wired.it/article/esame-di-maturita-2026-novita-poche/?utm_source=chatgpt.com "Esame di maturità, quali sono le novità del 2026"
 [4]: https://www.ecampusrende.it/maturita-2026-tutte-le-novita-su-prove-scritte-commissioni-colloquio-e-regolamento-dellesame-finale/?utm_source=chatgpt.com "Maturità 2026: tutte le novità su prove scritte, commissioni ..."
 [5]: https://tg24.sky.it/cronaca/2026/01/30/maturita-materie-2026?utm_source=chatgpt.com "Maturità 2026, tutte le materie di seconda prova scritta e ..."
+
+

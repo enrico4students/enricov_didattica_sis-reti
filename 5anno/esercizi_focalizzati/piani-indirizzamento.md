@@ -1,3 +1,4 @@
+
 # Lezione: Subnetting IPv4 e piani di indirizzamento
 
 (Istituto Tecnico Informatico – Sistemi e Reti)
@@ -8,8 +9,7 @@
 
 ### 1.1 Struttura di un indirizzo IPv4
 
-Un indirizzo IPv4 è composto da:
-
+Un indirizzo IPv4 è composto da:  
 * 32 bit
 * suddivisi in 4 ottetti (8 bit ciascuno)
 * rappresentati in notazione decimale puntata

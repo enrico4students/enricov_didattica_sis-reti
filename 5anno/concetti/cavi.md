@@ -1,3 +1,9 @@
+---
+marp: true
+theme: portrait
+paginate: true
+---
+
 # Lezione sui cavi Ethernet in rame
 
 Obiettivo: comprendere quale cavo scegliere in base a velocità, distanza e ambiente di utilizzo.

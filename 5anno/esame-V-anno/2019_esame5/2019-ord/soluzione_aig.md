@@ -25,7 +25,12 @@ Ne consegue un’architettura:
 
 ## Architettura proposta
 
-### Struttura logica
+### Struttura logica  
+
+Notare, molto diverso dalle altre soluzioni   
+- la parte internet è mostrata ma **non utilizzata**    
+- si arriva sul Web Server tamite VPN
+- assume i POI siano access point  
 
 ```
             INTERNET

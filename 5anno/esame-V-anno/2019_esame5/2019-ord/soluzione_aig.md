@@ -147,6 +147,9 @@ Accesso consentito se d ≤ 30 m.
 
 ### 3. Beacon BLE
 
+_def **beacon** BLE (Bluetooth Low Energy)  
+piccolo dispositivo che trasmette periodicamente un identificatore tramite BLE_  
+
 Identificatore beacon verificato lato server.
 
 Soluzione raccomandata: WiFi + GPS.
@@ -173,6 +176,33 @@ Relazioni:
 * BIGLIETTO ha TARIFFA
 * POI ha CONTENUTI
 * BIGLIETTO effettua ACCESSI
+
+---  
+
+    @startuml
+    title Modello Concettuale (E-R)
+
+    hide methods
+    hide stereotypes
+    skinparam classAttributeIconSize 0
+
+    entity VISITATORE
+    entity BIGLIETTO
+    entity TARIFFA
+    entity POI
+    entity CONTENUTO
+    entity LINGUA
+    entity ACCESSO
+
+    ' Relazioni
+
+    VISITATORE "1" -- "0..*" BIGLIETTO : acquista
+    BIGLIETTO "0..*" -- "1" TARIFFA : ha
+    POI "1" -- "0..*" CONTENUTO : ha
+    BIGLIETTO "1" -- "0..*" ACCESSO : effettua
+    CONTENUTO "0..*" -- "1" LINGUA : in
+
+    @enduml  
 
 ---
 
@@ -205,6 +235,50 @@ Relazioni:
 * tipo
 * lingua
 * url_video
+
+---  
+
+    @startuml
+    title Progetto base di dati - Modello logico (PlantUML)
+
+    hide methods
+    hide stereotypes
+    skinparam classAttributeIconSize 0
+
+    class TARIFFA {
+        +id_tariffa : int <<PK>>
+        +nome : string
+        +max_poi_avanzati : int
+    }
+
+    class BIGLIETTO {
+        +id_biglietto : int <<PK>>
+        +password : string
+        +data_validita : date
+        +id_tariffa : int <<FK>>
+    }
+
+    class POI {
+        +id_poi : int <<PK>>
+        +nome : string
+        +latitudine : decimal
+        +longitudine : decimal
+    }
+
+    class CONTENUTO {
+        +id_contenuto : int <<PK>>
+        +id_poi : int <<FK>>
+        +tipo : string
+        +lingua : string
+        +url_video : string
+    }
+
+    TARIFFA "1" <-- "0..*" BIGLIETTO : ha
+    POI "1" <-- "0..*" CONTENUTO : ha
+
+    @enduml  
+
+
 
 ---
 

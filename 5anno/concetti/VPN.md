@@ -1,4 +1,6 @@
-## Le VPN (Virtual Private Network)
+---
+
+# Le VPN (Virtual Private Network)
 
 ---
 
@@ -66,7 +68,7 @@ Garantisce che i dati non siano stati modificati durante il trasporto.
 
 Implementata tramite:
 
-* HMAC (Hash-based Message Authentication Code, meccanismo crittografico che usa una funzione di hash insieme a una chiave segreta condivisa per garantire l’integrità e l’autenticità di un messaggio).  
+* HMAC (Hash-based Message Authentication Code)
 * firme crittografiche
 
 ---
@@ -134,9 +136,9 @@ Casi d’uso:
 Caratteristiche:
 
 * basata su TLS (come HTTPS)
-* opera a livello applicativo o trasporto
+* opera sopra TCP o UDP
 * utilizza porta 443 (facile attraversamento firewall)
-* accessibile via browser o client leggero
+* richiede un client o accesso via browser
 * supporta MFA
 
 Casi d’uso:
@@ -144,8 +146,61 @@ Casi d’uso:
 * accesso remoto utenti
 * smart working
 * accessi temporanei
+* dispositivi mobili su rete pubblica
 
 È ideale per utenti mobili e ambienti dinamici.
+
+---
+
+### 5.2.1 OpenVPN
+
+**OpenVPN** è una delle implementazioni più diffuse di VPN SSL/TLS-based.
+
+Caratteristiche tecniche:
+
+* utilizza TLS per autenticazione e scambio chiavi
+* usa cifratura simmetrica per il traffico dati (es. AES)
+* può operare su UDP (più performante) o TCP
+* funziona in modalità client-to-server
+* disponibile su Windows, Linux, macOS, Android
+
+Architettura tipica:
+
+Dispositivo (client OpenVPN)
+⇄ Internet
+⇄ Server OpenVPN
+
+Ogni dispositivo stabilisce un tunnel cifrato verso il server.
+
+È particolarmente adatta a:
+
+* tablet e smartphone
+* utenti con IP dinamico
+* reti mobili (4G/5G)
+* accessi temporanei
+
+---
+
+### Differenza e relazione tra OpenVPN e TLS
+
+TLS (Transport Layer Security):
+
+* è un protocollo crittografico
+* protegge connessioni applicative (es. HTTPS)
+* fornisce autenticazione, cifratura e integrità
+
+OpenVPN:
+
+* non è TLS
+* utilizza TLS come meccanismo di sicurezza
+* incapsula traffico IP dentro un canale protetto da TLS
+
+In sintesi:
+
+TLS = protocollo crittografico
+OpenVPN = applicazione VPN che usa TLS
+
+OpenVPN crea un **tunnel IP cifrato tramite TLS**, mentre TLS da solo protegge singole applicazioni (es. browser).
 
 ---
 
@@ -165,7 +220,7 @@ Casi d’uso:
 * ambienti mission-critical
 * integrazione voce/dati/video
 
-La cifratura non è intrinseca: la sicurezza si basa sull’isolamento logico nel backbone del carrier.
+**La cifratura non è intrinseca: la sicurezza si basa sull’isolamento logico nel backbone del carrier**.  
 Se necessario, si può aggiungere IPsec sopra MPLS.
 
 ---
@@ -174,13 +229,15 @@ Se necessario, si può aggiungere IPsec sopra MPLS.
 
 IPsec
 
-* cifratura forte su Internet
+* cifratura forte a livello IP
 * ideale per site-to-site
+* integrato nei router/firewall
 
-SSL/TLS
+SSL/TLS (es. OpenVPN)
 
-* flessibile per utenti
-* semplice attraversamento firewall
+* flessibile per utenti mobili
+* funziona bene con IP dinamici
+* attraversa facilmente NAT e firewall
 
 BGP/MPLS
 
@@ -253,5 +310,8 @@ Il concetto di “private” è garantito da:
 * autenticazione
 * integrità
 * controllo degli accessi
+
+IPsec è dominante nei collegamenti permanenti tra reti.
+OpenVPN è una soluzione TLS-based ideale per accesso remoto e dispositivi mobili.
 
 La sicurezza reale deriva dall’integrazione coordinata di tutti questi elementi, non dalla sola cifratura.

@@ -1,14 +1,30 @@
+
 ---
+
 marp: false
 theme: portrait
 paginate: true
----
+
+--- 
+
+
+
+.page {
+    width: 210mm;
+    min-height: 297mm;
+    margin: auto;
+    padding: 2cm;
+    background-image: url("sfondo.png");
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
 
 # Lezione sui cavi Ethernet in rame
 
 Obiettivo: comprendere quale cavo scegliere in base a velocità, distanza e ambiente di utilizzo.
 
----
+<!-- slideseparator -->
 
 ## 1. Struttura del cavo Ethernet
 
@@ -21,7 +37,7 @@ Un cavo Ethernet in rame è composto da:
 
 L’intreccio dei fili riduce le interferenze tra le coppie (diafonia).
 
----
+<!-- slideseparator -->
 
 ## 2. Le due classificazioni fondamentali
 
@@ -34,7 +50,7 @@ Sono indipendenti e si combinano tra loro.
 
 Esempio: Cat6 UTP, Cat6a S/FTP.
 
----
+<!-- slideseparator -->
 
 ## 3. Le categorie principali
 
@@ -54,7 +70,7 @@ Uso tipico:
 * laboratori scolastici
 * piccoli uffici
 
----
+<!-- slideseparator -->
 
 ### Cat6
 
@@ -71,7 +87,7 @@ Uso tipico:
 * uffici moderni
 * nuove installazioni
 
----
+<!-- slideseparator -->
 
 ### Cat6a
 
@@ -87,7 +103,7 @@ Uso tipico:
 * reti aziendali evolute
 * sale server
 
----
+<!-- slideseparator -->
 
 ## 4. Tipi di schermatura
 
@@ -108,7 +124,7 @@ Uso consigliato:
 * ambienti industriali
 * vicinanza a linee elettriche o macchinari
 
----
+<!-- slideseparator -->
 
 ## 5. Lunghezza massima
 
@@ -121,7 +137,7 @@ Oltre questa distanza:
 * il segnale si degrada
 * è necessario uno switch intermedio o fibra ottica
 
----
+<!-- slideseparator -->
 
 ## 6. Guida pratica alla scelta
 
@@ -142,7 +158,7 @@ Ambiente con interferenze:
 
 * Cat6 o Cat6a schermato
 
----
+<!-- slideseparator -->
 
 ## Conclusione
 
@@ -179,7 +195,7 @@ Per la maggior parte delle installazioni moderne, **Cat6 UTP rappresenta un buon
 Obiettivo principale:
 progettare un’infrastruttura di cablaggio **neutra rispetto alle applicazioni**, capace di supportare voce, dati, video e servizi futuri senza rifare l’impianto.
 
----
+<!-- slideseparator -->
 
 ### 2. Concetto di cablaggio strutturato
 
@@ -193,7 +209,7 @@ Il cablaggio strutturato non è un insieme casuale di cavi, ma un sistema organi
 Principio fondamentale:
 l’infrastruttura fisica deve essere stabile nel tempo, mentre gli apparati attivi (switch, router) possono cambiare.
 
----
+<!-- slideseparator -->
 
 ### 3. Architettura definita dallo standard
 
@@ -212,7 +228,7 @@ Caratteristiche principali:
 * 100 m complessivi includendo patch cord
 * separazione tra dorsali e cablaggio orizzontale
 
----
+<!-- slideseparator -->
 
 ### 4. Classi e categorie
 
@@ -231,7 +247,7 @@ Esempi:
 
 Le classi sono definite in base alla **frequenza massima supportata** (MHz).
 
----
+<!-- slideseparator -->
 
 ### 5. Supporto ai servizi Ethernet
 
@@ -247,7 +263,7 @@ Esempi:
 
 Il principio è che lo standard di cablaggio è **indipendente dal protocollo**, ma deve garantire parametri elettrici adeguati (attenuazione, NEXT, FEXT, ecc.).
 
----
+<!-- slideseparator -->
 
 ### 6. Parametri tecnici principali
 
@@ -261,7 +277,7 @@ ISO/IEC 11801 definisce limiti per:
 
 Questi parametri vengono verificati tramite certificatori di cablaggio.
 
----
+<!-- slideseparator -->
 
 ### 7. Varianti dello standard
 
@@ -275,7 +291,7 @@ Lo standard è suddiviso in più parti:
 
 Ogni parte adatta i requisiti all’ambiente operativo.
 
----
+<!-- slideseparator -->
 
 ### 8. Differenze rispetto ad altri standard
 
@@ -288,7 +304,7 @@ Esiste anche lo standard americano:
 
 Le differenze sono minime a livello tecnico; la scelta dipende dal contesto geografico e normativo.
 
----
+<!-- slideseparator -->
 
 ### 9. Perché è importante in azienda
 
@@ -312,7 +328,7 @@ Un impianto conforme garantisce:
 ✅ documentazione tecnica standardizzata
 ✅ longevità dell’infrastruttura
 
----
+<!-- slideseparator -->
 
 ### 10. Sintesi finale
 

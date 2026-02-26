@@ -3,68 +3,28 @@ skinparam linetype ortho
 skinparam shadowing false
 
 ' -------------------------
+' DEFINIZIONE STEREOTIPI
+' -------------------------
+
+skinparam node {
+    BackgroundColor<<AP>> LightBlue
+    BackgroundColor<<SwitchL2>> LightGreen
+    BackgroundColor<<SwitchL3>> PaleGreen
+    BackgroundColor<<Firewall>> Salmon
+    BackgroundColor<<Server>> Wheat
+    BackgroundColor<<Client>> White
+}
+
+' -------------------------
 ' PIANI OSPEDALE
 ' -------------------------
 
 node "Piano 1" {
-    device "AP Reparti A-B\n(WPA2/WPA3-Enterprise)" as AP1
-    device "Switch L2 Piano 1\n(Trunk 802.1Q)" as SW1
+    node "AP Reparti A-B\n(WPA2/WPA3-Enterprise)" as AP1 <<AP>>
+    node "Switch L2 Piano 1\n(Trunk 802.1Q)" as SW1 <<SwitchL2>>
     AP1 -- SW1
 }
 
 node "Piano 2" {
-    device "AP Reparti C-D\n(WPA2/WPA3-Enterprise)" as AP2
-    device "Switch L2 Piano 2\n(Trunk 802.1Q)" as SW2
-    AP2 -- SW2
-}
-
-node "Piano 3" {
-    device "AP Reparti E-F\n(WPA2/WPA3-Enterprise)" as AP3
-    device "Switch L2 Piano 3\n(Trunk 802.1Q)" as SW3
-    AP3 -- SW3
-}
-
-' -------------------------
-' LOCALE TECNICO
-' -------------------------
-
-node "Seminterrato - Locale Tecnico" {
-
-    device "Core Switch L3\n(Routing Inter-VLAN)" as CORE
-    device "Firewall" as FW
-    device "RADIUS / AD" as RAD
-    device "DNS / DHCP / NTP" as INFRA
-
-    node "VLAN 30 - Server" {
-        device "Web Server (HTTPS)" as WEB
-        database "DB Server" as DB
-    }
-
-    CORE -- FW
-    CORE -- RAD
-    CORE -- INFRA
-    FW -- WEB
-    WEB -- DB
-}
-
-node "Farmacia" {
-    device "PC Farmacia\n(VLAN 20)" as PCF
-}
-
-device "Tablet Medici\n(VLAN 10 WiFi)" as TAB
-
-' -------------------------
-' COLLEGAMENTI
-' -------------------------
-
-TAB .. AP1
-TAB .. AP2
-TAB .. AP3
-
-SW1 -- CORE
-SW2 -- CORE
-SW3 -- CORE
-
-PCF -- CORE
-
-@enduml
+    node "AP Reparti C-D\n(WPA2/WPA3-Enterprise)" as AP2 <<AP>>
+    node "Switch L2 Piano 2\n(Trunk 802.1Q)" as SW2 <<SwitchL2>>

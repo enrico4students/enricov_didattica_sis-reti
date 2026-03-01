@@ -7,12 +7,25 @@ skinparam linetype ortho
 skinparam shadowing false
 
 ' -------------------------
+' DEFINIZIONE STEREOTIPI
+' -------------------------
+
+skinparam node {
+    BackgroundColor<<AP>> LightBlue
+    BackgroundColor<<SwitchL2>> LightGreen
+    BackgroundColor<<SwitchL3>> PaleGreen
+    BackgroundColor<<Firewall>> Salmon
+    BackgroundColor<<Server>> Wheat
+    BackgroundColor<<Client>> White
+}
+
+' -------------------------
 ' PIANI OSPEDALE
 ' -------------------------
 
 node "Piano 1" {
-    device "AP Reparti A-B\n(WPA2/WPA3-Enterprise)" as AP1
-    device "Switch L2 Piano 1\n(Trunk 802.1Q)" as SW1
+    node "AP Reparti A-B\n(WPA2/WPA3-Enterprise)" as AP1 <<AP>>
+    node "Switch L2 Piano 1\n(Trunk 802.1Q)" as SW1 <<SwitchL2>>
     AP1 -- SW1
 }
 

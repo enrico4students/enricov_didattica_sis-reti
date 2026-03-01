@@ -1,4 +1,6 @@
+
 # Lezione: Subnetting IPv4 e piani di indirizzamento
+
 (Istituto Tecnico Informatico – Sistemi e Reti)
 
 ---
@@ -6,46 +8,52 @@
 ## 1. Richiami teorici essenziali
 
 ### 1.1 Struttura di un indirizzo IPv4
-Un indirizzo IPv4 è composto da:
-- 32 bit
-- suddivisi in 4 ottetti (8 bit ciascuno)
-- rappresentati in notazione decimale puntata
+
+Un indirizzo IPv4 è composto da:  
+* 32 bit
+* suddivisi in 4 ottetti (8 bit ciascuno)
+* rappresentati in notazione decimale puntata
 
 Esempio:
 192.168.10.25
 
 Ogni indirizzo è suddiviso logicamente in:
-- parte di rete
-- parte di host
+
+* parte di rete
+* parte di host
 
 La suddivisione è determinata dalla subnet mask o dal prefisso CIDR.
 
 ---
 
 ### 1.2 Indirizzamento classful
-Storicamente le reti erano divise in classi.
+
+Storicamente le reti erano divise in classi:
 
 Classe A
-- Primo bit **0**
-- Range: 0.0.0.0 – 127.255.255.255
-- Default mask: 255.0.0.0 (/8)
+
+* Primo bit 0
+* Range: 0.0.0.0 – 127.255.255.255
+* Default mask: 255.0.0.0 (/8)
 
 Classe B
-- Primi bit **10**
-- Range: 128.0.0.0 – 191.255.255.255
-- Default mask: 255.255.0.0 (/16)
+
+* Primi bit 10
+* Range: 128.0.0.0 – 191.255.255.255
+* Default mask: 255.255.0.0 (/16)
 
 Classe C
-- Primi bit **110**
-- Range: 192.0.0.0 – 223.255.255.255
-- Default mask: 255.255.255.0 (/24)
 
-Limite principale: spreco di indirizzi, 
-a causa del fatto che i bits che identificano la classe sono "bloccati"
+* Primi bit 110
+* Range: 192.0.0.0 – 223.255.255.255
+* Default mask: 255.255.255.0 (/24)
+
+Limite principale: spreco di indirizzi.
 
 ---
 
 ### 1.3 CIDR (Classless Inter-Domain Routing)
+
 CIDR introduce la notazione:
 
 Indirizzo/prefisso
@@ -56,217 +64,379 @@ Esempio:
 Significa che i primi 27 bit identificano la rete in questo esempio.
 
 Vantaggi:
-- flessibilità
-- aggregazione di rotte
-- riduzione sprechi
+
+* flessibilità
+* aggregazione di rotte
+* riduzione sprechi
 
 ---
 
 ### 1.4 VLSM (Variable Length Subnet Mask)
+
 VLSM permette di:
-- suddividere una rete in sottoreti di dimensioni diverse
-- assegnare a ciascuna sottorete solo gli indirizzi necessari
+
+* suddividere una rete in sottoreti di dimensioni diverse
+* assegnare a ciascuna sottorete solo gli indirizzi necessari
 
 È fondamentale nella progettazione di un piano di indirizzamento aziendale.
 
 ---
 
-## 2. Obiettivo e formato standard delle soluzioni
+### 1.5 Elementi sempre richiesti nei piani di indirizzamento
 
-### 2.1 Obiettivo operativo
-Definire, per ogni rete o sottorete, tutti i parametri necessari all’assegnazione coerente degli indirizzi:
-- Rete (Network ID)
-- Subnet mask (o prefisso)
-- Gateway/Router (indirizzo del router nella sottorete)
-- Eventuali server o servizi con IP statico (DNS, DHCP, file server, ecc.)
-- Intervallo host assegnabile ai client
-- Broadcast
+Per ogni sottorete determinare:
 
-Nota terminologica (per coerenza con la tabella):
-- La colonna “Server” può indicare uno o più indirizzi riservati a servizi statici (non necessariamente un solo server).
+* indirizzo di rete
+* primo host
+* ultimo host
+* broadcast
+* numero di host utilizzabili
 
 ---
 
-### 2.2 Tabella standard
-Nei piani di indirizzamneto è consigliabile una struttura tabellare e, per uniformità, usare sempre lo stesso formato:
+# PARTE 1 – ESERCIZI
+
+## Richiami su procedimento per soluzione
+
+Obiettivo
+Definire, per ogni rete o sottorete, tutti i parametri necessari all’assegnazione coerente degli indirizzi:
+
+* Rete (Network ID)
+* Subnet mask (o prefisso)
+* Gateway/Router (indirizzo del router nella sottorete)
+* Eventuali server o servizi con IP statico (DNS, DHCP, file server, ecc.)
+* Intervallo host assegnabile ai client
+* Broadcast
+
+### Regole generali
+
+#### Lavorare sempre in modo “deterministico”, cioè con regole ripetibili:
+* scegliere un criterio fisso per il gateway (spesso ultimo host utilizzabile oppure primo host utilizzabile)
+* scegliere un criterio fisso per i servers (spesso primo host utilizzabile, o un blocco iniziale dedicato)
+* definire chiaramente quali indirizzi si riservano (router, server, stampanti, AP, switch management, ecc.)
+
+#### Tenere conto del reale numero di dispositivi  
+Il numero reale di dispositivi, cioè di indirizzi IP da includere in una sottorete è quindi:
+numero PC + 1 (broadcast) + 1 (indirizzo di rete) 
++ 1 (router)  (non sempre)
++ N servers
++ M stampanti
++ eventuale crescita degli utenti 
+
+
+### 1. Piano di indirizzamento classful
+
+Si usa quando si considera la rete secondo la maschera “di default” della classe (A=/8, B=/16, C=/24), senza subnetting aggiuntivo.
+
+Procedura
+
+1. Determinare la classe dall’ottetto iniziale (A, B, C).
+2. Associare la subnet mask di default della classe.
+3. Determinare:
+
+   * Network ID (di fatto “già dato” dalla classe)
+   * Broadcast (tutti i bit host a 1)
+   * Primo host (network + 1)
+   * Ultimo host (broadcast - 1)
+4. Definire le assegnazioni:
+
+   * Router: scegliere una regola (es. ultimo host)
+   * Server: scegliere una regola (es. primo host)
+   * Host: intervallo rimanente
+
+Risultato atteso
+Una singola riga (o poche righe) di tabella per ogni rete classful.
+
+#### 2. Piano di indirizzamento CIDR (subnetting “a taglia unica”)
+
+Si usa quando si sceglie un prefisso /n e lo si applica in modo uniforme (tutte le sottoreti hanno la stessa dimensione). È tipico quando si divide una rete in N sottoreti uguali.
+
+Procedura
+
+1. Identificare l’indirizzo di partenza e il prefisso /n.
+2. Calcolare:
+
+   * Subnet mask corrispondente a /n.
+   * Numero di indirizzi per sottorete: 2^(32-n).
+   * Host utilizzabili: 2^(32-n) - 2 (eccetto casi speciali come /31 in scenari particolari).
+3. Calcolare l’incremento (block size) nell’ottetto interessato:
+
+   * esempio /26: blocchi da 64 nell’ultimo ottetto
+   * esempio /20: blocchi da 16 nel terzo ottetto
+4. Elencare le sottoreti (se richiesto) aggiungendo l’incremento:
+
+   * ogni sottorete ha un Network ID “allineato” al block size
+5. Per ogni sottorete determinare:
+
+   * Network ID
+   * Broadcast (ultimo indirizzo del blocco)
+   * Primo/ultimo host
+6. Applicare le regole di assegnazione:
+
+   * Router, server, intervallo host
+
+Risultato atteso
+Una tabella con una riga per ogni sottorete richiesta.
+
+#### 3. Piano di indirizzamento VLSM (subnetting “a taglia variabile”)
+
+Si usa quando le sottoreti devono avere dimensioni diverse (reale progettazione: reparti, VLAN diverse, link punto-punto, DMZ, Wi-Fi guest, ecc.).
+
+Procedura
+
+1. Elencare i fabbisogni reali:  
+   * per ogni sottorete: numero di host richiesti
+   * includere eventuali riserve (router, server, dispositivi di rete)
+2. Ordinare i fabbisogni in ordine **decrescente** (**sempre**).
+3. Per ogni fabbisogno scegliere la sottorete minima sufficiente:
+
+   * trovare il più piccolo blocco 2^k tale che (2^k - 2) >= host_richiesti
+   * prefisso = 32 - k
+   * esempio: 60 host -> serve blocco 64 -> /26
+4. Allocare le sottoreti in sequenza, partendo dall’inizio della rete di partenza:
+
+   * la prima sottorete usa il primo blocco disponibile
+   * la seconda parte dal primo indirizzo libero dopo il broadcast della prima
+   * ogni Network ID deve essere “allineato” alla dimensione del blocco
+5. Per ogni sottorete calcolare:
+
+   * Network ID
+   * Broadcast (ultimo indirizzo del blocco)
+   * Primo host = network + 1
+   * Ultimo host = broadcast - 1
+6. Assegnare gli indirizzi interni con regole fisse:
+
+   * Router: tipicamente ultimo host
+   * Server: tipicamente primo host
+   * Host: intervallo intermedio
+7. Verifica finale obbligatoria:
+
+   * nessuna sovrapposizione tra sottoreti
+   * tutte le richieste soddisfatte
+   * tutte le sottoreti rientrano nella rete di partenza
+   * nessun buco “strano” dovuto a mancato allineamento
+
+Risultato atteso
+Una tabella con una riga per ogni sottorete (LAN, DMZ, Wi-Fi, p2p), con parametri completi.
+
+Formato di output consigliato nelle soluzioni
+Per uniformità, usare sempre la stessa tabella:
 
 | Rete | Subnet mask | Router | Server | Host | Broadcast |
 
 In presenza di link punto-punto (/30):
-- “Server” può essere indicato come N/D
-- “Host” coincide con i due indirizzi utilizzabili (oppure indicare direttamente i due endpoint)
 
----
+* Server può essere indicato come N/D
+* Host coincide con i due indirizzi utilizzabili (oppure indicare direttamente i due endpoint)
 
-## 3. Regole generali (metodo deterministico e ripetibile)
 
-### 3.1 Scelta di criteri fissi
-Lavorare sempre con regole ripetibili:
-- scegliere un criterio fisso per il gateway (spesso ultimo host utilizzabile oppure primo host utilizzabile)
-- scegliere un criterio fisso per i server/servizi statici (spesso primo host utilizzabile, o un blocco iniziale dedicato)
-- definire chiaramente quali indirizzi si riservano (router, server, stampanti, AP, switch management, ecc.)
-
----
-
-### 3.2 Stimare correttamente gli host richiesti
-Nel dimensionare una sottorete:
-- contare i dispositivi reali che richiedono IP nella sottorete (PC, server, stampanti, AP, gestione switch, ecc.)
-- aggiungere riserve coerenti (crescita utenti, nuovi dispositivi, margine tecnico)
-
-Poi scegliere una subnet tale che:
-- host_utilizzabili **>**= host_richiesti
-
-Nota:
-- Network ID e broadcast esistono sempre nella sottorete, ma non corrispondono a dispositivi “assegnabili”.
-
----
-
-# PARTE 1 – PROCEDURE OPERATIVE
-
-## 4. Piano di indirizzamento classful
-Si usa quando si considera la rete secondo la maschera “di default” della classe (A=/8, B=/16, C=/24), senza subnetting aggiuntivo.
-
-Procedura:
-1. Determinare la classe dall’ottetto iniziale (A, B, C).
-2. Associare la subnet mask di default della classe.
-3. Determinare:
-   - Network ID (di fatto “già dato” dalla classe)
-   - Broadcast (tutti i bit host a 1)
-   - Primo host (network + 1)
-   - Ultimo host (broadcast - 1)
-4. Definire le assegnazioni usando le regole generali (gateway, server, riserve), mantenendo criteri fissi e dichiarati.
-
-Risultato atteso:
-- una singola riga (o poche righe) di tabella per ogni rete classful.
-
----
-
-## 5. Piano di indirizzamento CIDR (subnetting “a taglia unica”)
-Si usa quando si sceglie un prefisso /n e lo si applica in modo uniforme (tutte le sottoreti hanno la stessa dimensione). È tipico quando si divide una rete in N sottoreti uguali.
-
-Procedura:
-1. Identificare l’indirizzo di partenza e il prefisso /n.
-2. Calcolare:
-   - subnet mask corrispondente a /n
-   - numero di indirizzi per sottorete: 2^(32-n)
-   - host utilizzabili: 2^(32-n) - 2 (eccetto casi speciali come /31 in scenari particolari)
-3. Calcolare l’incremento (block size) nell’ottetto interessato:
-   - esempio /26: blocchi da 64 nell’ultimo ottetto
-   - esempio /20: blocchi da 16 nel terzo ottetto
-4. Elencare le sottoreti (se richiesto) aggiungendo l’incremento:
-   - ogni sottorete ha un Network ID “allineato” al block size
-5. Per ogni sottorete determinare i campi della tabella standard (Network ID, host, broadcast) e poi applicare le regole generali di assegnazione.
-
-Risultato atteso:
-- una tabella con una riga per ogni sottorete richiesta.
-
----
-
-## 6. Piano di indirizzamento VLSM (subnetting “a taglia variabile”)
-Si usa quando le sottoreti devono avere dimensioni diverse (reale progettazione: reparti, VLAN diverse, link punto-punto, DMZ, Wi-Fi guest, ecc.).
-
-Procedura:
-1. Elencare i fabbisogni reali:
-   - per ogni sottorete: numero di host richiesti
-   - includere riserve coerenti (router, server, dispositivi di rete, crescita)
-2. Ordinare i fabbisogni in ordine decrescente (sempre).
-3. Per ogni fabbisogno scegliere la sottorete minima sufficiente:
-   - trovare il più piccolo blocco 2^k tale che (2^k - 2) >= host_richiesti
-   - prefisso = 32 - k
-   - esempio: 60 host -> serve blocco 64 -> /26
-4. Allocare le sottoreti in sequenza, partendo dall’inizio della rete di partenza:
-   - la prima sottorete usa il primo blocco disponibile
-   - la seconda parte dal primo indirizzo libero dopo il broadcast della prima
-   - ogni Network ID deve essere “allineato” alla dimensione del blocco
-5. Per ogni sottorete calcolare i campi della tabella standard:
-   - Network ID
-   - Broadcast (ultimo indirizzo del blocco)
-   - Primo host = network + 1
-   - Ultimo host = broadcast - 1
-6. Assegnare gli indirizzi interni con le regole generali (gateway, server, riserve), mantenendo criteri fissi e dichiarati.
-7. Verifica finale obbligatoria:
-   - nessuna sovrapposizione tra sottoreti
-   - tutte le richieste soddisfatte
-   - tutte le sottoreti rientrano nella rete di partenza
-   - nessun buco “strano” dovuto a mancato allineamento
-
-Risultato atteso:
-- una tabella con una riga per ogni sottorete (LAN, DMZ, Wi-Fi, p2p), con parametri completi.
 
 ---
 
 # A. 20 esercizi – Indirizzi Classful
 
 1. Data la rete 10.0.0.0, determinare classe, mask di default, numero host disponibili.
+
 2. La rete 172.16.0.0 appartiene a quale classe? Quanti host totali consente?
+
 3. Determinare se 192.168.5.10 è classe A, B o C e indicare la mask di default.
+
 4. Calcolare numero reti e host nella classe B.
+
 5. Data la rete 130.25.0.0, indicare classe e numero host per rete.
+
 6. Verificare se 200.10.5.0 è rete pubblica di classe C.
+
 7. Determinare intervallo indirizzi validi per rete 192.168.1.0 classful.
+
 8. Per 15.0.0.0 indicare classe e numero massimo di host.
+
 9. Per 180.20.0.0 indicare broadcast classful.
+
 10. Identificare la classe di 126.10.1.1.
+
 11. Identificare la classe di 191.255.1.1.
+
 12. Identificare la classe di 223.0.0.1.
+
 13. Quanti host utilizzabili in 172.20.0.0 classful?
+
 14. Quanti bit host in classe C?
+
 15. Data 150.10.10.10 indicare rete classful.
+
 16. Data 192.10.10.10 indicare rete classful.
+
 17. Data 11.5.6.7 indicare rete classful.
+
 18. Determinare se 224.0.0.1 è classe A, B o C.
+
 19. Spiegare perché 127.0.0.1 non è usabile come rete normale.
-20. Data la rete 12.0.0.0, determinare classe, mask di default, numero host disponibili.
+
+20. Determinare quanti host utilizzabili in 10.0.0.0 classful.
 
 ---
 
 # B. 20 esercizi – CIDR
 
 1. Data 192.168.10.0/26 determinare host utilizzabili.
+
 2. Data 192.168.10.0/27 determinare broadcast.
+
 3. Data 10.0.0.0/12 determinare numero reti possibili rispetto classful.
+
 4. Data 172.16.0.0/20 determinare range completo.
+
 5. Data 192.168.1.64/26 determinare primo e ultimo host.
+
 6. Data 192.168.1.128/25 determinare broadcast.
+
 7. Data 10.10.10.0/30 determinare host utilizzabili.
+
 8. Data 192.168.5.0/29 determinare numero sottoreti in una /24.
+
 9. Data 172.16.0.0/22 determinare numero host per sottorete.
+
 10. Data 192.168.1.0/28 determinare numero host.
+
 11. Data 192.168.1.16/28 determinare intervallo.
+
 12. Data 192.168.1.0/23 determinare totale host.
+
 13. Data 10.0.0.0/8 suddividere in /16: quante sottoreti?
+
 14. Data 172.16.0.0/24 rispetto a classful cosa cambia?
+
 15. Data 192.168.1.0/30 quanti host?
+
 16. Data 192.168.1.4/30 determinare broadcast.
+
 17. Data 192.168.100.0/21 determinare intervallo.
+
 18. Data 10.0.0.0/18 determinare host per rete.
+
 19. Data 172.16.0.0/26 determinare numero sottoreti in una /24.
+
 20. Data 192.168.0.0/19 determinare host totali.
 
 ---
 
 # C. 20 esercizi – VLSM (piani di indirizzamento)
 
-1. Progettare piano per rete 192.168.10.0/24 con: 60 host, 30 host, 10 host.
-2. Progettare piano per 10.0.0.0/24 con: 100 host, 50 host, 20 host.
+1. Progettare piano per rete 192.168.10.0/24 con:
+
+   * 60 host
+   * 30 host
+   * 10 host
+
+2. Progettare piano per 10.0.0.0/24 con:
+
+   * 100 host
+   * 50 host
+   * 20 host
+
 3. Progettare piano per 172.16.0.0/24 con 4 reti da 50 host.
-4. Progettare rete 192.168.1.0/24 con: 120 host, 60 host, 30 host.
-5. Progettare rete 10.0.0.0/23 con: 200 host, 100 host, 50 host, 20 host.
-6. Rete 192.168.0.0/24 con: 80 host, 40 host, 20 host, 10 host.
-7. Rete 172.16.10.0/24 con: 70 host, 30 host, 10 host.
-8. Rete 192.168.5.0/24 con: 2 link punto-punto (/30) e 1 LAN da 100 host.
-9. Rete 10.1.0.0/24 con: 120 host, 60 host, 60 host.
-10. Rete 192.168.50.0/24 con: 90 host, 40 host, 20 host.
-11. Rete 172.20.0.0/24 con: 4 reti da 30 host.
-12. Rete 10.0.10.0/24 con: 200 host, 20 host.
-13. Rete 192.168.200.0/24 con: 100 host, 50 host, 25 host, 10 host.
-14. Rete 172.16.5.0/24 con: 3 reti da 60 host.
-15. Rete 10.10.0.0/24 con: 120 host, 30 host, 30 host, 10 host.
-16. Rete 192.168.0.0/23 con: 300 host, 100 host, 50 host.
-17. Rete 172.16.0.0/23 con: 200 host, 60 host, 60 host.
-18. Rete 10.0.0.0/22 con: 500 host, 200 host, 100 host.
-19. Rete 192.168.100.0/24 con: 150 host, 50 host, 20 host.
-20. Rete 172.16.100.0/24 con: 100 host, 30 host, 10 host, 2 link p2p.
+
+4. Progettare rete 192.168.1.0/24 con:
+
+   * 120 host
+   * 60 host
+   * 30 host
+
+5. Progettare rete 10.0.0.0/23 con:
+
+   * 200 host
+   * 100 host
+   * 50 host
+   * 20 host
+
+6. Rete 192.168.0.0/24 con:
+
+   * 80 host
+   * 40 host
+   * 20 host
+   * 10 host
+
+7. Rete 172.16.10.0/24 con:
+
+   * 70 host
+   * 30 host
+   * 10 host
+
+8. Rete 192.168.5.0/24 con:
+
+   * 2 link punto-punto (/30)
+   * 1 LAN da 100 host
+
+9. Rete 10.1.0.0/24 con:
+
+   * 120 host
+   * 60 host
+   * 60 host
+
+10. Rete 192.168.50.0/24 con:
+
+    * 90 host
+    * 40 host
+    * 20 host
+
+11. Rete 172.20.0.0/24 con:
+
+    * 4 reti da 30 host
+
+12. Rete 10.0.10.0/24 con:
+
+    * 200 host
+    * 20 host
+
+13. Rete 192.168.200.0/24 con:
+
+    * 100 host
+    * 50 host
+    * 25 host
+    * 10 host
+
+14. Rete 172.16.5.0/24 con:
+
+    * 3 reti da 60 host
+
+15. Rete 10.10.0.0/24 con:
+
+    * 120 host
+    * 30 host
+    * 30 host
+    * 10 host
+
+16. Rete 192.168.0.0/23 con:
+
+    * 300 host
+    * 100 host
+    * 50 host
+
+17. Rete 172.16.0.0/23 con:
+
+    * 200 host
+    * 60 host
+    * 60 host
+
+18. Rete 10.0.0.0/22 con:
+
+    * 500 host
+    * 200 host
+    * 100 host
+
+19. Rete 192.168.100.0/24 con:
+
+    * 150 host
+    * 50 host
+    * 20 host
+
+20. Rete 172.16.100.0/24 con:
+
+    * 100 host
+    * 30 host
+    * 10 host
+    * 2 link p2p
 
 ---
 
@@ -386,15 +556,13 @@ A19) Spiegare suggerendo la motivazione perché 127.0.0.1 non è usabile come re
 | --------- | ----------- | ------ | ------ | -------------------------------------------------------------- | --------- |
 | 127.0.0.1 | 255.0.0.0   | N/D    | N/D    | Classe=A (127/8) ; riservato loopback, non assegnabile in rete | N/D       |
 
-A20) Data la rete 12.0.0.0, determinare classe, mask di default, numero host disponibili.
+A20) Determinare quanti host utilizzabili in 10.0.0.0 classful.
 
-| Rete     | Subnet mask | Router | Server | Host                                                                 | Broadcast      |
-| -------- | ----------- | ------ | ------ | -------------------------------------------------------------------- | -------------- |
-| 12.0.0.0 | 255.0.0.0   | N/D    | N/D    | da 12.0.0.1 a 12.255.255.254 ; Classe=A ; host_utilizzabili=16777214 | 12.255.255.255 |
+| Rete     | Subnet mask | Router | Server | Host                                                                                           | Broadcast      |
+| -------- | ----------- | ------ | ------ | ---------------------------------------------------------------------------------------------- | -------------- |
+| 10.0.0.0 | 255.0.0.0   | N/D    | N/D    | da 10.0.0.1 a 10.255.255.254 ; Classe=A ; host_utilizzabili=16777214 ; ripetizione esercizio 1 | 10.255.255.255 |
 
----
-
-## B. SOLUZIONI – CIDR
+## B. SOLUZIONI – CIDR  
 
 B1) Data 192.168.10.0/26 determinare host utilizzabili.
 
@@ -515,8 +683,6 @@ B20) Data 192.168.0.0/19 determinare host totali.
 | Rete        | Subnet mask   | Router | Server | Host                                                     | Broadcast      |
 | ----------- | ------------- | ------ | ------ | -------------------------------------------------------- | -------------- |
 | 192.168.0.0 | 255.255.224.0 | N/D    | N/D    | da 192.168.0.1 a 192.168.31.254 ; host_utilizzabili=8190 | 192.168.31.255 |
-
----
 
 ## C. SOLUZIONI – VLSM (piani di indirizzamento)
 

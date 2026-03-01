@@ -1,4 +1,8 @@
 @startuml
+
+' Definizione dello stereotipo device come rettangolo
+!define device rectangle
+
 skinparam linetype ortho
 skinparam shadowing false
 
@@ -29,7 +33,6 @@ node "Piano 3" {
 ' -------------------------
 
 node "Seminterrato - Locale Tecnico" {
-
     device "Core Switch L3\n(Routing Inter-VLAN)" as CORE
     device "Firewall" as FW
     device "RADIUS / AD" as RAD

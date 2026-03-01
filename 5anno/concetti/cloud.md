@@ -1,9 +1,11 @@
-## 1. Cloud Computing
+---
+
+# Cloud Computing Overview
+
+## 1. Che cos’è il Cloud Computing
 
 Il **cloud computing** è un modello di erogazione di risorse informatiche tramite Internet.
-Invece di possedere fisicamente server, storage e reti, si utilizzano infrastrutture remote messe a disposizione da grandi provider.
-
-Secondo il National Institute of Standards and Technology (NIST), il cloud è un modello che consente accesso on-demand a un insieme condiviso di risorse configurabili (rete, server, storage, applicazioni) rapidamente attivabili e rilasciabili.
+Invece di possedere fisicamente server, storage e reti, si utilizzano infrastrutture remote messe a disposizione da grandi provider. Secondo il National Institute of Standards and Technology (NIST), il cloud è un modello che consente accesso on-demand a risorse configurabili (rete, server, storage, applicazioni) rapidamente attivabili e rilasciabili. ([Google Cloud][1])
 
 Caratteristiche fondamentali:
 
@@ -15,11 +17,11 @@ Caratteristiche fondamentali:
 
 ---
 
-# 2. Modelli di servizio (con operatività concreta)
+# 2. Modelli di servizio  
 
 ## 2.1 IaaS – Infrastructure as a Service
 
-Nel modello IaaS il provider fornisce **infrastruttura virtuale**.
+Nel modello IaaS il provider fornisce **infrastruttura virtuale**. ([Google Cloud][2])
 
 ### Cosa trova disponibile il cliente all’istante zero
 
@@ -34,6 +36,12 @@ Appena creato l’account sono disponibili:
 * Storage a blocchi e oggetti
 
 Non è presente alcuna applicazione pronta: esiste solo l’infrastruttura.
+
+### Offerte IaaS attualmente disponibili
+
+* **Amazon EC2 (Elastic Compute Cloud)** – servizio per creare e gestire macchine virtuali nel cloud AWS: [https://aws.amazon.com/it/ec2/](https://aws.amazon.com/it/ec2/) ([Amazon Web Services, Inc.][3])
+* **Microsoft Azure Virtual Machines** – macchine virtuali scalabili su Azure: [https://azure.microsoft.com/it-it/services/virtual-machines/](https://azure.microsoft.com/it-it/services/virtual-machines/)
+* **Google Compute Engine** – macchine virtuali on demand con pagamento a consumo: [https://cloud.google.com/compute](https://cloud.google.com/compute)
 
 ---
 
@@ -60,7 +68,7 @@ Responsabilità elevata, massima flessibilità.
 
 ## 2.2 PaaS – Platform as a Service
 
-Nel modello PaaS il provider fornisce una **piattaforma pronta per eseguire codice**.
+Nel modello PaaS il provider fornisce una **piattaforma pronta per eseguire codice**. ([Google Cloud][2])
 
 ### Cosa trova disponibile il cliente all’istante zero
 
@@ -74,6 +82,12 @@ Appena attivato il servizio sono già presenti:
 * Log centralizzati
 
 Non si gestiscono VM né patch di sistema.
+
+### Offerte PaaS attualmente disponibili
+
+* **Azure App Service (Microsoft)** – ambiente per eseguire app web e API: [https://azure.microsoft.com/it-it/services/app-service/](https://azure.microsoft.com/it-it/services/app-service/)
+* **Google App Engine** – piattaforma PaaS per applicazioni scalabili: [https://cloud.google.com/appengine](https://cloud.google.com/appengine)
+* **AWS Elastic Beanstalk** – servizio che automatizza creazione, deploy e scaling: [https://aws.amazon.com/elasticbeanstalk/](https://aws.amazon.com/elasticbeanstalk/) ([linkedin.com][4])
 
 ---
 
@@ -99,14 +113,7 @@ Il cliente gestisce solo il codice e la logica applicativa.
 
 ## 2.3 SaaS – Software as a Service
 
-Nel modello SaaS il software è completamente pronto all’uso.
-
-Esempi:
-
-* Google Workspace
-* Microsoft 365
-
----
+Nel modello SaaS il software è completamente pronto all’uso. ([Google Cloud][2])
 
 ### Cosa trova disponibile il cliente all’istante zero
 
@@ -119,6 +126,12 @@ Subito disponibili:
 * Backup gestiti dal provider
 
 Non è possibile modificare l’infrastruttura sottostante.
+
+### Offerte SaaS attualmente disponibili
+
+* **Google Workspace** (posta, documenti, calendario) – [https://workspace.google.com/](https://workspace.google.com/)
+* **Microsoft 365** (posta e office online) – [https://www.microsoft.com/it-it/microsoft-365](https://www.microsoft.com/it-it/microsoft-365)
+* **Salesforce CRM** – [https://www.salesforce.com/it/](https://www.salesforce.com/it/) (esempio di SaaS enterprise)
 
 ---
 
@@ -138,9 +151,7 @@ Nessuna gestione server.
 
 ## 2.4 FaaS – Function as a Service (Serverless)
 
-Modello in cui si eseguono singole funzioni senza gestire server.
-
----
+Modello in cui si eseguono singole funzioni senza gestire server. ([Kinsta®][5])
 
 ### Cosa trova disponibile il cliente all’istante zero
 
@@ -150,6 +161,12 @@ Modello in cui si eseguono singole funzioni senza gestire server.
 * Logging integrato
 
 Non esistono macchine virtuali visibili.
+
+### Offerte FaaS attualmente disponibili
+
+* **AWS Lambda** – esecuzione di funzioni serverless: [https://aws.amazon.com/lambda/](https://aws.amazon.com/lambda/)
+* **Azure Functions** – funzioni serverless su Azure: [https://azure.microsoft.com/it-it/services/functions/](https://azure.microsoft.com/it-it/services/functions/)
+* **Google Cloud Functions** – esecuzione eventi serverless: [https://cloud.google.com/functions](https://cloud.google.com/functions)
 
 ---
 
@@ -166,45 +183,221 @@ Il sistema esegue la funzione solo quando viene chiamata.
 
 ---
 
+Ecco la **versione delle sezioni “as a Service”** (HaaS, DaaS, DBaaS, STaaS, CaaS) *aggiornata e integrabile direttamente nella lezione*, **con collegamenti a offerte commerciali attualmente disponibili**.
+
+---
+
+# 2.5 HaaS – Hardware as a Service
+
+HaaS indica un modello in cui **l’hardware fisico viene fornito come servizio** a fronte di un canone, senza acquisto diretto di dispositivi.
+
+## Cosa trova disponibile il cliente all’istante zero
+
+* Hardware fisico preconfigurato
+* Installazione e consegna gestita
+* Contratto di manutenzione e sostituzione guasti
+* Aggiornamenti pianificati
+
+## Uso tipico
+
+Esempio: laboratorio scolastico con PC in noleggio.
+
+Passi:
+
+1. Definire requisiti hardware.
+2. Sottoscrivere contratto di servizio.
+3. Ricevere e installare i dispositivi.
+4. Pagare canone periodico.
+5. Sostituire dispositivi a fine ciclo.
+
+## Offerte commerciali (esempi)
+
+* **Microsoft Windows 365 Business (DaaS / HaaS correlato)** – desktop virtuali cloud con Windows gestito da Microsoft: [https://www.microsoft.com/it-it/windows-365/business/](https://www.microsoft.com/it-it/windows-365/business/) (modello simile a HaaS se integrato con dispositivi gestiti) ([Microsoft][1])
+* Provider di HaaS tipici includono aziende che offrono leasing di server bare metal o PC come servizio (consultare fornitori locali o integratori).
+
+*Nota:* HaaS **non** è sempre un’offerta cloud pura ma un modello commerciale di **noleggio hw + servizi**.
+
+---
+
+# 2.6 DaaS – Desktop as a Service
+
+DaaS fornisce **desktop virtuali completi** nel cloud, accessibili via Internet.
+
+## Cosa trova disponibile il cliente all’istante zero
+
+* Desktop virtuale operativo
+* Sistema operativo preconfigurato
+* Accesso da browser o client
+* Storage associato
+* Gestione centralizzata utenti
+
+## Uso tipico
+
+Esempio: team in smart working.
+
+Passi:
+
+1. Creare desktop virtuali.
+2. Assegnare credenziali.
+3. Installare software aziendali.
+4. Consentire accesso da qualsiasi device.
+
+## Offerte commerciali
+
+* **Windows 365 Cloud PC (Microsoft)** – Desktop virtuale Windows gestito nel cloud: [https://www.microsoft.com/it-it/windows-365/business/](https://www.microsoft.com/it-it/windows-365/business/) ([Microsoft][1])
+* **vDesk.works Desktop DaaS** – Desktop cloud remoto pronto all’uso: [https://vdeskworks.com/offer-DaaS-save](https://vdeskworks.com/offer-DaaS-save) ([vDesk.works][2])
+* **Azure Virtual Desktop (Microsoft)** – ambiente desktop virtuale scalabile su Azure: [https://azure.microsoft.com/it-it/services/virtual-desktop/](https://azure.microsoft.com/it-it/services/virtual-desktop/)
+
+---
+
+# 2.7 DBaaS – Database as a Service
+
+DBaaS fornisce **database gestiti** senza che il cliente debba gestire server, patch o backup.
+
+## Cosa trova disponibile il cliente all’istante zero
+
+* Database pronto all’uso (SQL o NoSQL)
+* Backup automatici
+* Replica e alta disponibilità
+* Monitoraggio integrato
+
+## Uso tipico
+
+Esempio: applicazione web con database relazionale.
+
+Passi:
+
+1. Creare istanza database.
+2. Configurare utenti e permessi.
+3. Collegare l’applicazione al DB.
+4. Attivare scaling automatico.
+
+## Offerte commerciali
+
+* **Amazon Relational Database Service (RDS)** – database relazionale gestito da AWS: [https://aws.amazon.com/rds/](https://aws.amazon.com/rds/) ([Wikipedia][3])
+* **Google Cloud Datastore (NoSQL DBaaS)** – database NoSQL scalabile: [https://cloud.google.com/datastore/](https://cloud.google.com/datastore/) ([Wikipedia][4])
+* **Azure SQL Database** – database SQL completamente gestito su Microsoft Azure: [https://azure.microsoft.com/it-it/services/sql-database/](https://azure.microsoft.com/it-it/services/sql-database/)
+
+---
+
+# 2.8 STaaS – Storage as a Service
+
+STaaS fornisce **spazio di archiviazione remoto scalabile** su richiesta via cloud.
+
+## Cosa trova disponibile il cliente all’istante zero
+
+* Storage configurabile
+* Accesso via API o interfaccia di rete
+* Replica e durabilità dei dati
+* Elevata scalabilità
+
+## Uso tipico
+
+Esempio: backup aziendale o archiviazione di file multimediali.
+
+Passi:
+
+1. Creare bucket (object storage) o volume.
+2. Configurare permessi.
+3. Caricare i dati.
+4. Impostare politiche di conservazione.
+
+## Offerte commerciali
+
+* **Amazon S3 (object storage)** – storage scalabile su AWS: [https://aws.amazon.com/s3/](https://aws.amazon.com/s3/)
+* **Google Cloud Storage** – storage di oggetti su Google Cloud: [https://cloud.google.com/storage](https://cloud.google.com/storage)
+* **Azure Blob Storage** – storage oggetti su Microsoft Azure: [https://azure.microsoft.com/it-it/services/storage/blobs/](https://azure.microsoft.com/it-it/services/storage/blobs/)
+
+---
+
+# 2.9 CaaS – Container as a Service
+
+CaaS fornisce **piattaforme per eseguire e orchestrare container** (es. Kubernetes) senza gestire server fisici.
+
+## Cosa trova disponibile il cliente all’istante zero
+
+* Cluster container gestito
+* Orchestrazione (es. Kubernetes)
+* Networking containerizzato
+* Bilanciamento e scaling automatico
+
+## Uso tipico
+
+Esempio: applicazioni microservizi containerizzate.
+
+Passi:
+
+1. Creare immagini container.
+2. Pubblicarle in un registry.
+3. Distribuirle nel cluster.
+4. Configurare autoscaling.
+
+## Offerte commerciali
+
+* **Google Kubernetes Engine (GKE)** – CaaS gestito su Google Cloud: [https://cloud.google.com/kubernetes-engine/](https://cloud.google.com/kubernetes-engine/) ([Google Cloud][5])
+* **Azure Kubernetes Service (AKS)** – servizio Kubernetes gestito su Microsoft Azure: [https://azure.microsoft.com/it-it/services/kubernetes-service/](https://azure.microsoft.com/it-it/services/kubernetes-service/)
+* **Amazon Elastic Kubernetes Service (EKS)** – Kubernetes gestito da AWS: [https://aws.amazon.com/eks/](https://aws.amazon.com/eks/)
+
+---
+
+Fonti generiche su modelli “as a Service”: definizioni e classificazioni nel cloud computing. ([Wikipedia][6])
+
+[1]: https://www.microsoft.com/it-it/windows-365/business?utm_source=chatgpt.com "Windows 365 Business Cloud PC"
+[2]: https://vdeskworks.com/offer-DaaS-save?utm_source=chatgpt.com "Desktop as a Service Provider DaaS | Cloud DaaS"
+[3]: https://en.wikipedia.org/wiki/Amazon_Relational_Database_Service?utm_source=chatgpt.com "Amazon Relational Database Service"
+[4]: https://en.wikipedia.org/wiki/Google_Cloud_Datastore?utm_source=chatgpt.com "Google Cloud Datastore"
+[5]: https://cloud.google.com/discover/what-is-caas?hl=it&utm_source=chatgpt.com "Che cos'è Container as a Service (CaaS)?"
+[6]: https://en.wikipedia.org/wiki/As_a_service?utm_source=chatgpt.com "As a service"
+
+---
+
+# Schema sintetico esteso
+
+| Modello | Livello fornito | Gestione cliente     | Caso tipico       |
+| ------- | --------------- | -------------------- | ----------------- |
+| IaaS    | Infrastruttura  | SO + applicazioni    | VM con server web |
+| PaaS    | Piattaforma     | Solo codice          | Deploy app        |
+| SaaS    | Software        | Solo uso             | Posta elettronica |
+| FaaS    | Funzione        | Solo funzione        | API serverless    |
+| HaaS    | Hardware fisico | Uso e configurazione | Laboratorio PC    |
+| DaaS    | Desktop remoto  | Uso desktop          | Smart working     |
+| DBaaS   | Database        | Schema e dati        | App con DB        |
+| STaaS   | Storage         | Gestione file        | Backup            |
+| CaaS    | Container       | Container e servizi  | Microservizi      |
+
+---
+
+Aspetti chiave:  
+Ogni modello “XaaS” indica quale livello dell’infrastruttura viene astratto e gestito dal provider.   
+Più si sale nella pila dei servizi, minore è il controllo tecnico diretto, ma minore è anche la complessità gestionale per il cliente.  
+
+
+---   
+
 # 3. Specificità del Cloud
 
 ## 3.1 Region e Availability Zone
 
-![Image](https://miro.medium.com/0%2AENYm2-13BhmJbFO6.png)
-
-![Image](https://docs.aws.amazon.com/images/AWSEC2/latest/UserGuide/images/region-with-wavelength-zones.png)
-
-![Image](https://learn.microsoft.com/en-us/azure/reliability/media/cross-region-replication.png)
-
-![Image](https://agileit.com/_astro/az-graphic-two.C0qDynBR_Z3LjvV.webp)
+---
 
 Il cloud è organizzato in:
 
-* Region (area geografica)
-* Availability Zone (datacenter separati)
+* Region: aree geografiche (Europa, USA, Asia)
+* Availability Zone: datacenter separati per alta affidabilità
 
-Le applicazioni possono essere replicate su più zone per garantire continuità operativa.
+Applicazioni possono essere replicate su più zone per garantire resilienza.
 
 ---
 
 ## 3.2 Storage nel Cloud
 
-### Object Storage
+Esistono vari modelli di storage:
 
-![Image](https://miro.medium.com/1%2AEfGkQYt_uW8yNG3X7hVjSA.png)
+* Block storage
+* Object storage
+* File system distribuiti
 
-![Image](https://cdn.prod.website-files.com/6758716c1db67a29ec00ebb4/681c9b5b592d590a9a5502d5_Amazon%20S3.png)
-
-![Image](https://d2908q01vomqb2.cloudfront.net/e1822db470e60d090affd0956d743cb0e7cdf113/2023/02/17/Arch_Diagram_Replication_Image2.png)
-
-![Image](https://d2908q01vomqb2.cloudfront.net/fc074d501302eb2b93e2554793fcaf50b3bf7291/2021/08/02/Fig1-S3-Object.png)
-
-Caratteristiche:
-
-* Accesso via API HTTP
-* Scalabilità quasi illimitata
-* Replica automatica
-* Elevata durabilità
+Object storage è tipico per dati non strutturati e accessibile via API.
 
 ---
 
@@ -212,17 +405,17 @@ Caratteristiche:
 
 Nel cloud:
 
-* Il provider protegge l’hardware e i datacenter.
-* Il cliente configura accessi, permessi, cifratura applicativa.
+* Il provider protegge l’infrastruttura
+* Il cliente configura accessi, permessi, cifratura
 
 Strumenti tipici:
 
 * IAM
-* Reti virtuali isolate
-* Firewall logici
-* Cifratura dati
+* reti virtuali isolate
+* firewall logici
+* cifratura dati
 
-Errore comune: configurazioni pubbliche involontarie.
+Errore comune: dati pubblici involontari.
 
 ---
 
@@ -230,57 +423,19 @@ Errore comune: configurazioni pubbliche involontarie.
 
 ## 4.1 Amazon Web Services
 
-![Image](https://res.cloudinary.com/hy4kyit2a/f_auto%2Cfl_lossy%2Cq_70/learn/modules/aws-cloud/explore-the-aws-global-infrastructure/images/c72a7ac57ffc2469619e66dc74dfea24_kix.q8rtdmc6bgiq.png)
-
-![Image](https://assets.aboutamazon.com/dims4/default/9021a44/2147483647/strip/true/crop/5266x2962%2B3%2B0/resize/1440x810%21/quality/90/?url=https%3A%2F%2Famazon-blogs-brightspot.s3.amazonaws.com%2Fa3%2Ff6%2F0abb1c1a4734ba2e727893e6eae2%2Faws-data-center-exterior-1.jpg)
-
-![Image](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2024/11/12/01-Console-home-previous-1.png)
-
-![Image](https://d2908q01vomqb2.cloudfront.net/da4b9237bacccdf19c0760cab7aec4a8359010b0/2023/11/14/2023-myapplications-1-console-home.jpg)
-
-Leader mondiale per quota di mercato e ampiezza servizi.
-
----
+Provider con il maggior numero di servizi cloud pubblici. ([CloudZero][6])
 
 ## 4.2 Microsoft Azure
 
-![Image](https://learn.microsoft.com/en-us/azure/networking/media/microsoft-global-network/microsoft-global-wan.png)
-
-![Image](https://www.techielass.com/content/images/2021/03/azuredatacentre.jpg)
-
-![Image](https://learn.microsoft.com/en-us/azure/azure-portal/media/azure-portal-dashboards/portal-menu-dashboard.png)
-
-![Image](https://learn.microsoft.com/en-us/azure/azure-monitor/visualize/media/tutorial-logs-dashboards/log-analytics-portal-dashboard.png)
-
-Fortissima integrazione con ecosistema Microsoft.
-
----
+Forte integrazione con ambienti Microsoft. ([CloudZero][6])
 
 ## 4.3 Google Cloud Platform
 
-![Image](https://images.openai.com/static-rsc-3/EdMcuFFCO3u-eMOOHhjKOdaavW9NWZqcXNTm_Sxb4EwhzZVMyoAJL9VsC9Tax5JtLcYts3_KjPfo0-0k_g4gn_TRrhOxRmal-6dv3Q87BEM?purpose=fullsize\&v=1)
-
-![Image](https://storage.googleapis.com/gweb-uniblog-publish-prod/images/unnamed_RTmGiMI.width-1300.png)
-
-![Image](https://docs.cloud.google.com/static/docs/images/overview/console.png)
-
-![Image](https://cloudmaven.github.io/cloud101_cloudproviders/fig/03-gcp-intro-0001.png)
-
-Specializzazione in AI e Big Data.
-
----
+Particolarmente competente in IA e dati. ([CloudZero][6])
 
 ## 4.4 Alibaba Cloud
 
-![Image](https://yqintl.alicdn.com/1fcea5e2afccff733dc41e49b5d7236d3d1fa61b.png)
-
-![Image](https://yqintl.alicdn.com/b20e486124a4fae0cdb9fe023d273fa9c8857ec9.jpeg)
-
-![Image](https://yqintl.alicdn.com/f7bd42edf766b8918888271986ef559daea6498c.png)
-
-![Image](https://help-static-aliyun-doc.aliyuncs.com/assets/img/en-US/0113824171/p795313.png)
-
-Leader nel mercato asiatico.
+Leader in Asia. ([Info Data][7])
 
 ---
 
@@ -289,10 +444,279 @@ Leader nel mercato asiatico.
 Nel cloud:
 
 * Le risorse sono virtuali e distribuite.
-* L’infrastruttura è organizzata in region e zone.
-* Lo storage è spesso object-based.
-* La sicurezza è condivisa.
+* L’infrastruttura è organizzata in zone e region.
+* Lo storage include object storage e altri modelli.
+* La sicurezza è responsabilità condivisa.
 * L’automazione è centrale.
 
-Il livello di controllo diminuisce passando da IaaS a SaaS, mentre diminuisce anche la complessità di gestione per il cliente.
 
+---  
+
+# Tipologie di Cloud (modelli di distribuzione)
+
+Oltre ai modelli di servizio (IaaS, PaaS, SaaS, FaaS), il cloud si distingue anche per **modalità di distribuzione dell’infrastruttura**.
+
+---
+
+## 1. Public Cloud (Cloud pubblico)
+
+È un’infrastruttura cloud di proprietà di un provider che offre servizi a più clienti contemporaneamente tramite Internet.
+
+Caratteristiche:
+
+* Infrastruttura condivisa tra più organizzazioni (multi-tenant)
+* Elevata scalabilità
+* Pagamento a consumo
+* Nessuna gestione dell’hardware da parte del cliente
+
+Esempi di provider pubblici:
+
+* Amazon Web Services
+* Microsoft Azure
+* Google Cloud Platform
+
+Uso tipico: startup, siti web pubblici, applicazioni scalabili.
+
+---
+
+## 2. Private Cloud (Cloud privato)
+
+È un’infrastruttura cloud dedicata a una sola organizzazione.
+
+Può essere:
+
+* On-premise (all’interno dell’azienda)
+* Ospitato presso un provider ma dedicato
+
+Caratteristiche:
+
+* Maggiore controllo
+* Maggiore personalizzazione
+* Investimento iniziale più elevato
+* Spesso utilizzato per dati sensibili
+
+Uso tipico: enti pubblici, banche, aziende con forti vincoli normativi.
+
+---
+
+## 3. Hybrid Cloud (Cloud ibrido)
+
+È una combinazione di cloud pubblico e privato.
+
+Caratteristiche:
+
+* Parte dei servizi su infrastruttura privata
+* Parte su cloud pubblico
+* Collegamento sicuro tra i due ambienti
+
+Uso tipico:
+
+* Dati sensibili nel private cloud
+* Servizi pubblici o scalabili nel public cloud
+* Backup o disaster recovery nel cloud pubblico
+
+Vantaggio principale: equilibrio tra controllo e scalabilità.
+
+---
+
+## 4. Multi-Cloud
+
+Strategia che prevede l’utilizzo simultaneo di più provider cloud pubblici.
+
+Caratteristiche:
+
+* Riduzione dipendenza da un singolo fornitore
+* Possibilità di scegliere il servizio migliore per ogni esigenza
+* Maggiore complessità gestionale
+
+Esempio: utilizzare AWS per infrastruttura, Google Cloud per AI, Azure per integrazione con ambienti Microsoft.
+
+---
+
+## 5. Community Cloud
+
+Infrastruttura condivisa tra organizzazioni con esigenze simili (es. enti governativi o settore sanitario).
+
+Caratteristiche:
+
+* Accesso limitato a un gruppo specifico
+* Costi condivisi
+* Requisiti normativi comuni
+
+---
+
+# Schema sintetico
+
+| Tipologia   | Proprietà infrastruttura | Condivisione | Controllo          | Uso tipico            |
+| ----------- | ------------------------ | ------------ | ------------------ | --------------------- |
+| Public      | Provider                 | Multi-tenant | Medio              | Servizi web, startup  |
+| Private     | Organizzazione           | Singola      | Alto               | Dati sensibili        |
+| Hybrid      | Mista                    | Parziale     | Alto + Scalabilità | Aziende strutturate   |
+| Multi-Cloud | Più provider             | Multi-tenant | Variabile          | Strategie enterprise  |
+| Community   | Gruppo organizzazioni    | Limitata     | Medio              | Settori regolamentati |
+
+---
+
+Concetto chiave:
+Le tipologie di cloud definiscono **dove si trova l’infrastruttura e chi la condivide**, mentre IaaS/PaaS/SaaS definiscono **quale livello di servizio viene fornito**.
+
+
+---
+
+# 6. Caso di studio pratico
+
+## Caso: una scuola superiore vuole pubblicare un registro elettronico interno e un sito web istituzionale
+
+### Scenario iniziale
+
+Un istituto scolastico deve:
+
+* pubblicare un sito web istituzionale
+* gestire un registro elettronico accessibile da docenti e famiglie
+* garantire disponibilità continua
+* proteggere dati personali (GDPR)
+* evitare costi di acquisto server fisici
+
+Si analizzano le possibili soluzioni cloud.
+
+---
+
+## Soluzione 1: approccio IaaS
+
+Scelta: utilizzare macchine virtuali su Amazon Web Services oppure Microsoft Azure.
+
+### Implementazione possibile
+
+1. Creare una Virtual Machine Linux.
+2. Installare manualmente:
+
+   * server web (Nginx/Apache)
+   * database (MySQL/PostgreSQL)
+3. Configurare firewall virtuale.
+4. Attivare backup automatici.
+5. Replicare la VM su un’altra Availability Zone.
+
+### Vantaggi
+
+* Massimo controllo.
+* Personalizzazione completa.
+* Possibilità di installare qualsiasi software.
+
+### Svantaggi
+
+* Richiede competenze sistemistiche.
+* Responsabilità diretta per aggiornamenti e patch di sicurezza.
+* Maggior rischio di errore di configurazione.
+
+---
+
+## Soluzione 2: approccio PaaS
+
+Scelta: usare ad esempio:
+
+* Azure App Service
+* Google App Engine
+* AWS Elastic Beanstalk
+
+### Implementazione possibile
+
+1. Caricare il codice del sito.
+2. Configurare database gestito (Database-as-a-Service).
+3. Attivare scaling automatico.
+4. Configurare certificato HTTPS.
+
+### Vantaggi
+
+* Nessuna gestione sistema operativo.
+* Aggiornamenti automatici.
+* Scalabilità automatica.
+* Riduzione rischio di errori infrastrutturali.
+
+### Svantaggi
+
+* Minore controllo sul sistema.
+* Dipendenza dal provider.
+
+---
+
+## Soluzione 3: approccio SaaS
+
+Scelta: adottare una piattaforma SaaS già pronta (es. registro elettronico fornito da azienda specializzata).
+
+### Implementazione possibile
+
+1. Attivare abbonamento.
+2. Creare account utenti.
+3. Configurare dominio e DNS.
+4. Formare il personale.
+
+### Vantaggi
+
+* Nessuna gestione tecnica.
+* Aggiornamenti automatici.
+* Sicurezza gestita dal fornitore.
+
+### Svantaggi
+
+* Personalizzazione limitata.
+* Dipendenza totale dal fornitore.
+* Costi ricorrenti per utente.
+
+---
+
+## Conclusione del caso
+
+Se l’istituto possiede competenze IT interne → IaaS può essere appropriato.
+Se vuole ridurre complessità tecnica → PaaS è spesso la soluzione più equilibrata.
+Se vuole eliminare completamente la gestione tecnica → SaaS è la soluzione più semplice.
+
+---
+
+# 7. Tabella riassuntiva per interrogazione
+
+| Aspetto                          | IaaS                                        | PaaS                           | SaaS                            | FaaS                           |
+| -------------------------------- | ------------------------------------------- | ------------------------------ | ------------------------------- | ------------------------------ |
+| Cosa trova il cliente all’inizio | Infrastruttura virtuale (VM, rete, storage) | Piattaforma pronta con runtime | Software già operativo          | Ambiente per eseguire funzioni |
+| Gestione sistema operativo       | Cliente                                     | Provider                       | Provider                        | Provider                       |
+| Gestione applicazione            | Cliente                                     | Cliente                        | Provider                        | Cliente (solo funzione)        |
+| Livello di controllo             | Molto alto                                  | Medio                          | Basso                           | Molto limitato                 |
+| Complessità tecnica              | Alta                                        | Media                          | Bassa                           | Media                          |
+| Scalabilità                      | Manuale o automatica                        | Automatica                     | Automatica                      | Automatica                     |
+| Esempio tipico                   | VM con server web                           | Deploy app web                 | Posta elettronica online        | API serverless                 |
+| Provider noti                    | AWS EC2, Azure VM                           | App Engine, App Service        | Google Workspace, Microsoft 365 | AWS Lambda                     |
+
+---
+
+# 8. Schema sintetico per risposta orale
+
+Per rispondere in modo completo durante interrogazione:
+
+1. Definire il cloud come modello on-demand.
+2. Spiegare differenza tra:
+
+   * IaaS → infrastruttura
+   * PaaS → piattaforma
+   * SaaS → software pronto
+   * FaaS → funzioni senza server visibili
+3. Spiegare concetto di:
+
+   * Region
+   * Availability Zone
+   * Responsabilità condivisa
+4. Citare almeno tre provider globali:
+
+   * Amazon Web Services
+   * Microsoft Azure
+   * Google Cloud Platform
+
+
+---
+
+
+[1]: https://cloud.google.com/learn/paas-vs-iaas-vs-saas?utm_source=chatgpt.com "PaaS vs. IaaS vs. SaaS vs. CaaS: How are they different?"
+[2]: https://cloud.google.com/learn/paas-vs-iaas-vs-saas?hl=it&utm_source=chatgpt.com "PaaS, IaaS, SaaS e CaaS: in che cosa differiscono?"
+[3]: https://aws.amazon.com/it/ec2/?utm_source=chatgpt.com "Calcolo sicuro e ridimensionabile nel cloud - Amazon EC2"
+[4]: https://www.linkedin.com/posts/sonali-purandare-326ba01a0_cloudcomputing-usa-trending-activity-7350588652428644353-ZMrB?utm_source=chatgpt.com "Understanding IaaS, PaaS, SaaS: A Simple Cloud Service ..."
+[5]: https://kinsta.com/blog/types-of-cloud-computing/?utm_source=chatgpt.com "Types of Cloud Computing | IaaS, PaaS, SaaS, XaaS"
+[6]: https://www.cloudzero.com/blog/cloud-service-providers/?utm_source=chatgpt.com "21+ Top Cloud Service Providers Globally In 2025"
+[7]: https://www.infodata.ilsole24ore.com/2025/12/13/cloud-computing-data-center-e-ai-i-numeri-e-i-protagonisti-del-mercato/?utm_source=chatgpt.com "Cloud computing, data center e Ai. I numeri e i protagonisti del ..."

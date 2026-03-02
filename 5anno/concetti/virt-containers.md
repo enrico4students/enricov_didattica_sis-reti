@@ -1,6 +1,6 @@
 ---
 
-# Virtualizzazione – lezione introduttiva
+# Virtualizzazione – Concetti Base
 
 ---
 

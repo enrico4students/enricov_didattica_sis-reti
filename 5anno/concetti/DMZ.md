@@ -297,7 +297,6 @@ In questo modello il firewall è il **punto centrale di controllo** per tutte le
 
 ## 2) Architettura DMZ con doppio firewall (Dual Firewall)
 
-![Image](https://www.zenarmor.com/docs/assets/images/3-41a25cc48b21f3ab2f5b901dd6060bcb.png)
 
 ![Image](https://image1.slideserve.com/2781756/two-firewalls-one-dmz1-l.jpg)
 

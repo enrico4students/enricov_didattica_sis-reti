@@ -1,20 +1,22 @@
 ---
 
-# Virtualizzazione – Concetti Base
+# Virtualizzazione – Concetti Base **DRAFT!!!**  
 
 ---
 
 ## 1. Perché nasce la virtualizzazione
 
-Un server fisico tradizionale esegue un solo sistema operativo e un numero limitato di applicazioni. Nelle infrastrutture moderne questo modello è inefficiente perché spesso l’hardware non viene utilizzato completamente: CPU e RAM rimangono parzialmente inutilizzate.
+Un server fisico tradizionale esegue un solo sistema operativo e un numero limitato di applicazioni. 
+Nelle infrastrutture moderne questo modello è inefficiente perché spesso l’hardware non viene utilizzato completamente: **CPU e RAM rimangono parzialmente inutilizzate**.
 
-La virtualizzazione nasce per sfruttare meglio le risorse hardware, consentendo a un singolo server fisico di eseguire più sistemi operativi contemporaneamente in modo isolato.
+La virtualizzazione nasce per sfruttare meglio le risorse hardware, consentendo a un singolo server fisico di eseguire più sistemi operativi contemporaneamente in modo isolato (non sotto-utilizzando l'hardware "host" disponibile).  
+*(Nasce anche per altri benefici, illustrati in seguito)*  
 
 ---
 
 ## 2. Che cos’è la virtualizzazione
 
-La virtualizzazione è una tecnologia che permette di creare **macchine virtuali (VM)**, cioè computer simulati che funzionano come sistemi indipendenti ma condividono lo stesso hardware fisico.
+La virtualizzazione **server** _(che NON è assolutamente l'unico tipo ma è il tipo piu' noto e semplice)_ è una tecnologia che permette di creare **macchine virtuali (VM)**, cioè computer simulati che funzionano come sistemi indipendenti ma condividono lo stesso hardware fisico.
 
 Ogni macchina virtuale:
 
@@ -36,6 +38,8 @@ L’hypervisor:
 * gestisce l’accesso al disco
 * controlla la rete virtuale
 * garantisce isolamento tra le macchine
+
+Esiste piu' di una tipologia di hypervisor  
 
 ### Hypervisor di tipo 1 (bare-metal)
 
@@ -69,6 +73,8 @@ Prodotti di interesse per studenti:
 * Parallels Desktop (ambiente macOS)
   [https://www.parallels.com/products/desktop/](https://www.parallels.com/products/desktop/)
 
+Utile per uso personale e didattico e in technical pre-sales.  
+
 ---
 
 ## 4. Come funziona in pratica
@@ -85,7 +91,7 @@ Le risorse possono essere allocate in modo statico o dinamico.
 
 ### Hosting classico (server fisico dedicato)
 
-Nel modello tradizionale:
+In questo modello tradizionale **NON** abbiamo virtualizzaione:
 
 * un’applicazione viene installata su un server fisico dedicato
 * ogni server svolge un solo ruolo principale
@@ -220,9 +226,105 @@ I container sono preferibili quando:
 
 Nei data center moderni il modello più comune è ibrido: VM per isolare e segmentare l’infrastruttura, container per distribuire applicazioni in modo agile e scalabile.
 
+
+---  
+
+
+## 10. Relazione tra virtualizzazione e hardware dei data center
+
+Le tecnologie di virtualizzazione (VM e container) non richiedono un tipo di hardware specifico: possono funzionare su qualunque server compatibile con i sistemi operativi e gli hypervisor utilizzati. Tuttavia nei data center moderni si utilizzano quasi sempre **server progettati per infrastrutture ad alta densità e alta affidabilità**.
+
+### Server rack
+
+Il tipo di server più comune è il **rack server**.
+Si tratta di server montati in armadi standard da 19 pollici chiamati rack.
+
+Caratteristiche principali:
+
+* installazione modulare nei rack
+* alimentazioni ridondanti
+* molte CPU core e grandi quantità di RAM
+* molte interfacce di rete ad alta velocità
+
+Un singolo rack server può ospitare decine o centinaia di macchine virtuali, a seconda delle risorse disponibili.
+
+Questo è oggi il modello più diffuso nei data center.
+
 ---
 
-## 10. Sintesi finale
+### Blade server
+
+Un’altra architettura diffusa è quella dei **blade server**.
+
+In questo modello più server molto compatti (le *blade*) vengono inseriti in uno chassis comune che fornisce:
+
+* alimentazione
+* raffreddamento
+* connettività di rete
+* backplane interno
+
+Ogni blade contiene CPU e RAM ma utilizza l’infrastruttura condivisa dello chassis.
+
+Il vantaggio principale è **l’elevata densità di calcolo**, utile nei grandi data center.
+
+---
+
+### Server iperconvergenti
+
+Negli ultimi anni si sono diffusi anche i sistemi **iperconvergenti (HCI – Hyper-Converged Infrastructure)**.
+
+In questi sistemi ogni nodo server fornisce contemporaneamente:
+
+* calcolo (CPU e RAM)
+* storage distribuito
+* virtualizzazione
+
+Più nodi formano un cluster che esegue macchine virtuali e gestisce lo storage in modo distribuito.
+
+Prodotti diffusi:
+
+* VMware vSAN
+  [https://www.vmware.com/products/vsan.html](https://www.vmware.com/products/vsan.html)
+
+* Nutanix HCI
+  [https://www.nutanix.com/platform](https://www.nutanix.com/platform)
+
+---
+
+### Hardware nei cloud provider
+
+I grandi provider cloud utilizzano infrastrutture simili ma su scala molto più grande.
+
+Nei data center di cloud pubblici si trovano:
+
+* grandi cluster di **rack servers**
+* storage distribuito
+* reti ad alta velocità (10–100 Gbit o più)
+
+Su questi server fisici vengono eseguiti hypervisor e piattaforme di orchestrazione che permettono di creare:
+
+* macchine virtuali
+* container
+* servizi cloud.
+
+---
+
+### Sintesi
+
+La virtualizzazione è principalmente **una tecnologia software**, ma per funzionare in modo efficiente richiede server potenti e affidabili.
+
+Nella pratica le infrastrutture virtualizzate utilizzano soprattutto:
+
+* rack servers (soluzione più comune)
+* blade servers (alta densità)
+* nodi iperconvergenti
+
+su cui vengono eseguiti hypervisor e piattaforme di orchestrazione per VM e container.
+
+
+---
+
+## 11. Sintesi finale
 
 La virtualizzazione permette di eseguire più sistemi operativi su un singolo hardware fisico tramite un hypervisor che assegna e isola le risorse.
 

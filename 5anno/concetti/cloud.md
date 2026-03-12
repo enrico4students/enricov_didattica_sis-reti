@@ -369,8 +369,12 @@ Fonti generiche su modelli “as a Service”: definizioni e classificazioni nel
 ---
 
 Aspetti chiave:  
+
 Ogni modello “XaaS” indica quale livello dell’infrastruttura viene astratto e gestito dal provider.   
-Più si sale nella pila dei servizi, minore è il controllo tecnico diretto, ma minore è anche la complessità gestionale per il cliente.  
+
+Più si sale nella pila dei servizi, 
+minore è il controllo tecnico diretto, ma   
+minore è anche la complessità gestionale per il cliente.  
 
 
 ---   
@@ -394,11 +398,54 @@ Applicazioni possono essere replicate su più zone per garantire resilienza.
 
 Esistono vari modelli di storage:
 
-* Block storage
-* Object storage
-* File system distribuiti
+**Block storage**
+È uno spazio disco virtuale che viene collegato a una macchina virtuale e visto dal sistema operativo come un normale disco.
+Esempio: un server cloud utilizza un volume block storage per installare il sistema operativo e salvare il database.
 
-Object storage è tipico per dati non strutturati e accessibile via API.
+**Object storage**
+Memorizza i dati come oggetti indipendenti identificati da un ID e accessibili tramite rete, spesso tramite API HTTP.
+Esempio: un sito web salva immagini o file degli utenti in un sistema di object storage accessibile tramite URL.
+
+Esempio minimale di accesso ad un oggetto tramite HTTP (Java):
+
+```
+import java.io.InputStream;
+import java.net.URL;
+
+public class ReadObjectExample {
+
+    public static void main(String[] args) throws Exception {
+
+        // URL dell'oggetto salvato nello storage
+        // esempio tipico: immagine salvata in un bucket
+        String objectURL = "https://example-bucket.storage.example.com/foto1.jpg";
+
+        // creazione dell'oggetto URL che rappresenta la risorsa remota
+        URL url = new URL(objectURL);
+
+        // apertura dello stream di lettura verso l'oggetto
+        InputStream in = url.openStream();
+
+        // lettura dei primi byte dell'oggetto
+        int firstByte = in.read();
+
+        // stampa del primo byte letto (solo come dimostrazione)
+        System.out.println(firstByte);
+
+        // chiusura dello stream
+        in.close();
+    }
+}
+```
+
+si accede direttamente all’oggetto memorizzato nello storage tramite il suo **URL pubblico**, si leggono i dati come se fosse un normale stream di rete.
+
+---
+
+**File system distribuiti**
+Sono file system accessibili da più server contemporaneamente e progettati per funzionare su molte macchine.
+Esempio: più server di un’applicazione web condividono gli stessi file di configurazione o documenti tramite un file system distribuito.
+
 
 ---
 

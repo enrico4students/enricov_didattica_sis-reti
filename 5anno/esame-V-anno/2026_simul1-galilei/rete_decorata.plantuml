@@ -1,0 +1,110 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam roundcorner 18
+skinparam dpi 180
+skinparam defaultTextAlignment center
+
+skinparam packageStyle rectangle
+
+title Rete hotel con DMZ, VLAN e collegamento stabilimento
+
+cloud "Internet" as INTERNET #BFDFFF
+
+node "ONT / CPE FTTH" as ONT #D6ECFF
+
+node "Firewall / UTM\nWAN - LAN - DMZ" as FW #FFCCCC
+
+rectangle "DMZ\n10.10.70.0/24" as DMZ #FFE599 {
+    node "WEB Server\n10.10.70.10\nHTTP / HTTPS" as WEB #FFF2CC
+    database "RDBMS Server\n10.10.70.20" as DB #FFF2CC
+}
+
+package "LAN Hotel" as LAN #D5F5E3 {
+
+    node "Core Switch\n802.1Q trunk" as CORE #ABEBC6
+
+    rectangle "VLAN 10\nUffici\n10.10.10.0/24" as VLAN10 #D4EFDF {
+        node "PC uffici"
+        node "Stampante"
+    }
+
+    rectangle "VLAN 20\nServizi\n10.10.20.0/24" as VLAN20 #D1F2EB {
+        database "Server Gestionale\n10.10.20.10" as GEST
+        node "NAS / Backup"
+        node "Controller WiFi / RADIUS"
+    }
+
+    rectangle "VLAN 30\nConvegni\n10.10.30.0/24" as VLAN30 #D6EAF8 {
+        node "AP sala convegni"
+        node "Client convegni"
+    }
+
+    rectangle "VLAN 40\nOspiti hotel\n10.10.40.0/24" as VLAN40 #E8DAEF {
+        node "AP camere / hall"
+        node "Client ospiti"
+    }
+
+    rectangle "VLAN 60\nColonnine EV\n10.10.60.0/24" as VLAN60 #FADBD8 {
+        node "Colonnine 1..6"
+    }
+
+    rectangle "VLAN 80\nManagement\n10.10.80.0/24" as VLAN80 #E5E7E9 {
+        node "Console amministrazione"
+    }
+}
+
+folder "Collegamento radio 500 m" as LINK #D6EAF8 {
+    node "Bridge radio A\nHotel" as RA
+    node "Bridge radio B\nStabilimento" as RB
+}
+
+package "Stabilimento balneare" as BEACH #FAD7A0 {
+
+    node "Switch stabilimento" as BSW #F8C471
+
+    rectangle "VLAN 90\nStaff\n10.10.90.0/24" as VLAN90 #F9E79F {
+        node "PC bar / cassa"
+    }
+
+    rectangle "VLAN 50\nOspiti spiaggia\n10.10.50.0/24" as VLAN50 #E8DAEF {
+        node "AP spiaggia"
+        node "Client spiaggia"
+    }
+}
+
+INTERNET --> ONT
+ONT --> FW
+
+FW --> WEB : HTTP / HTTPS
+WEB --> DB : connessione DB
+
+FW --> CORE : routing VLAN
+
+CORE --> VLAN10
+CORE --> VLAN20
+CORE --> VLAN30
+CORE --> VLAN40
+CORE --> VLAN60
+CORE --> VLAN80
+
+CORE --> RA
+RA --> RB
+RB --> BSW
+
+BSW --> VLAN90
+BSW --> VLAN50
+
+legend right
+|= Colore |= Significato |
+|<#BFDFFF>| Internet / WAN |
+|<#FFCCCC>| Firewall |
+|<#FFE599>| DMZ |
+|<#D5F5E3>| LAN hotel |
+|<#E8DAEF>| Reti ospiti |
+|<#E5E7E9>| Management |
+|<#FAD7A0>| Stabilimento |
+endlegend
+
+@enduml

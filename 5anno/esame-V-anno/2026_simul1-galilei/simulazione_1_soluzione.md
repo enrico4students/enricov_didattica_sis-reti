@@ -2,7 +2,23 @@
 
 ### 1. Analisi iniziale e logica generale di progetto
 
-La traccia descrive una struttura alberghiera con 52 camere, quattro sale convegni, ristorante, piscina, sei colonnine di ricarica, uffici con sette postazioni, server gestionale interno, server web esposto su Internet, Wi-Fi differenziato per ospiti, dipendenti e partecipanti ai convegni, oltre allo stabilimento balneare collegato funzionalmente all’hotel. Quindi la prima esigenza è evitare una rete unica e piatta. Serve invece una rete segmentata, con separazione logica dei vari tipi di utenti e servizi, così da migliorare sicurezza, gestione e prestazioni. 
+La traccia descrive una struttura alberghiera con  
+- 52 camere,  
+- quattro sale convegni,  
+- ristorante,  
+- piscina,  
+- sei colonnine di ricarica, 
+- uffici con sette postazioni,  
+- server gestionale *interno*,  
+- server web esposto su Internet, 
+- Wi-Fi differenziato per 
+    - ospiti, 
+    - dipendenti e 
+    - partecipanti ai convegni, oltre allo 
+- stabilimento balneare collegato funzionalmente all’hotel.  
+
+Quindi la prima esigenza è evitare una rete unica e piatta.  
+Serve invece una rete **segmentata**, con **separazione logica** dei vari tipi di utenti e servizi, così da migliorare sicurezza, gestione e prestazioni. 
 
 La logica seguita è questa:
 
@@ -15,7 +31,10 @@ La logica seguita è questa:
 7. collegare lo stabilimento con un link dedicato e sicuro;
 8. consentire agli ospiti Internet ma non accesso alla LAN interna.
 
-Questa scelta è adatta perché la traccia richiede esplicitamente funzionamento in sicurezza e separazione fra ospiti, uffici, servizi e sale convegni. 
+Questa deriva dal fatto che la traccia richiede  
+- esplicitamente funzionamento in sicurezza e  
+- separazione fra ospiti, uffici, servizi e sale convegni.  
+
 
 ### 2. Architettura di rete proposta
 
@@ -56,12 +75,15 @@ Le regole essenziali sono:
 
 * Internet -> WEB server: consentito solo su 80 e 443;
 * Internet -> RDBMS: negato;
-* WEB server -> RDBMS: consentito solo sulla porta del DBMS;
+* WEB server -> RDBMS: solo tramite la porta del database (es. 3306/5432), restrizione realizzata tramite configurazione del DBMS o firewall host-based (locale all'host del RDBMS).  
 * LAN interna -> RDBMS: negato, salvo amministrazione controllata;
 * DMZ -> LAN interna: negato salvo servizi strettamente necessari;
 * LAN interna -> DMZ: consentito solo per amministrazione o backup autorizzati.
 
-Quindi il database può stare nella stessa DMZ del WEB server, ma non deve essere pubblicato e non deve accettare connessioni da host diversi dal WEB server.
+Notare che il DBMS può stare ed è nella stessa DMZ del WEB server, ma  
+- non deve essere pubblicato e  
+- non deve accettare connessioni da host diversi dal WEB server.  
+
 
 ### 4. Diagramma testuale completo della rete
 
@@ -81,34 +103,34 @@ INTERNET
   |
   +------ [CORE SWITCH gestito, trunk 802.1Q]
               |
-              +--- VLAN 10 UFFICI         10.10.10.0/24
+              +--- VLAN 10: UFFICI         10.10.10.0/24
               |      |
               |      +--- PC reception
               |      +--- PC direzione
               |      +--- PC uffici
               |      +--- Stampante di rete
               |
-              +--- VLAN 20 SERVIZI        10.10.20.0/24
+              +--- VLAN 20: SERVIZI        10.10.20.0/24
               |      |
               |      +--- Server gestionale   10.10.20.10
               |      +--- NAS / backup
               |      +--- Controller Wi-Fi / RADIUS
               |
-              +--- VLAN 30 CONVEGNI       10.10.30.0/24
+              +--- VLAN 30: CONVEGNI       10.10.30.0/24
               |      |
               |      +--- AP sale convegni
               |      +--- client convegni
               |
-              +--- VLAN 40 OSPITI HOTEL   10.10.40.0/24
+              +--- VLAN 40: OSPITI HOTEL   10.10.40.0/24
               |      |
               |      +--- AP camere / hall / ristorante
               |      +--- SmartTV e dispositivi ospiti
               |
-              +--- VLAN 60 COLONNINE EV   10.10.60.0/24
+              +--- VLAN 60: COLONNINE EV   10.10.60.0/24
               |      |
               |      +--- colonnina 1..6
               |
-              +--- VLAN 80 MANAGEMENT     10.10.80.0/24
+              +--- VLAN 80: MANAGEMENT     10.10.80.0/24
                      |
                      +--- switch management
                      +--- AP management
@@ -120,9 +142,9 @@ Dal core switch parte anche il collegamento verso lo stabilimento:
 ```
 [CORE SWITCH HOTEL]
      |
-[Bridge radio PTP A]
-     ))))))))) 500 m LOS (((((((( 
-[Bridge radio PTP B]
+[Bridge radio PTP (point to point) A]
+     ))))))))) 500 m LOS (Line of Sight) (((((((( 
+[Bridge radio PTP (point to point) B]
      |
 [Switch stabilimento]
   |
@@ -283,7 +305,12 @@ Controller Wi-Fi      10.10.20.30
 
 ### 8. Motivazione delle scelte di indirizzamento e segmentazione
 
-Ho scelto reti diverse per ospiti, uffici, servizi, convegni e colonnine perché la traccia richiede esplicitamente tale separazione. La VLAN ospiti hotel e la VLAN ospiti spiaggia devono poter accedere a Internet ma non alla rete interna. La VLAN uffici e la VLAN servizi devono poter usare il gestionale. La VLAN convegni deve avere accesso separato per i partecipanti agli eventi. Le colonnine vanno isolate, perché sono dispositivi dedicati che non devono dialogare liberamente con tutto il resto della rete. 
+Ho scelto reti diverse per ospiti, uffici, servizi, convegni e colonnine perché la traccia richiede esplicitamente tale separazione.  
+- La VLAN ospiti hotel e la VLAN ospiti spiaggia devono poter accedere a Internet ma non alla rete interna.  
+- La VLAN uffici e la VLAN servizi devono poter usare il gestionale.  
+- La VLAN convegni deve avere accesso separato per i partecipanti agli eventi.  
+- Le colonnine vanno isolate, perché sono dispositivi dedicati che non devono dialogare liberamente con tutto il resto della rete.  
+
 
 ### 9. Regole firewall principali
 
@@ -292,7 +319,7 @@ Le regole più importanti sono:
 * Internet -> WEB server: consentire solo TCP 80 e 443;
 * Internet -> RDBMS: negare;
 * Internet -> LAN interna: negare;
-* WEB server -> RDBMS: consentire solo sulla porta del DBMS;
+* **NON FIREWALL PRINCIPALE** WEB server -> RDBMS: consentire solo sulla porta del DBMS;
 * VLAN ospiti hotel -> Internet: consentire;
 * VLAN ospiti hotel -> LAN interna: negare;
 * VLAN ospiti spiaggia -> Internet: consentire;
@@ -336,12 +363,13 @@ Limiti:
 
 ### 11. Scelta effettuata per il collegamento
 
-Scelgo come soluzione principale il ponte radio punto-punto cifrato, perché la distanza è ridotta e la visibilità ottica è già dichiarata. È la scelta più naturale, economica e coerente con la traccia. Lo switch dello stabilimento distribuirà poi due reti separate:
+La soluzione preferenziale è il ponte radio punto-punto cifrato, perché la distanza è ridotta e la visibilità ottica è già dichiarata. È la scelta più naturale, quasi suggerita dalla traccia, più economica. Lo switch dello stabilimento distribuirà poi due reti separate:
 
 * VLAN 90 per il personale;
 * VLAN 50 per gli ospiti della spiaggia.
 
-Il personale dello stabilimento deve poter consultare il software gestionale dell’albergo. Gli ospiti della spiaggia devono usare Internet con modalità di identificazione analoghe a quelle dell’hotel. 
+Il personale dello stabilimento deve poter consultare il software gestionale dell’albergo.  
+Gli ospiti della spiaggia devono usare Internet con modalità di identificazione analoghe a quelle dell’hotel. 
 
 ### 12. Progetto della base di dati
 
@@ -352,7 +380,7 @@ La base di dati deve gestire:
 * prenotazioni con check-in e check-out;
 * credenziali Wi-Fi legate alla prenotazione. 
 
-La scelta migliore è modellare le credenziali Wi-Fi come entità separata collegata alla prenotazione. In questo modo si rappresenta correttamente il fatto che la credenziale vale per uno specifico soggiorno e non genericamente per l’ospite.
+La scelta migliore è modellare le credenziali Wi-Fi come entità separata collegata alla prenotazione. In questo modo si rappresenta correttamente il fatto che **la credenziale vale per uno specifico soggiorno** e non genericamente per l’ospite.
 
 ### 13. Modello concettuale
 
@@ -422,7 +450,9 @@ PRENOTAZIONE ||--|| CREDENZIALE_WIFI : genera
 
 ### 15. Motivazione delle cardinalità
 
-La cardinalità OSPITE 1:N PRENOTAZIONE è corretta perché uno stesso ospite può soggiornare più volte. La cardinalità CAMERA 1:N PRENOTAZIONE è corretta perché una stessa camera può essere prenotata molte volte, ma in periodi diversi. La cardinalità PRENOTAZIONE 1:1 CREDENZIALE_WIFI è una scelta semplice e molto adatta per il compito: una prenotazione produce una coppia username-password per l’accesso Wi-Fi.
+Cardinalità OSPITE 1:N PRENOTAZIONE perché uno stesso ospite può soggiornare più volte. 
+Cardinalità CAMERA 1:N PRENOTAZIONE perché una stessa camera può essere prenotata molte volte, ma in periodi diversi. 
+Cardinalità PRENOTAZIONE 1:1 CREDENZIALE_WIFI: una prenotazione produce una coppia username-password per l’accesso Wi-Fi.
 
 ### 16. Modello logico relazionale
 
@@ -469,40 +499,40 @@ hide circle
 skinparam linetype ortho
 
 entity "OSPITE" as OSP {
-  * id_ospite : INT <<PK>>
-  --
-  nome : VARCHAR(50)
-  cognome : VARCHAR(50)
-  email : VARCHAR(100) <<UQ>>
-  telefono : VARCHAR(20)
-  documento : VARCHAR(30)
+    * id_ospite : INT <<PK>>
+    --
+    nome : VARCHAR(50)
+    cognome : VARCHAR(50)
+    email : VARCHAR(100) <<UQ>>
+    telefono : VARCHAR(20)
+    documento : VARCHAR(30)
 }
 
 entity "CAMERA" as CAM {
-  * id_camera : INT <<PK>>
-  --
-  numero : VARCHAR(10) <<UQ>>
-  tipologia : VARCHAR(30)
+    * id_camera : INT <<PK>>
+    --
+    numero : VARCHAR(10) <<UQ>>
+    tipologia : VARCHAR(30)
 }
 
 entity "PRENOTAZIONE" as PRE {
-  * id_prenotazione : INT <<PK>>
-  --
-  id_ospite : INT <<FK>>
-  id_camera : INT <<FK>>
-  data_check_in : DATE
-  data_check_out : DATE
-  stato : VARCHAR(20)
+    * id_prenotazione : INT <<PK>>
+    --
+    id_ospite : INT <<FK>>
+    id_camera : INT <<FK>>
+    data_check_in : DATE
+    data_check_out : DATE
+    stato : VARCHAR(20)
 }
 
 entity "CREDENZIALE_WIFI" as WIFI {
-  * id_wifi : INT <<PK>>
-  --
-  id_prenotazione : INT <<FK,UQ>>
-  username : VARCHAR(50) <<UQ>>
-  password : VARCHAR(100)
-  data_attivazione : DATETIME
-  data_scadenza : DATETIME
+    * id_wifi : INT <<PK>>
+    --
+    id_prenotazione : INT <<FK,UQ>>
+    username : VARCHAR(50) <<UQ>>
+    password : VARCHAR(100)
+    data_attivazione : DATETIME
+    data_scadenza : DATETIME
 }
 
 OSP ||--o{ PRE
@@ -535,7 +565,10 @@ Formato di trasmissione possibile:
 
 Scelgo JSON perché è leggibile, semplice da trasmettere e facile da interpretare sia da microcontrollore sia dal server.
 
-I socket rappresentano l’interfaccia software con cui due processi in rete comunicano. In una soluzione affidabile userei TCP. Il server crea un socket, esegue bind su una porta, poi listen e accept per ricevere la connessione. La colonnina crea il socket client ed esegue connect verso il server remoto. Una volta stabilita la connessione, i dati vengono inviati e ricevuti con send/recv oppure write/read. Al termine della sessione entrambi chiudono il socket con close. TCP è preferibile a UDP perché garantisce consegna, ordine dei dati e controllo degli errori, aspetti importanti quando si trasmettono dati di contabilizzazione energetica.
+I socket rappresentano l’interfaccia software con cui due processi in rete comunicano.  
+In una soluzione affidabile userei TCP. Il server crea un socket, esegue bind su una porta, poi listen e accept per ricevere la connessione.  
+La colonnina crea il socket client ed esegue connect verso il server remoto. Una volta stabilita la connessione, i dati vengono inviati e ricevuti con send/recv oppure write/read. Al termine della sessione entrambi chiudono il socket con close.  
+TCP è preferibile a UDP perché **garantisce** consegna, ordine dei dati e controllo degli errori, aspetti importanti quando si trasmettono dati di contabilizzazione energetica.
 
 Schema:
 
@@ -553,7 +586,17 @@ socket TCP server
 
 ### 20. Seconda parte, quesito 2: filtraggio contenuti a scuola
 
-Per una scuola userei firewall/UTM, switch gestito con VLAN, proxy o content filter e DNS filtering. Gli studenti starebbero in una VLAN separata da quella degli uffici. Il firewall distinguerebbe le politiche: sulla rete studenti si applicherebbero filtri più rigidi, blocco di categorie, DNS filtrato, logging e limiti applicativi. Sulla rete uffici si userebbero regole più permissive ma sempre isolate dalla rete didattica. Il content filter può controllare il traffico web, mentre il DNS filtering impedisce di risolvere domini vietati. Il vantaggio è una navigazione più sicura e una separazione chiara dei contesti d’uso. I limiti sono i costi, la complessità e il fatto che parte del traffico HTTPS possa richiedere analisi più avanzate.
+Per una scuola userei  
+- firewall/UTM,  
+- switch gestito con VLAN,  
+- proxy o content filter e  
+- DNS filtering.  
+
+Gli studenti starebbero in una VLAN separata da quella degli uffici.  
+Il firewall distinguerebbe le politiche: sulla rete studenti si applicherebbero filtri più rigidi, blocco di categorie, DNS filtrato, logging e limiti applicativi.  
+Sulla rete uffici si userebbero regole più permissive ma sempre isolate dalla rete didattica. Il content filter può controllare il traffico web, mentre il DNS filtering impedisce di risolvere domini vietati.  
+Il vantaggio è una navigazione più sicura e una separazione chiara dei contesti d’uso.  
+I limiti sono i costi, la complessità e il fatto che parte del traffico HTTPS possa richiedere analisi più avanzate.
 
 Schema:
 
@@ -569,7 +612,12 @@ VLAN studenti    VLAN uffici
 
 ### 21. Seconda parte, quesito 3: differenza tra HTTP e HTTPS
 
-HTTP è un protocollo applicativo usato per scambiare pagine web e risorse, ma in chiaro. HTTPS è HTTP protetto da TLS. Questo comporta tre vantaggi fondamentali: cifratura, autenticazione del server tramite certificato, integrità dei dati. Con HTTP un intercettatore può leggere o modificare il traffico; con HTTPS il browser verifica il certificato e crea un canale cifrato col server. Per il visitatore del sito ciò significa maggiore protezione di credenziali, dati personali e pagamenti, oltre a minore rischio di attacchi man-in-the-middle e alterazione dei contenuti.
+HTTP è un protocollo applicativo usato per scambiare pagine web e risorse, ma in chiaro. HTTPS è HTTP protetto da TLS. Questo comporta tre vantaggi fondamentali:  
+- cifratura,  
+- autenticazione del server tramite certificato,  
+- integrità dei dati.  
+
+Con HTTP un intercettatore può leggere o modificare il traffico; con HTTPS il browser verifica il certificato e crea un canale cifrato col server. Per il visitatore del sito ciò significa maggiore protezione di credenziali, dati personali e pagamenti, oltre a minore rischio di attacchi man-in-the-middle e alterazione dei contenuti.
 
 Schema:
 
@@ -583,7 +631,14 @@ Browser ==== canale TLS cifrato ==== Server
 
 ### 22. Seconda parte, quesito 4: PC che non apre siti esterni ma vede la LAN
 
-La sequenza corretta di verifiche è procedere per esclusione. Per prima cosa controllare configurazione IP, subnet mask, gateway 192.168.24.1 e DNS 192.168.24.5. Poi eseguire il ping del gateway. Se non risponde, il problema è locale o di instradamento interno. Se risponde, verificare il DNS locale con ping 192.168.24.5. Successivamente provare il ping verso un IP pubblico, ad esempio 8.8.8.8. Se questo funziona ma i siti non si aprono, è probabile un problema DNS; allora usare nslookup per verificare la risoluzione dei nomi. Se invece non si raggiunge l’IP pubblico, il problema può stare nel gateway, nel NAT, nel firewall o nella connettività Internet. Infine controllare eventuale proxy errato nel browser e usare tracert per capire dove il traffico si interrompe.
+La sequenza corretta di verifiche è procedere per esclusione. Per prima cosa  
+- controllare configurazione IP, subnet mask, gateway 192.168.24.1 e DNS 192.168.24.5.  
+- Poi eseguire il ping del gateway. Se non risponde, il problema è locale o di instradamento interno.  
+- Se risponde, verificare il DNS locale con ping 192.168.24.5.  
+- Successivamente provare il ping verso un IP pubblico, ad esempio 8.8.8.8.  
+- Se questo funziona ma i siti non si aprono, è probabile un problema DNS; allora usare nslookup per verificare la risoluzione dei nomi.  
+- Se invece non si raggiunge l’IP pubblico, il problema può stare nel gateway, nel NAT, nel firewall o nella connettività Internet.  
+- Infine controllare eventuale proxy errato nel browser e usare tracert per capire dove il traffico si interrompe.
 
 Schema:
 
@@ -599,5 +654,6 @@ Schema:
 
 ### 23. Conclusione finale
 
-La soluzione proposta rispetta i requisiti della traccia perché usa una rete segmentata, protegge i servizi esposti con una DMZ, mantiene il gestionale nella rete interna, collega in modo sicuro lo stabilimento balneare e modella correttamente le prenotazioni e le credenziali Wi-Fi. La scelta della DMZ unica con WEB server e RDBMS nello stesso segmento è valida purché il database non sia pubblicato e accetti connessioni solo dal WEB server. In questo modo si ottiene una soluzione realistica, ordinata e tecnicamente coerente per un compito di Sistemi e Reti. 
+La soluzione proposta rispetta i requisiti posti dalla traccia perché usa una rete segmentata, protegge i servizi esposti con una DMZ, mantiene il gestionale nella rete interna, collega in modo sicuro lo stabilimento balneare e modella correttamente le prenotazioni e le credenziali Wi-Fi.  
+La scelta della DMZ unica con WEB server e RDBMS nello stesso segmento è valida purché il database non sia pubblicato e accetti connessioni solo dal WEB server. In questo modo si ottiene una soluzione realistica, ordinata e tecnicamente coerente. 
 

@@ -1,5 +1,10 @@
 
 .~lock*
+delet*.*
+tex2pdf*.*
+*.log
+*.aux
+
 
 # File eseguibili Windows
 *.exe

@@ -1,6 +1,15 @@
 {
     "version": "0.2.0",
     "configurations": [
+
+        {
+            "name": "Pandoc → PDF file corrente",
+            "type": "node-terminal",
+            "request": "launch",
+            "command": "pandoc \"${file}\" -o \"${fileDirname}\\${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex -H \"${workspaceFolder}\\authoring\\latex\\header1.tex\"",
+            "cwd": "${workspaceFolder}"
+        },
+
         {
             "name": "TCP Receiver",
             "type": "cppdbg",

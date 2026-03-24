@@ -1,8 +1,9 @@
 
 .~lock*
 delet*
-tex2pdf*/**
+tex2*/**
 tex2pdf*
+
 
 *.log
 *.aux

@@ -1,7 +1,9 @@
 
 .~lock*
-delet*.*
-tex2pdf*.*
+delet*
+tex2pdf*/**
+tex2pdf*
+
 *.log
 *.aux
 

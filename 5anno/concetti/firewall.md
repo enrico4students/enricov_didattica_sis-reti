@@ -1,6 +1,3 @@
-Di seguito la **versione completamente riorganizzata, lineare e priva di ridondanze**, mantenendo tutti i contenuti tecnici presenti nella versione originale.
-
----
 
 # Firewall
 

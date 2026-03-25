@@ -69,7 +69,7 @@ La DMZ scelta è una DMZ unica collegata al firewall. In questa DMZ si trovano:
 * il WEB server, accessibile da Internet;
 * il server RDBMS, non accessibile da Internet.
 
-Questa soluzione è meno complessa di una separazione ulteriore in due sottoreti distinte, ma resta sicura se si applicano regole corrette.
+Questa soluzione è meno complessa di una DMZ con due firewalls (l'altra tipologia delle due), ma resta sicura se si applicano regole corrette.
 
 Le regole essenziali sono:
 

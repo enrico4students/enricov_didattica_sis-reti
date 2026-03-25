@@ -566,8 +566,11 @@ Formato di trasmissione possibile:
 Scelgo JSON perché è leggibile, semplice da trasmettere e facile da interpretare sia da microcontrollore sia dal server.
 
 I socket rappresentano l’interfaccia software con cui due processi in rete comunicano.  
-In una soluzione affidabile userei TCP. Il server crea un socket, esegue bind su una porta, poi listen e accept per ricevere la connessione.  
-La colonnina crea il socket client ed esegue connect verso il server remoto. Una volta stabilita la connessione, i dati vengono inviati e ricevuti con send/recv oppure write/read. Al termine della sessione entrambi chiudono il socket con close.  
+In una soluzione con connessione e  affidabilite (non nel senso "forte" di robusta) usare TCP. Il server crea un socket, esegue bind su una porta, poi listen e accept per ricevere la connessione.  
+La colonnina crea il socket client ed esegue connect verso il server remoto.  
+Una volta stabilita la connessione, i dati vengono inviati e ricevuti con send/recv oppure write/read.  
+Al termine della sessione entrambi chiudono il socket con close.  
+
 TCP è preferibile a UDP perché **garantisce** consegna, ordine dei dati e controllo degli errori, aspetti importanti quando si trasmettono dati di contabilizzazione energetica.
 
 Schema:

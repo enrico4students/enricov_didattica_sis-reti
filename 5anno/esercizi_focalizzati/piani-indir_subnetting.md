@@ -1,6 +1,7 @@
 # Lezione: Subnetting IPv4 e piani di indirizzamento
 (Istituto Tecnico Informatico – Sistemi e Reti)
 
+
 ---
 
 ## 1. Richiami teorici essenziali
@@ -192,6 +193,386 @@ Procedura:
 
 Risultato atteso:
 - una tabella con una riga per ogni sottorete (LAN, DMZ, Wi-Fi, p2p), con parametri completi.
+
+
+## 7. Valutazione  
+Per valutare in modo completo lo svolgimento di un **esercizio di subnetting e piano di indirizzamento**, conviene separare i criteri di valutazione in alcune aree logiche.
+Questo consente anche di attribuire facilmente punteggi parziali.
+
+Di seguito una possibile **struttura completa e didatticamente coerente**.
+
+---
+
+# 1. Analisi dei requisiti del problema
+
+Verificare se è stata compresa correttamente la traccia.
+
+Sottopunti possibili:
+
+* identificazione corretta delle **reti necessarie**
+* identificazione del **numero di host richiesti per ogni rete**
+* eventuale identificazione di **reti speciali** (DMZ, link punto-punto, rete management, ecc.)
+* riconoscimento dei **vincoli** indicati nella traccia (indirizzo di partenza, uso di VLSM, rete classful, ecc.)
+
+Questo punto valuta la **comprensione del problema**, non ancora il calcolo.
+
+---
+
+# 2. Identificazione delle sottoreti
+
+Valutare se lo studente ha determinato correttamente le sottoreti logiche.
+
+Sottopunti:
+
+* numero corretto di sottoreti
+* identificazione delle funzioni delle reti (LAN utenti, server, link router-router, ecc.)
+* eventuale distinzione tra **reti LAN e reti di collegamento**
+
+In molti esercizi questo punto precede il subnetting vero e proprio.
+
+---
+
+# 3. Scelta dell’architettura di rete
+
+Valutare la correttezza della progettazione logica.
+
+Sottopunti:
+
+* separazione delle reti tramite **router**
+* eventuale utilizzo di **VLAN**
+* coerenza tra architettura scelta e requisiti
+* presenza di eventuali **reti di interconnessione tra router**
+
+Questo punto è importante negli esercizi di **progettazione di rete**, non solo di subnetting.
+
+---
+
+# 4. Calcolo delle dimensioni delle sottoreti
+
+Valutare se sono state determinate correttamente le dimensioni delle subnet.
+
+Sottopunti:
+
+* numero minimo di **bit host necessari**
+* dimensione della sottorete scelta
+* eventuale uso corretto del **VLSM**
+* verifica che il numero di host disponibili sia sufficiente
+
+Errori frequenti:
+
+* sottoreti troppo piccole
+* sottoreti eccessivamente grandi senza motivo
+
+---
+
+# 5. Calcolo della subnet mask / prefisso
+
+Valutare la correttezza del subnetting.
+
+Sottopunti:
+
+* subnet mask corretta
+* prefisso CIDR corretto
+* relazione corretta tra **bit di rete e bit host**
+* coerenza con il numero di host richiesto
+
+---
+
+# 6. Determinazione degli indirizzi delle subnet
+
+Valutare il calcolo degli indirizzi di rete.
+
+Sottopunti:
+
+* indirizzo di rete corretto
+* indirizzo broadcast corretto
+* primo indirizzo utilizzabile
+* ultimo indirizzo utilizzabile
+
+Questo è uno dei punti più importanti negli esercizi.
+
+---
+
+# 7. Costruzione del piano di indirizzamento
+
+Valutare la completezza della tabella finale.
+
+Sottopunti:
+
+* assegnazione delle subnet alle diverse reti
+* indirizzi assegnati ai router
+* indirizzi assegnati ai server
+* indirizzi assegnati agli host
+* eventuale indirizzo gateway corretto
+
+---
+
+# 8. Coerenza globale del piano
+
+Controllare che il piano di indirizzamento sia internamente consistente.
+
+Sottopunti:
+
+* assenza di **sovrapposizioni tra subnet**
+* tutte le subnet appartengono alla rete di partenza
+* nessun uso di indirizzi riservati (network o broadcast)
+* corretta sequenza degli indirizzi
+
+---
+
+# 9. Rappresentazione e chiarezza
+
+Valutare la qualità della presentazione.
+
+Sottopunti:
+
+* presenza di **tabella delle subnet**
+* eventuale schema di rete
+* chiarezza dei calcoli
+* uso corretto della notazione CIDR
+
+Questo punto è utile nelle verifiche scolastiche.
+
+---
+
+# 10. Verifica finale
+
+Valutare se lo studente ha controllato il risultato.
+
+Sottopunti:
+
+* verifica del numero di host disponibili
+* verifica della correttezza delle subnet
+* verifica dell'assenza di conflitti
+
+---
+
+# Esempio sintetico di griglia di valutazione
+
+Una versione molto compatta potrebbe essere:
+
+1. Analisi della traccia
+2. Identificazione delle reti logiche
+3. Scelta dell'architettura (router / VLAN)
+4. Calcolo dimensione subnet
+5. Calcolo subnet mask / prefisso
+6. Determinazione indirizzi di rete e broadcast
+7. Piano di indirizzamento degli host
+8. Coerenza complessiva
+9. Chiarezza e rappresentazione
+
+---
+
+Di seguito una **griglia di valutazione più robusta**, organizzata esplicitamente secondo le quattro fasi cognitive tipiche della risoluzione di un esercizio di subnetting e piano di indirizzamento:
+
+1. analisi del problema
+2. progettazione della rete
+3. calcolo del subnetting
+4. costruzione del piano di indirizzamento
+
+Questo schema è utile perché permette di **attribuire punteggi parziali anche quando un errore iniziale influenza i passaggi successivi**, evitando di penalizzare eccessivamente lo studente.
+
+---
+
+## Griglia di valutazione DETTAGLIATA – Subnetting e piano di indirizzamento IPv4 (20 punti)
+
+| Criterio                                  | Punti max | Criteri di assegnazione                                                                                                                                                                                              |
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Analisi della traccia                     | 2         | 2 punti: requisiti completamente identificati (numero di reti, numero host per rete, eventuali reti speciali). 1 punto: piccolo errore nella lettura dei requisiti. 0 punti: interpretazione errata della traccia.   |
+| Identificazione delle reti logiche        | 3         | 3 punti: tutte le reti individuate correttamente (LAN, server, link router, ecc.). 2 punti: errore minore nel numero o nel ruolo di una rete. 1 punto: progettazione parziale. 0 punti: struttura delle reti errata. |
+| Scelta dell’architettura di rete          | 2         | 2 punti: separazione corretta delle reti (router o VLAN) coerente con la traccia. 1 punto: architettura parzialmente corretta. 0 punti: architettura incoerente o assente.                                           |
+| Ordinamento delle subnet (VLSM)           | 2         | 2 punti: subnet ordinate correttamente per dimensione (host maggiori → minori). 1 punto: ordinamento parzialmente corretto. 0 punti: nessun criterio di ordinamento.                                                 |
+| Dimensionamento delle subnet              | 3         | 3 punti: numero di host e dimensione delle subnet corretti. 2 punti: un errore isolato. 1 punto: più errori ma metodo corretto. 0 punti: dimensionamento errato.                                                     |
+| Determinazione dei prefissi / subnet mask | 3         | 3 punti: prefissi CIDR o subnet mask corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo riconoscibile. 0 punti: prefissi errati.                                                                  |
+| Calcolo degli indirizzi delle subnet      | 3         | 3 punti: indirizzi di rete e broadcast corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo corretto. 0 punti: indirizzi errati.                                                                    |
+| Costruzione del piano di indirizzamento   | 1         | 1 punto: assegnazione coerente di indirizzi a router, server e host. 0 punti: piano incoerente.                                                                                                                      |
+| Verifica della coerenza del piano         | 1         | 1 punto: nessuna sovrapposizione tra subnet e rispetto della rete iniziale. 0 punti: sovrapposizioni o errori logici.                                                                                                |
+| Totale                                    | 20        |                                                                                                                                                                                                                      |
+
+---
+
+Struttura logica della valutazione
+
+Analisi del problema
+
+* comprensione della traccia
+* identificazione delle reti
+
+Progettazione della rete
+
+* architettura (router/VLAN)
+* ordinamento subnet (VLSM)
+
+Calcolo matematico
+
+* dimensionamento subnet
+* prefissi CIDR
+* indirizzi network/broadcast
+
+Applicazione operativa
+
+* piano di indirizzamento
+* verifica di coerenza
+
+---
+
+Vantaggi di questa griglia
+
+Permette di valutare separatamente:
+
+* comprensione del problema
+* progettazione della rete
+* capacità di calcolo
+* correttezza operativa finale
+
+Utile negli esercizi di **Sistemi e Reti**, dove spesso uno studente:
+
+* comprende bene la rete ma sbaglia un calcolo
+* oppure sa fare i calcoli ma non progetta correttamente le reti.
+
+---  
+
+Di seguito una **versione semplificata e molto robusta (6 criteri)** pensata per verifiche di **Sistemi e Reti per studenti 16-19 anni**.
+
+Gli obiettivi sono:
+
+* rendere la **correzione molto rapida**
+* mantenere **equità nella valutazione**
+* separare chiaramente **progettazione, calcolo e risultato**
+
+Il totale rimane **20 punti**.
+
+---
+
+## Griglia di valutazione semplificata – Subnetting e piano di indirizzamento (20 punti)
+
+| Criterio                                        | Punti max | Criteri di assegnazione                                                                                                                                                                                                             |
+| ----------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Comprensione della traccia                      | 3         | 3 punti: numero di reti e host richiesti corretti. 2 punti: errore minore nella comprensione. 1 punto: comprensione parziale. 0 punti: interpretazione errata della traccia.                                                        |
+| Identificazione delle sottoreti                 | 3         | 3 punti: tutte le reti individuate correttamente. 2 punti: errore minore. 1 punto: struttura parziale. 0 punti: reti non identificate.                                                                                              |
+| Dimensionamento delle subnet                    | 4         | 4 punti: dimensioni delle subnet corrette per tutte le reti. 3 punti: un errore isolato. 2 punti: più errori ma metodo corretto. 1 punto: metodo parzialmente corretto. 0 punti: dimensionamento errato.                            |
+| Calcolo delle subnet (CIDR, network, broadcast) | 5         | 5 punti: prefissi, network e broadcast corretti. 4 punti: errore isolato. 3 punti: alcuni errori ma metodo corretto. 2 punti: errori multipli ma procedura comprensibile. 1 punto: tentativo incompleto. 0 punti: risultato errato. |
+| Piano di indirizzamento                         | 3         | 3 punti: assegnazione coerente di indirizzi a router e host. 2 punti: errori minori. 1 punto: piano parziale. 0 punti: piano incoerente.                                                                                            |
+| Coerenza e chiarezza della soluzione            | 2         | 2 punti: tabella chiara e nessuna sovrapposizione tra subnet. 1 punto: soluzione comprensibile ma con imperfezioni. 0 punti: soluzione confusa o incoerente.                                                                        |
+| Totale                                          | 20        |                                                                                                                                                                                                                                     |
+
+---
+
+Caratteristiche
+
+* **6 criteri sono facili da ricordare**
+* si corregge **in meno di un minuto per compito**
+* gli studenti capiscono facilmente **dove hanno perso punti**
+
+La struttura implicita è:
+
+1. comprensione del problema
+2. progettazione delle reti
+3. calcolo del subnetting
+4. piano di indirizzamento
+5. verifica finale
+
+
+---  
+
+
+## Griglia di correzione rapida – Subnetting e piano di indirizzamento IPv4
+
+| Criterio                                      | 0 punti                | livello intermedio    | livello buono  | livello pieno               | punti assegnati |
+| --------------------------------------------- | ---------------------- | --------------------- | -------------- | --------------------------- | --------------- |
+| Comprensione della traccia (3)                | interpretazione errata | comprensione parziale | piccolo errore | requisiti corretti          |                 |
+| Identificazione sottoreti (3)                 | sottoreti errate       | struttura incompleta  | piccolo errore | tutte corrette              |                 |
+| Dimensionamento subnet (4)                    | dimensionamento errato | metodo parziale       | un errore      | tutte corrette              |                 |
+| Calcolo subnet (CIDR, network, broadcast) (5) | calcoli errati         | molti errori          | errore isolato | tutti corretti              |                 |
+| Piano di indirizzamento (3)                   | piano incoerente       | piano incompleto      | errori minori  | assegnazione corretta       |                 |
+| Coerenza e chiarezza (2)                      | soluzione confusa      | leggibilità parziale  | —              | soluzione chiara e coerente |                 |
+| Totale                                        |                        |                       |                |                             | 20              |
+
+---
+
+Esempio di compilazione durante la correzione
+
+| Criterio                  | livello scelto | punti |
+| ------------------------- | -------------- | ----- |
+| Comprensione traccia      | piccolo errore | 2     |
+| Identificazione sottoreti | tutte corrette | 3     |
+| Dimensionamento subnet    | un errore      | 3     |
+| Calcolo subnet            | errore isolato | 4     |
+| Piano indirizzamento      | corretto       | 3     |
+| Chiarezza                 | buona          | 2     |
+| Totale                    |                | 17    |
+
+---
+
+Vantaggi di questa griglia
+
+* consente una **correzione molto veloce**
+* riduce la soggettività della valutazione
+* rende **trasparente il motivo della perdita di punti**
+* è facile da **stampare e compilare a mano**
+
+
+---  
+
+## **griglia di correzione basata sulle penalità**  
+
+Utile quando si correggono molti compiti perché permette di:
+
+* partire dal **punteggio massimo**
+* sottrarre rapidamente punti per **errori tipici**
+* evitare lunghe valutazioni qualitative
+
+Punteggio iniziale: **20 punti**
+
+---
+
+Griglia di correzione – metodo delle penalità
+
+| Errore                                                    | Penalità |
+| --------------------------------------------------------- | -------- |
+| Interpretazione errata della traccia (numero reti o host) | −3       |
+| Una sottorete mancante o non identificata                 | −2       |
+| Errore nell’ordinamento delle subnet (VLSM)               | −1       |
+| Dimensionamento errato di una subnet                      | −2       |
+| Subnet mask o prefisso CIDR errato                        | −1       |
+| Errore nel calcolo dell’indirizzo di rete                 | −2       |
+| Errore nel calcolo dell’indirizzo broadcast               | −2       |
+| Errore nel calcolo dell’intervallo host                   | −1       |
+| Sovrapposizione tra subnet                                | −3       |
+| Assegnazione errata di indirizzi a router o host          | −1       |
+| Uso di indirizzo network o broadcast come host            | −2       |
+| Piano di indirizzamento incompleto                        | −1       |
+| Soluzione poco chiara o senza tabella                     | −1       |
+
+---
+
+Vantaggi 
+
+* estremamente **veloce**
+* molto **oggettivo**
+* facile da usare quando si correggono **20–30 compiti**
+
+
+Limitazioni
+
+Questo metodo funziona meglio quando:
+
+* gli esercizi sono **molto standardizzati**
+* la soluzione è **abbastanza strutturata**
+
+
+---
+
+# Struttura consigliata della risposta dello studente
+
+Per facilitare la correzione è utile richiedere sempre una tabella finale come questa.
+
+| Rete        | Prefisso | Subnet mask     | Network | Primo host | Ultimo host | Broadcast |
+| ----------- | -------- | --------------- | ------- | ---------- | ----------- | --------- |
+| LAN1        | /26      | 255.255.255.192 | …       | …          | …           | …         |
+| LAN2        | /27      | 255.255.255.224 | …       | …          | …           | …         |
+| Link router | /30      | 255.255.255.252 | …       | …          | …           | …         |
+
 
 ---
 
@@ -695,3 +1076,7 @@ C20) Rete 172.16.100.0/24 con: 100 host, 30 host, 10 host, 2 link p2p.
 | 172.16.100.160 | 255.255.255.240 | 172.16.100.174 | 172.16.100.161 | da 172.16.100.162 a 172.16.100.173 ; LAN_10 ; host_utilizzabili=14 | 172.16.100.175 |
 | 172.16.100.176 | 255.255.255.252 | N/D            | N/D            | da 172.16.100.177 a 172.16.100.178 ; P2P_1 ; host_utilizzabili=2   | 172.16.100.179 |
 | 172.16.100.180 | 255.255.255.252 | N/D            | N/D            | da 172.16.100.181 a 172.16.100.182 ; P2P_2 ; host_utilizzabili=2   | 172.16.100.183 |
+
+
+
+

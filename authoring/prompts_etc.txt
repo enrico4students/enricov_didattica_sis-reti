@@ -1,0 +1,18 @@
+
+Liste
+Non usare troppe liste o troppi livelli di gerarchia non necessari, 
+non mettere come lista elenchi non importanti, ad esempio il testo seguente
+
+"Esempi tipici:
+
+• un'abitazione
+• un laboratorio scolastico
+• un ufficio
+• un edificio aziendale
+• un campus"
+
+devi scriverlo 
+
+"Esempi tipici: un'abitazione, un laboratorio scolastico, un ufficio, un edificio aziendale, un campus"
+
+usa liste o gerarchie solo per concetti importanti o nuovi

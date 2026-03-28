@@ -1,320 +1,537 @@
-# Concetti base  
 
 ---
 
-## 1. ADSL
+# Tecnologie di accesso a Internet
 
-ADSL significa **Asymmetric Digital Subscriber Line**.
-
-Caratteristiche principali:
-
-* utilizza il doppino telefonico in rame
-* connessione asimmetrica (download maggiore dell’upload)
-* fortemente influenzata dalla distanza dalla centrale
-
-Prestazioni tipiche:
-
-* download fino a circa 20 Mbit/s (in condizioni ideali)
-* upload fino a circa 1 Mbit/s
-* latenza relativamente elevata rispetto alla fibra
-
-Limiti:
-
-* velocità limitata
-* degrado significativo oltre pochi chilometri
-* tecnologia oggi superata dove è disponibile la fibra
+## Fondamenti, architetture e soluzioni operative
 
 ---
 
-## 2. Fibra ottica
+# 1. Livelli di classificazione delle tecnologie di accesso
 
-La fibra trasmette dati tramite impulsi luminosi in un cavo in vetro o plastica.
+Per comprendere correttamente le tecnologie di connettività è utile distinguere quattro livelli concettuali diversi.
 
-Vantaggi generali:
+## 1.1 Mezzo fisico di trasmissione
 
-* velocità molto elevate
-* bassa latenza
-* maggiore stabilità
-* minore attenuazione rispetto al rame
+Indica il supporto utilizzato per trasportare i dati.
+
+Principali mezzi:
+
+rame
+fibra ottica
+cavo coassiale
+radio (reti cellulari)
+
+## 1.2 Architettura dell’accesso
+
+Indica **fino a dove arriva la fibra o la rete dell’operatore**.
+
+Esempi:  
+FTTC  
+FTTH  
+FTTO  
+reti HFC  
+
+## 1.3 Tecnologia di rete
+
+Indica **come i dati vengono trasmessi sulla rete**.
+
+Esempi:  
+ADSL
+VDSL
+GPON
+XGS-PON
+EPON
+DOCSIS
+
+## 1.4 Tipo di servizio
+
+Indica **come l’operatore fornisce la connettività**.
+
+Esempi:  
+FTTH residenziale  
+FTTH business  
+leased line  
+backup 4G/5G  
+
+Separare questi livelli evita confusione tra concetti che spesso vengono mescolati.
 
 ---
 
-## 3. FTTC (Fiber To The Cabinet)
+# 2. Mezzi fisici di trasmissione
+
+## 2.1 Rame (doppino telefonico)
+
+Storicamente la rete Internet domestica utilizzava il **doppino telefonico**.  
+Su questo mezzo sono state sviluppate tecnologie DSL.
+
+### ADSL
+
+ADSL significa Asymmetric Digital Subscriber Line.  
+
+Caratteristiche principali:  
+utilizza il doppino telefonico in rame
+connessione asimmetrica
+download maggiore dell’upload
+prestazioni dipendenti dalla distanza dalla centrale
+
+Prestazioni tipiche:  
+download fino a circa 20 Mbit/s  
+upload circa 1 Mbit/s  
+
+Limiti:  
+velocità limitata  
+degrado rapido oltre pochi chilometri  
+latenza relativamente elevata  
+
+Questa tecnologia oggi è considerata **superata nelle aree raggiunte dalla fibra**.
+
+---
+
+## 2.2 Fibra ottica
+
+La fibra ottica trasmette dati tramite **impulsi luminosi** all’interno di un filamento di vetro o plastica.  
+
+Vantaggi principali:  
+velocità molto elevate
+bassa latenza
+maggiore stabilità
+minore attenuazione del segnale rispetto al rame
+
+La fibra è oggi il mezzo principale per le nuove reti di accesso.
+
+---
+
+## 2.3 Cavo coassiale  
+
+Il cavo coassiale è utilizzato nelle reti TV via cavo.  
+
+In queste reti l’accesso Internet utilizza la tecnologia DOCSIS.  
+
+La struttura della rete è tipicamente **HFC (Hybrid Fiber Coaxial)**:  
+fibra fino a nodi di distribuzione  
+coassiale fino agli utenti  
+
+---
+
+## 2.4 Radio (reti cellulari)
+
+Le reti cellulari forniscono accesso Internet tramite collegamenti radio.
+
+Tecnologie principali:  
+4G LTE
+5G NR
+
+Sono utilizzate spesso come:
+connessione primaria in zone isolate  
+linea di backup aziendale  
+connessione temporanea.  
+
+---
+
+# 3. Architetture di accesso alla rete
+
+Questa classificazione descrive **dove arriva la fibra o la rete dell’operatore**.
+
+---
+
+## 3.1 FTTC – Fiber To The Cabinet
+
+La fibra arriva fino all’armadio stradale.  
+L’ultimo tratto verso l’abitazione utilizza il doppino in rame.  
+
+Tecnologia tipica:  
+VDSL o VDSL2.
+
+Prestazioni realistiche:  
+download 30–200 Mbit/s
+upload 10–30 Mbit/s
+
+Caratteristica importante:  
+la velocità dipende dalla distanza dall’armadio.  
+Il tratto in rame rappresenta un collo di bottiglia.  
+
+---
+
+## 3.2 FTTH – Fiber To The Home
+
+La fibra ottica arriva direttamente all’abitazione o all’ufficio.
+
+Non esiste tratto finale in rame.  
+
+Prestazioni tipiche:  
+300 Mbit/s  
+1 Gbit/s  
+velocità superiori con nuove tecnologie  
+
+Caratteristiche:  
+- latenza molto bassa  
+- alta stabilità  
+- prestazioni indipendenti dalla distanza urbana  
+
+Applicazioni tipiche:  
+- streaming  
+- smart working  
+- gaming online  
+- trasferimento file pesanti  
+- uso simultaneo di molti dispositivi  
+
+---
+
+## 3.3 FTTO – Fiber To The Office
+
+È una variante dell’FTTH applicata alle aziende.
+
+La fibra arriva direttamente alla sede aziendale.
+
+Spesso viene utilizzata per:
+
+linee dedicate
+leased line
+collegamenti con banda garantita.
+
+---
+
+## 3.4 Architettura HFC
+
+Hybrid Fiber Coaxial.
+
+Utilizzata nelle reti DOCSIS.
 
 Struttura:
 
-* fibra fino all’armadio stradale
-* ultimo tratto in rame fino all’abitazione
-
-Tecnologia tipica:
-
-* VDSL o VDSL2 sull’ultimo tratto
-
-Prestazioni realistiche:
-
-* download: 30–200 Mbit/s (dipende dalla distanza dall’armadio)
-* upload: 10–30 Mbit/s
-* latenza inferiore all’ADSL ma superiore alla FTTH
-
-Fattore critico:
-
-* più si è lontani dall’armadio, più la velocità diminuisce
-* il tratto in rame resta un collo di bottiglia
-
-Quando ha senso:
-
-* aree dove non è disponibile la fibra completa
-* buon compromesso tra costo e prestazioni
+fibra fino a nodi di distribuzione
+coassiale fino agli utenti.
 
 ---
 
-## 4. FTTH (Fiber To The Home)
+# 4. Tecnologie utilizzate sulle reti in fibra
 
-Struttura:
+Quando la fibra arriva fino all’utente (FTTH o FTTO) devono essere utilizzate tecnologie specifiche per condividere la rete.
 
-* fibra ottica fino all’interno dell’abitazione
-* nessun tratto finale in rame
-
-Prestazioni tipiche:
-
-* download: 300 Mbit/s, 1 Gbit/s o superiore
-* upload: spesso 100 Mbit/s – 1 Gbit/s
-* latenza molto bassa
-
-Caratteristica importante:
-
-* le prestazioni non dipendono in modo significativo dalla distanza urbana
-* maggiore stabilità nel tempo
-
-Quando ha senso:
-
-* streaming ad alta definizione
-* smart working
-* gaming online
-* trasferimento di file di grandi dimensioni
-* utilizzo simultaneo da parte di più dispositivi
+Le principali appartengono alla famiglia **PON (Passive Optical Network)** oppure alle reti **punto-punto Ethernet**.
 
 ---
 
-## 5. Confronto sintetico delle prestazioni
+## 4.1 GPON
 
-ADSL:
+GPON significa Gigabit Passive Optical Network.
 
-* velocità bassa
-* upload molto limitato
-* latenza più alta
+È la tecnologia FTTH più diffusa.
 
-FTTC:
+Caratteristiche principali:  
+- rete ottica passiva condivisa
+- assenza di apparati alimentati tra centrale e utenti
+- utilizzo di splitter ottici passivi
 
-* velocità medio-alta
-* dipende dalla distanza dall’armadio
-* buon compromesso
+Una singola fibra viene suddivisa tra più utenti.
 
-FTTH:
+Componenti principali:
+- OLT nella centrale operatore  
+- splitter ottici  
+- ONT presso il cliente  
 
-* velocità molto alta
-* upload elevato
-* latenza bassa
-* soluzione più performante disponibile oggi
+Velocità teoriche:  
+- 2.5 Gbit/s downstream  
+- 1.25 Gbit/s upstream  
 
----
-
-## Conclusione
-
-ADSL è una tecnologia su rame con limiti strutturali.
-FTTC migliora le prestazioni ma mantiene un tratto in rame.
-FTTH elimina il rame e rappresenta la soluzione più veloce, stabile e adatta alle esigenze moderne.
-
-
-<hr/>  
-
-# Connettività Internet aziendale in Europa – Tecnologie di accesso  
-<br/>
-<br/>
-
-La connettività aziendale europea si basa principalmente su: **linee dedicate in fibra (FTTO / leased line)**, **FTTH/GPON**, **VDSL (FTTC)**, **DOCSIS**, e soluzioni **4G/5G business**.
-La scelta dipende da budget, necessità di banda simmetrica, SLA e continuità operativa.
+La banda è condivisa tra gli utenti dello stesso ramo.
 
 ---
 
-# 1. Linee dedicate in fibra (FTTO / Leased Line)
+## 4.2 XGS-PON
 
-Questa è la soluzione tipicamente enterprise.
+Evoluzione di GPON.
 
-## FTTO (Fiber To The Office)
+Velocità:  
+- 10 Gbit/s downstream
+- 10 Gbit/s upstream
 
-Fibra dedicata fino alla sede aziendale.
+Architettura identica a GPON.
 
-### Velocità tipiche
+Viene utilizzata per:  
+- connessioni FTTH di nuova generazione  
+- servizi business ad alta banda.  
 
-* 100 Mbps simmetrici
-* 1 Gbps simmetrico
-* 10 Gbps su richiesta
-
-## Leased Line / Fibra dedicata L2/L3
-
-Collegamento punto-punto o accesso Internet con banda garantita.
-
-### Velocità tipiche
-
-* 10 Mbps – 10 Gbps simmetrici
-* Banda garantita 100%
-* SLA elevati (99.9%–99.99%)
-
-### Caratteristiche
-
-* Banda simmetrica
-* IP pubblici statici
-* Bassa latenza
-* SLA contrattuale
-* Monitoraggio H24
-
-### Casi d’uso
-
-* Data center
-* Sedi corporate
-* Server esposti pubblicamente
-* VPN site-to-site critiche
-* VoIP enterprise
-* Applicazioni finanziarie o industriali
-
-### Differenza chiave rispetto FTTH
-
-* FTTH = banda condivisa, best effort
-* Leased line = banda dedicata, garantita, simmetrica
 
 ---
 
-# 2. FTTH – GPON (fibra fino alla sede)
+## 4.3 EPON
 
-### Tecnologia
+Ethernet Passive Optical Network.
 
-Fibra ottica passiva fino all’edificio aziendale.
+Standard IEEE 802.3ah.
 
-### Velocità tipiche (Europa 2024–2026)
+Caratteristiche:
 
-* 1 Gbps download / 300–1000 Mbps upload
-* 2.5 Gbps su offerte business avanzate
-* Latenza molto bassa (<10 ms verso rete ISP)
+trasporto diretto di frame Ethernet
+diffusione maggiore in Asia
 
-### Casi d’uso
+Velocità tipiche:
 
-* PMI moderne
-* Aziende cloud-centric
-* Backup remoto
-* VPN e smart working
-* Videoconferenze intensive
-
-### Caratteristiche
-
-* Alta stabilità
-* Banda elevata
-* Upload adeguato ma spesso asimmetrico
+circa 1 Gbit/s.
 
 ---
 
-# 3. VDSL – FTTC (rame ultimo tratto)
+## 4.4 10G-EPON
 
-### Tecnologia
+Evoluzione di EPON.
 
-Fibra fino all’armadio stradale, ultimo tratto su rame.
+Velocità:
 
-### Velocità tipiche
+fino a 10 Gbit/s.
 
-* 50–200 Mbps download
-* 10–30 Mbps upload
-* Latenza 15–30 ms tipica
-
-### Casi d’uso
-
-* Piccoli studi professionali
-* Uffici in zone non raggiunte da FTTH
-* Linea secondaria di backup
-
-### Limiti
-
-* Prestazioni dipendenti dalla distanza
-* Upload limitato
+Mantiene l’architettura PON condivisa.
 
 ---
 
-# 4. DOCSIS – rete via cavo (HFC)  
-Diffuso in USA,presente e operativo in Europa, ma meno rispetto agli Stati Uniti, in progressiva sostituzione con FTTH, adatto a PMI urbane con traffico prevalentemente in download
+## 4.5 Active Ethernet
 
-### Tecnologia
+Tecnologia alternativa alle PON.
 
-Fibra + coassiale (Hybrid Fiber Coaxial).
+Caratteristiche:
 
-### Velocità tipiche
+fibra dedicata per ogni utente
+presenza di switch attivi nella rete
+banda non condivisa
 
-* 300 Mbps – 1 Gbps download
-* 20–100 Mbps upload
-* Banda condivisa tra utenti dello stesso nodo
+Velocità tipiche:
 
-### Casi d’uso
+1 Gbit/s
+10 Gbit/s
 
-* PMI urbane
-* Studi con traffico prevalentemente in download
-* Soluzione alternativa a FTTC
+È utilizzata spesso in:
 
-### Limiti
+reti aziendali
+reti metropolitane
+alcune implementazioni FTTH.
 
-* Upload asimmetrico
-* Prestazioni variabili in ore di punta
+---   
+## 4.6 Confronto tra tecnologie ottiche
 
----
+Tecnologia | Tipo rete | Velocità
+--- | --- | ---
+GPON | PON condivisa | 2.5 / 1.25 Gbit/s
+XGS-PON | PON condivisa | 10 / 10 Gbit/s
+EPON | PON condivisa | 1 Gbit/s
+10G-EPON | PON condivisa | 10 Gbit/s
+Active Ethernet | punto-punto | 1–10 Gbit/s
 
-# 5. 4G / 5G Business
-
-### Tecnologia
-
-Accesso radio mobile tramite rete cellulare LTE (4G) o NR (5G).
-
-### Velocità tipiche
-
-* 4G: 30–150 Mbps download / 10–50 Mbps upload
-* 5G: 100 Mbps – 1 Gbps download / 50–200 Mbps upload
-* Latenza variabile (10–40 ms in 5G buone condizioni)
-
-### Caratteristiche
-
-* Installazione rapida
-* Nessuna posa di cavi
-* Prestazioni dipendenti da copertura e congestione radio
-
-### Casi d’uso
-
-* Linea di backup (failover)
-* Sedi temporanee
-* Cantieri, eventi
-* Piccole filiali
-* Ridondanza per continuità operativa
 
 ---
 
-# Confronto sintetico
+# 5. Dispositivi nelle reti in fibra
 
-| Tecnologia         | Banda       | Simmetria | SLA         | Uso tipico           |
-| ------------------ | ----------- | --------- | ----------- | -------------------- |
-| FTTO / Leased line | Molto alta  | Sì        | Alto        | Aziende enterprise   |
-| FTTH GPON          | Alta        | Parziale  | Medio       | PMI                  |
-| VDSL               | Media-bassa | No        | Basso       | Piccoli uffici       |
-| DOCSIS             | Media-alta  | No        | Medio       | PMI urbane           |
-| 4G/5G              | Variabile   | Parziale  | Basso-Medio | Backup / sedi mobili |
+## 5.1 OLT
+
+Optical Line Terminal.
+
+È il dispositivo presente nella centrale dell’operatore che gestisce la rete GPON.
 
 ---
 
-# Considerazioni progettuali
+## 5.2 ONT
 
-In Europa, scenario tipico aziendale:
+Optical Network Terminal.
 
-* PMI → FTTH + linea secondaria 4G/5G
-* Azienda medio-grande → Leased line primaria + FTTH backup
-* Enterprise multi-sede → MPLS o SD-WAN su linee dedicate
+Dispositivo installato presso il cliente.
 
-La scelta della tecnologia influisce direttamente su:
+Funzione:  
+- terminare la fibra ottica  
+- convertire il segnale ottico in Ethernet.  
 
-* continuità operativa
-* qualità servizi cloud
-* latenza applicativa
-* resilienza infrastrutturale
+Schema tipico:  
+- operatore  
+- OLT  
+- rete GPON  
+- splitter ottici  
+- ONT presso cliente  
+- router o firewall locale  
+
+L’ONT può essere:  
+- dispositivo separato  
+- integrato nel modem/router.
+
+
+---
+
+## 5.3 ONU
+
+Optical Network Unit.
+
+Termine più generico. Spesso usato come sinonimo di ONT.
+
+Storicamente:  
+- ONU = dispositivo generico
+- ONT = terminale utente finale.
+  
+
+---
+
+## 5.4 Terminologia utilizzata dagli operatori
+  
+Termine | Significato
+--- | ---
+FTTH / GPON | ONT
+FTTB / GPON | ONT o ONU
+fibra punto-punto | NTU
+terminologia generica | CPE (Customer Premises Equipment)
+
+---
+
+# 6. Soluzioni di connettività aziendale
+
+Le aziende utilizzano diverse tecnologie di accesso a seconda delle esigenze.
+
+---
+
+## 6.1 Linee dedicate in fibra (FTTO / leased line)
+
+Soluzione tipicamente enterprise.
+
+Caratteristiche:  
+- banda simmetrica
+- banda garantita  
+- IP pubblici statici  
+- SLA contrattuali elevati  
+
+Velocità tipiche:  
+- 100 Mbps
+- 1 Gbps  
+- 10 Gbps  
+
+Utilizzi:  
+- data center  
+- sedi corporate  
+- VPN site-to-site  
+- VoIP enterprise  
+- applicazioni critiche  
+
+Differenza principale rispetto FTTH:  
+- FTTH → banda condivisa  
+- leased line → banda dedicata.  
+
+---
+
+## 6.2 FTTH business (GPON)
+
+Molte aziende utilizzano FTTH anche per attività professionali.
+
+Velocità tipiche:
+
+1 Gbit/s download
+300–1000 Mbps upload
+
+Caratteristiche:
+
+alta banda
+latenza bassa
+costo relativamente contenuto.
+
+Utilizzi:
+
+PMI
+cloud computing
+backup remoto
+smart working.
+
+---
+
+## 6.3 VDSL (FTTC)
+
+Ancora utilizzata dove la fibra completa non è disponibile.
+
+Velocità tipiche:
+
+50–200 Mbps download
+10–30 Mbps upload.
+
+Utilizzi:
+
+piccoli uffici
+linee secondarie.
+
+---
+
+## 6.4 DOCSIS
+
+Tecnologia Internet su rete via cavo.
+
+Velocità tipiche:
+
+300 Mbps – 1 Gbps download
+20–100 Mbps upload
+
+Banda condivisa tra utenti dello stesso nodo.
+
+---
+
+## 6.5 4G / 5G business
+
+Accesso Internet tramite rete cellulare.
+
+Velocità tipiche:
+
+4G:
+
+30–150 Mbps download
+
+5G:
+
+100 Mbps – 1 Gbps download.
+
+Utilizzi principali:
+
+backup automatico
+sedi temporanee
+cantieri
+ridondanza di rete.
+
+---
+
+# 7. Confronto tra principali soluzioni di accesso
+
+Tecnologia | Banda | Simmetria | SLA | Uso tipico
+FTTO / leased line | molto alta | sì | alto | aziende enterprise
+FTTH GPON | alta | parziale | medio | PMI
+VDSL | media | no | basso | piccoli uffici
+DOCSIS | medio-alta | no | medio | PMI urbane
+4G/5G | variabile | parziale | basso | backup
+
+---
+
+# 8. Considerazioni progettuali
+
+Scenario tipico in Europa:
+
+PMI
+FTTH primaria
+backup 4G/5G
+
+azienda medio-grande
+leased line primaria
+FTTH backup
+
+enterprise multi-sede
+MPLS o SD-WAN su linee dedicate.
+
+La scelta della tecnologia influenza:
+
+continuità operativa
+latenza applicativa
+prestazioni cloud
+resilienza della rete.
+
+---
+
+Questa struttura elimina quasi tutte le duplicazioni perché:
+
+GPON è spiegato una sola volta
+FTTH è trattato prima come architettura e poi come servizio
+FTTC compare una sola volta
+le tecnologie ottiche sono raggruppate
+le soluzioni aziendali sono separate dal livello tecnologico
+
+e rende esplicita la gerarchia concettuale:
+
+mezzo fisico → architettura → tecnologia → dispositivi → servizi → progettazione.

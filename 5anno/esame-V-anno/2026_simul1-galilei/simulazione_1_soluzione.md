@@ -1,375 +1,463 @@
 ## Soluzione
 
-### 1. Analisi iniziale e logica generale di progetto
-
-La traccia descrive una struttura alberghiera con  
-- 52 camere,  
-- quattro sale convegni,  
-- ristorante,  
-- piscina,  
-- sei colonnine di ricarica, 
-- uffici con sette postazioni,  
-- server gestionale *interno*,  
-- server web esposto su Internet, 
-- Wi-Fi differenziato per 
-    - ospiti, 
-    - dipendenti e 
-    - partecipanti ai convegni, oltre allo 
-- stabilimento balneare collegato funzionalmente all’hotel.  
-
-Quindi la prima esigenza è evitare una rete unica e piatta.  
-Serve invece una rete **segmentata**, con **separazione logica** dei vari tipi di utenti e servizi, così da migliorare sicurezza, gestione e prestazioni. 
-
-La logica seguita è questa:
-
-1. separare le reti tramite VLAN;
-2. usare un firewall/UTM come punto centrale di controllo;
-3. mettere in DMZ il server web pubblico;
-4. tenere il gestionale nella rete interna;
-5. collocare anche il server RDBMS nella stessa DMZ del web server, ma senza pubblicarlo su Internet;
-6. consentire al database connessioni solo dal WEB server;
-7. collegare lo stabilimento con un link dedicato e sicuro;
-8. consentire agli ospiti Internet ma non accesso alla LAN interna.
-
-Questa deriva dal fatto che la traccia richiede  
-- esplicitamente funzionamento in sicurezza e  
-- separazione fra ospiti, uffici, servizi e sale convegni.  
-
-
-### 2. Architettura di rete proposta
-
-Si ipotizza una struttura con:
-
-* accesso Internet FTTH lato hotel;
-* firewall/UTM centrale;
-* core switch gestito;
-* access switch gestiti e, dove utile, PoE;
-* access point gestiti con SSID distinti;
-* DMZ unica;
-* server gestionale in rete interna;
-* collegamento radio punto-punto verso stabilimento;
-* eventuale autenticazione centralizzata Wi-Fi.
-
-La scelta del firewall/UTM come nodo centrale è motivata dal fatto che deve svolgere molte funzioni:
-
-* filtraggio tra VLAN;
-* NAT verso Internet;
-* pubblicazione del server web;
-* blocco dell’accesso diretto al DB;
-* logging;
-* eventuale VPN futura;
-* eventuale captive portal o integrazione AAA/RADIUS.
-
-Una semplice soluzione con solo router del provider e switch non sarebbe sufficiente, perché offrirebbe protezione e controllo troppo limitati.
-
-### 3. DMZ scelta e motivazione
-
-La DMZ scelta è una DMZ unica collegata al firewall. In questa DMZ si trovano:
-
-* il WEB server, accessibile da Internet;
-* il server RDBMS, non accessibile da Internet.
-
-Questa soluzione è meno complessa di una DMZ con due firewalls (l'altra tipologia delle due), ma resta sicura se si applicano regole corrette.
-
-Le regole essenziali sono:
-
-* Internet -> WEB server: consentito solo su 80 e 443;
-* Internet -> RDBMS: negato;
-* WEB server -> RDBMS: solo tramite la porta del database (es. 3306/5432), restrizione realizzata tramite configurazione del DBMS o firewall host-based (locale all'host del RDBMS).  
-* LAN interna -> RDBMS: negato, salvo amministrazione controllata;
-* DMZ -> LAN interna: negato salvo servizi strettamente necessari;
-* LAN interna -> DMZ: consentito solo per amministrazione o backup autorizzati.
-
-Notare che il DBMS può stare ed è nella stessa DMZ del WEB server, ma  
-- non deve essere pubblicato e  
-- non deve accettare connessioni da host diversi dal WEB server.  
-
-
-### 4. Diagramma testuale completo della rete
-
-```
-INTERNET
-    |
-[ONT / CPE FTTH]
-    |
-[FIREWALL / UTM]
-  |            \
-  |             \
-  |              \------ DMZ 10.10.70.0/24
-  |                         |
-  |                         +--- WEB SERVER      10.10.70.10
-  |                         |
-  |                         +--- RDBMS SERVER    10.10.70.20
-  |
-  +------ [CORE SWITCH gestito, trunk 802.1Q]
-              |
-              +--- VLAN 10: UFFICI         10.10.10.0/24
-              |      |
-              |      +--- PC reception
-              |      +--- PC direzione
-              |      +--- PC uffici
-              |      +--- Stampante di rete
-              |
-              +--- VLAN 20: SERVIZI        10.10.20.0/24
-              |      |
-              |      +--- Server gestionale   10.10.20.10
-              |      +--- NAS / backup
-              |      +--- Controller Wi-Fi / RADIUS
-              |
-              +--- VLAN 30: CONVEGNI       10.10.30.0/24
-              |      |
-              |      +--- AP sale convegni
-              |      +--- client convegni
-              |
-              +--- VLAN 40: OSPITI HOTEL   10.10.40.0/24
-              |      |
-              |      +--- AP camere / hall / ristorante
-              |      +--- SmartTV e dispositivi ospiti
-              |
-              +--- VLAN 60: COLONNINE EV   10.10.60.0/24
-              |      |
-              |      +--- colonnina 1..6
-              |
-              +--- VLAN 80: MANAGEMENT     10.10.80.0/24
-                     |
-                     +--- switch management
-                     +--- AP management
-                     +--- console amministrazione
-```
-
-Dal core switch parte anche il collegamento verso lo stabilimento:
-
-```
-[CORE SWITCH HOTEL]
-     |
-[Bridge radio PTP (point to point) A]
-     ))))))))) 500 m LOS (Line of Sight) (((((((( 
-[Bridge radio PTP (point to point) B]
-     |
-[Switch stabilimento]
-  |
-  +--- VLAN 90 STAFF STABILIMENTO   10.10.90.0/24
-  |      |
-  |      +--- PC cassa / bar / personale
-  |
-  +--- VLAN 50 OSPITI SPIAGGIA      10.10.50.0/24
-         |
-         +--- AP spiaggia
-         +--- dispositivi ospiti
-```
-
-### 5. PlantUML completo della rete
-
-```
-@startuml
-left to right direction
-skinparam shadowing false
-skinparam defaultTextAlignment center
-skinparam linetype ortho
-skinparam roundcorner 18
-
-cloud "Internet" as INTERNET
-node "ONT / CPE FTTH" as ONT
-node "Firewall / UTM\nWAN - LAN - DMZ" as FW
-
-rectangle "DMZ\n10.10.70.0/24" as DMZ {
-    node "WEB Server\n10.10.70.10" as WEB
-    database "RDBMS Server\n10.10.70.20" as DB
-}
-
-package "LAN Hotel" as LAN {
-    node "Core Switch\ntrunk 802.1Q" as CORE
-
-    rectangle "VLAN 10 - UFFICI\n10.10.10.0/24" as VLAN10 {
-        node "PC uffici"
-        node "Stampante di rete"
-    }
-
-    rectangle "VLAN 20 - SERVIZI\n10.10.20.0/24" as VLAN20 {
-        database "Server Gestionale\n10.10.20.10" as GEST
-        node "NAS / Backup"
-        node "Controller Wi-Fi / RADIUS"
-    }
-
-    rectangle "VLAN 30 - CONVEGNI\n10.10.30.0/24" as VLAN30 {
-        node "AP sale convegni"
-        node "Client convegni"
-    }
-
-    rectangle "VLAN 40 - OSPITI HOTEL\n10.10.40.0/24" as VLAN40 {
-        node "AP camere / hall"
-        node "Client ospiti hotel"
-    }
-
-    rectangle "VLAN 60 - COLONNINE EV\n10.10.60.0/24" as VLAN60 {
-        node "Colonnine 1..6"
-    }
-
-    rectangle "VLAN 80 - MANAGEMENT\n10.10.80.0/24" as VLAN80 {
-        node "Console amministrazione"
-    }
-}
-
-folder "Collegamento PTP 500 m" as LINK {
-    node "Bridge radio A" as RA
-    node "Bridge radio B" as RB
-}
-
-package "Stabilimento balneare" as BEACH {
-    node "Switch stabilimento" as BSW
-
-    rectangle "VLAN 90 - STAFF\n10.10.90.0/24" as VLAN90 {
-        node "PC cassa / bar"
-    }
-
-    rectangle "VLAN 50 - OSPITI SPIAGGIA\n10.10.50.0/24" as VLAN50 {
-        node "AP spiaggia"
-        node "Client spiaggia"
-    }
-}
-
-INTERNET -- ONT
-ONT -- FW
-FW -- WEB : 80/443
-WEB -- DB : porta DBMS
-FW -- CORE
-CORE -- VLAN10
-CORE -- VLAN20
-CORE -- VLAN30
-CORE -- VLAN40
-CORE -- VLAN60
-CORE -- VLAN80
-CORE -- RA
-RA -- RB
-RB -- BSW
-BSW -- VLAN90
-BSW -- VLAN50
-
-note top of FW
-Regole:
-Internet -> WEB consentito
-Internet -> DB negato
-Guest -> LAN negato
-Staff stabilimento -> gestionale consentito
-end note
-
-note right of DB
-DB non pubblicato.
-Accesso solo dal WEB server.
-end note
-@enduml
-```
-
-### 6. Apparati necessari
-
-Gli apparati necessari sono:
-
-* ONT/CPE FTTH del provider;
-* firewall/UTM con almeno tre interfacce logiche o fisiche;
-* core switch gestito;
-* access switch gestiti;
-* access point gestiti;
-* server gestionale interno;
-* WEB server in DMZ;
-* RDBMS server in DMZ;
-* NAS o sistema di backup;
-* controller Wi-Fi e/o server RADIUS;
-* due bridge radio punto-punto per il collegamento allo stabilimento;
-* switch gestito presso lo stabilimento;
-* UPS per gli apparati principali.
-
-### 7. Piano di indirizzamento
-
-Per semplicità e chiarezza si usa una sottorete /24 per ogni segmento logico. In un compito scritto è una scelta leggibile, ordinata e facilmente espandibile.
-
-```
-VLAN 10   UFFICI               10.10.10.0/24    gateway 10.10.10.1
-VLAN 20   SERVIZI INTERNI      10.10.20.0/24    gateway 10.10.20.1
-VLAN 30   CONVEGNI             10.10.30.0/24    gateway 10.10.30.1
-VLAN 40   OSPITI HOTEL         10.10.40.0/24    gateway 10.10.40.1
-VLAN 50   OSPITI SPIAGGIA      10.10.50.0/24    gateway 10.10.50.1
-VLAN 60   COLONNINE EV         10.10.60.0/24    gateway 10.10.60.1
-VLAN 70   DMZ                  10.10.70.0/24    gateway 10.10.70.1
-VLAN 80   MANAGEMENT           10.10.80.0/24    gateway 10.10.80.1
-VLAN 90   STAFF STABILIMENTO   10.10.90.0/24    gateway 10.10.90.1
-```
-
-Assegnazioni significative:
-
-```
-WEB server            10.10.70.10
-RDBMS server          10.10.70.20
-Server gestionale     10.10.20.10
-Controller Wi-Fi      10.10.20.30
-```
-
-### 8. Motivazione delle scelte di indirizzamento e segmentazione
-
-Ho scelto reti diverse per ospiti, uffici, servizi, convegni e colonnine perché la traccia richiede esplicitamente tale separazione.  
-- La VLAN ospiti hotel e la VLAN ospiti spiaggia devono poter accedere a Internet ma non alla rete interna.  
-- La VLAN uffici e la VLAN servizi devono poter usare il gestionale.  
-- La VLAN convegni deve avere accesso separato per i partecipanti agli eventi.  
-- Le colonnine vanno isolate, perché sono dispositivi dedicati che non devono dialogare liberamente con tutto il resto della rete.  
-
-
-### 9. Regole firewall principali
-
-Le regole più importanti sono:
-
-* Internet -> WEB server: consentire solo TCP 80 e 443;
-* Internet -> RDBMS: negare;
-* Internet -> LAN interna: negare;
-* **NON FIREWALL PRINCIPALE** WEB server -> RDBMS: consentire solo sulla porta del DBMS;
-* VLAN ospiti hotel -> Internet: consentire;
-* VLAN ospiti hotel -> LAN interna: negare;
-* VLAN ospiti spiaggia -> Internet: consentire;
-* VLAN ospiti spiaggia -> LAN interna: negare;
-* VLAN staff stabilimento -> server gestionale: consentire;
-* VLAN management -> apparati di rete: consentire;
-* VLAN colonnine -> solo servizi web/applicativi autorizzati: consentire.
-
-### 10. Collegamento tra hotel e stabilimento: confronto soluzioni
-
-La traccia precisa che lo stabilimento è visibile dalla terrazza e dista 500 metri. Inoltre entrambe le sedi possono avere FTTH. Quindi le soluzioni principali sono due. 
-
-#### Soluzione A: ponte radio punto-punto
-
-Vantaggi:
-
-* molto adatto a 500 m con visibilità ottica;
-* alte prestazioni;
-* costo operativo ridotto;
-* gestione centralizzata dell’accesso.
-
-Limiti:
-
-* richiede installazione esterna;
-* dipende dalla qualità del link radio;
-* richiede allineamento e manutenzione.
-
-#### Soluzione B: doppia FTTH + VPN site-to-site
-
-Vantaggi:
-
-* ogni sede ha autonomia Internet;
-* architettura più flessibile;
-* riduce la dipendenza da un unico link fisico tra sedi.
-
-Limiti:
-
-* costi maggiori;
-* maggiore complessità;
-* richiede VPN permanente.
-
-### 11. Scelta effettuata per il collegamento
-
-La soluzione preferenziale è il ponte radio punto-punto cifrato, perché la distanza è ridotta e la visibilità ottica è già dichiarata. È la scelta più naturale, quasi suggerita dalla traccia, più economica. Lo switch dello stabilimento distribuirà poi due reti separate:
-
-* VLAN 90 per il personale;
-* VLAN 50 per gli ospiti della spiaggia.
-
-Il personale dello stabilimento deve poter consultare il software gestionale dell’albergo.  
-Gli ospiti della spiaggia devono usare Internet con modalità di identificazione analoghe a quelle dell’hotel. 
+### Architettura di rete: apparati, funzioni e collegamenti
+
+Questa sezione descrive **in modo preciso e completo** il funzionamento della rete, specificando apparati, routing, DHCP, trunk 802.1Q e collegamenti tra i dispositivi.
+
+---
+
+## 1. Struttura generale della rete
+
+La rete dell’hotel è organizzata in tre zone principali:
+
+* **WAN (Internet)**
+* **DMZ**
+* **LAN interna segmentata in VLAN**
+
+Il dispositivo centrale è il **firewall/UTM**, che svolge le seguenti funzioni:
+
+* routing tra le VLAN
+* NAT verso Internet
+* server DHCP
+* filtraggio del traffico
+* pubblicazione del web server
+* isolamento della DMZ
+* logging e controllo degli accessi
+
+Topologia semplificata:
+
+Internet
+→ ONT/CPE FTTH
+→ Firewall/UTM
+→ Core switch gestito
+→ Access switch / Access Point / Bridge radio
+
+---
+
+# 2. Apparati di rete
+
+### Apparati lato hotel
+
+1. **ONT / CPE FTTH del provider**
+
+Funzione:
+
+* terminazione della linea FTTH
+* conversione fibra → Ethernet
+
+Collegamento:
+
+ONT → porta WAN firewall
+
+---
+
+2. **Firewall / UTM**
+
+Il firewall è il nodo centrale della rete.
+
+Funzioni principali:
+
+* routing inter-VLAN
+* NAT verso Internet
+* server DHCP
+* filtraggio del traffico
+* gestione DMZ
+* VPN futura
+* logging
+
+Interfacce configurate:
+
+WAN
+collegata all’ONT
+
+LAN trunk
+collegata al core switch con **802.1Q**
+
+DMZ
+rete separata per i server esposti
+
+---
+
+3. **Core Switch gestito (Layer 2)**
+
+Funzioni:
+
+* distribuzione delle VLAN
+* trunk verso access switch
+* trunk verso firewall
+* trunk verso bridge radio
+
+Il core switch **non esegue routing** perché il routing è svolto dal firewall.
+
+Collegamenti principali:
+
+* trunk 802.1Q verso firewall
+* trunk 802.1Q verso access switch
+* trunk 802.1Q verso access point
+* trunk 802.1Q verso ponte radio
+
+---
+
+4. **Access Switch gestiti**
+
+Funzioni:
+
+* collegamento delle prese LAN delle camere
+* collegamento dei PC degli uffici
+* collegamento degli access point
+* collegamento delle colonnine di ricarica
+
+Tipologia porte:
+
+porte access (untagged) per host finali
+
+porte trunk per uplink verso core switch.
+
+---
+
+5. **Access Point**
+
+Gli access point supportano più SSID.
+
+Ogni SSID è associato a una VLAN.
+
+Collegamento:
+
+switch → AP tramite porta trunk 802.1Q.
+
+---
+
+6. **Bridge radio punto-punto**
+
+Due apparati radio collegano hotel e stabilimento.
+
+Funzione:
+
+* trasporto Layer 2 delle VLAN
+* collegamento trasparente tra le due sedi
+
+Il link radio trasporta **due VLAN**:
+
+* VLAN ospiti spiaggia
+* VLAN staff stabilimento
+
+---
+
+7. **Switch stabilimento balneare**
+
+Funzioni:
+
+* distribuzione delle VLAN locali
+* collegamento access point spiaggia
+* collegamento PC del personale
+
+---
+
+# 3. Segmentazione VLAN
+
+Le VLAN configurate sono:
+
+| VLAN | Funzione           | Rete          |
+| ---- | ------------------ | ------------- |
+| 10   | Uffici             | 10.10.10.0/24 |
+| 20   | Servizi interni    | 10.10.20.0/24 |
+| 30   | Convegni           | 10.10.30.0/24 |
+| 40   | Ospiti hotel       | 10.10.40.0/24 |
+| 50   | Ospiti spiaggia    | 10.10.50.0/24 |
+| 60   | Colonnine ricarica | 10.10.60.0/24 |
+| 70   | DMZ                | 10.10.70.0/24 |
+| 80   | Management         | 10.10.80.0/24 |
+| 90   | Staff stabilimento | 10.10.90.0/24 |
+
+---
+
+# 4. Routing tra le reti
+
+Il **routing tra VLAN è svolto dal firewall**.
+
+Il firewall dispone di subinterfacce VLAN sulla porta LAN trunk.
+
+Esempio configurazione logica:
+
+interfaccia LAN.10
+IP 10.10.10.1
+
+interfaccia LAN.20
+IP 10.10.20.1
+
+interfaccia LAN.30
+IP 10.10.30.1
+
+interfaccia LAN.40
+IP 10.10.40.1
+
+interfaccia LAN.50
+IP 10.10.50.1
+
+interfaccia LAN.60
+IP 10.10.60.1
+
+interfaccia LAN.80
+IP 10.10.80.1
+
+interfaccia LAN.90
+IP 10.10.90.1
+
+interfaccia DMZ
+IP 10.10.70.1
+
+Ogni subnet utilizza l’indirizzo .1 come **default gateway**.
+
+---
+
+# 5. Server DHCP
+
+Il servizio DHCP è fornito dal firewall.
+
+Per ogni VLAN viene configurato uno **scope DHCP separato**.
+
+Esempio.
+
+VLAN 10 UFFICI
+
+range DHCP
+10.10.10.50 – 10.10.10.200
+
+gateway
+10.10.10.1
+
+DNS
+server DNS pubblico o interno.
+
+---
+
+VLAN 40 OSPITI HOTEL
+
+range DHCP
+10.10.40.50 – 10.10.40.250
+
+gateway
+10.10.40.1
+
+DNS
+DNS pubblico o DNS filtrato.
+
+---
+
+VLAN 50 OSPITI SPIAGGIA
+
+range DHCP
+10.10.50.50 – 10.10.50.250
+
+gateway
+10.10.50.1
+
+---
+
+Le reti server e management utilizzano invece **indirizzi statici**.
+
+---
+
+# 6. Configurazione trunk 802.1Q
+
+Le tratte trunk sono le seguenti.
+
+Firewall ↔ Core Switch
+
+porta trunk 802.1Q
+trasporta VLAN:
+
+10
+20
+30
+40
+50
+60
+80
+90
+
+La DMZ è su interfaccia separata.
+
+---
+
+Core Switch ↔ Access Switch
+
+porta trunk 802.1Q
+
+trasporta VLAN:
+
+10
+20
+30
+40
+60
+80
+
+---
+
+Switch ↔ Access Point
+
+porta trunk 802.1Q
+
+trasporta VLAN:
+
+30 (convegni)
+40 (ospiti hotel)
+10 o 20 (dipendenti)
+
+---
+
+Core Switch ↔ Bridge radio
+
+porta trunk 802.1Q
+
+trasporta VLAN:
+
+50 ospiti spiaggia
+90 staff stabilimento
+
+---
+
+Bridge radio ↔ Switch stabilimento
+
+porta trunk 802.1Q
+
+trasporta VLAN:
+
+50
+90
+
+---
+
+# 7. Configurazione porte access
+
+Le porte verso host finali sono porte access.
+
+Esempi.
+
+PC uffici
+VLAN 10
+
+server gestionale
+VLAN 20
+
+colonnine EV
+VLAN 60
+
+PC stabilimento
+VLAN 90
+
+---
+
+# 8. Pubblicazione del web server
+
+Il firewall esegue NAT.
+
+IP pubblico → WEB server.
+
+Esempio.
+
+203.0.113.10:80
+→ 10.10.70.10:80
+
+203.0.113.10:443
+→ 10.10.70.10:443
+
+---
+
+# 9. Comunicazione WEB server – DBMS
+
+Il DBMS non è pubblicato.
+
+Regola firewall:
+
+WEB server → DBMS
+
+porta database.
+
+Esempio:
+
+10.10.70.10 → 10.10.70.20
+porta TCP 3306
+
+Tutte le altre connessioni verso il DBMS sono bloccate.
+
+---
+
+# 10. Politiche di sicurezza
+
+Principali regole firewall.
+
+Internet → WEB server
+consentito su 80 e 443
+
+Internet → DBMS
+negato
+
+Guest VLAN → LAN interna
+negato
+
+Guest VLAN → Internet
+consentito
+
+Staff stabilimento → server gestionale
+consentito
+
+DMZ → LAN interna
+negato
+
+Management → apparati di rete
+consentito
+
+---
+
+# 11. Collegamento con lo stabilimento
+
+Il collegamento è realizzato tramite **ponte radio punto-punto**.
+
+Caratteristiche:
+
+* distanza 500 m
+* linea di vista
+* throughput elevato
+* trasporto VLAN
+
+Il link trasporta due VLAN:
+
+* ospiti spiaggia
+* staff stabilimento
+
+In questo modo lo stabilimento utilizza gli stessi servizi dell’hotel.
+
+---
+
+# 12. Funzionamento complessivo
+
+Il traffico segue queste regole:
+
+gli ospiti hotel e spiaggia accedono a Internet ma non alle reti interne;
+
+il personale degli uffici accede al server gestionale;
+
+il personale dello stabilimento accede al gestionale tramite VLAN dedicata;
+
+il web server pubblica il sito Internet;
+
+il database è accessibile solo dal web server;
+
+il firewall controlla e filtra tutte le comunicazioni tra le reti.
+
+---
+
+Questa architettura soddisfa tutti i requisiti della traccia:
+
+* rete segmentata
+* separazione ospiti / uffici / servizi
+* sicurezza tramite firewall e DMZ
+* collegamento allo stabilimento
+* supporto Wi-Fi differenziato
+* isolamento dei sistemi critici.
+
 
 ### 12. Progetto della base di dati
 

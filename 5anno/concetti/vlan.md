@@ -38,6 +38,13 @@ Esempio:
 
 Anche se tutti i dispositivi sono collegati allo stesso switch, non possono comunicare tra VLAN diverse senza routing.
 
+
+Per ribadire il livello a cui sono le VLAN, livello 2, conviene fare riferimento a queste frasi:  
+- Una VLAN **separa il traffico Ethernet**.  
+- Il routing **collega le reti IP**.  
+- VLAN e sotto/reti IP sono a livelli diversi, solitamente si faranno coincidere VLAN diverse con reti IP diverse ma tecnicamente non è una proprietà intrinseca delle VLAN.
+
+
 ---
 
 ## 2. Concetti principali
@@ -116,7 +123,9 @@ Spostare un utente di reparto richiede solo cambiare VLAN sulla porta, non il ca
 - VLAN = separazione a livello 2  
 - Subnet = separazione a livello 3  
 
-Spesso: 1 VLAN = 1 subnet **ma sono concetti distinti**.
+Nella pratica di progettazione si segue quasi sempre questa regola:  
+una VLAN → una subnet IP  
+**ma sono concetti distinti**.  
 
 Senza VLAN ma con subnet:
 
@@ -180,6 +189,84 @@ Esempio:
 
 * SSID aziendale → VLAN 10
 * SSID guest → VLAN 30
+
+--- 
+
+## possibilità teoriche inizio
+
+
+Ricordiamo che VLAN e IP operano a livelli diversi, una VLAN è un concetto di **livello 2 (Ethernet)** che serve a **separare il traffico Ethernet** in domini distinti. Una rete IP invece appartiene al **livello 3**.  
+VLAN → livello 2  
+IP network → livello 3  
+
+**Una VLAN non definisce automaticamente una rete IP** anche se nella pratica spesso ma non sempre verranno configurati in modo che coincidano
+
+
+Una VLAN definisce:  
+* un **dominio di broadcast Layer 2**  
+* un **insieme di porte dello switch**  
+* un **tag VLAN nei frame Ethernet**  
+In pratica:
+tutti i dispositivi nella stessa VLAN ricevono i broadcast Ethernet.
+
+Nella pratica di progettazione si segue quasi sempre questa regola:
+una VLAN → una subnet IP. Esempio tipico:
+VLAN 10 192.168.10.0/24
+VLAN 20 192.168.20.0/24
+VLAN 30 192.168.30.0/24
+
+Il motivo è semplice:  
+* il routing diventa chiaro  
+* la gestione è semplice  
+* si evitano problemi di broadcast  
+* il troubleshooting è molto più facile  
+Per questo nei corsi di reti si insegna spesso la regola:
+"una VLAN corrisponde a una rete IP".
+Ma è **una scelta progettuale**, non un vincolo tecnico.
+
+---
+
+### Caso 1 — Più VLAN con la stessa rete IP (possibile ma raro)
+
+È tecnicamente possibile avere:  
+VLAN 10 → 192.168.1.0/24
+VLAN 20 → 192.168.1.0/24
+
+In questo caso:  
+* sono due domini Layer 2 separati  
+* ma usano lo stesso indirizzamento IP  
+Conseguenze:  
+* i dispositivi **credono di essere nella stessa rete**  
+* ma **non possono comunicare** perché sono in VLAN diverse  
+Questo crea facilmente problemi ARP e di connettività.  
+Per questo motivo **si evita quasi sempre**.  
+
+---
+
+# 5. Caso 2 — Più reti IP nella stessa VLAN
+
+È invece abbastanza possibile avere:  
+VLAN 10 host A → 192.168.10.5 host B → 192.168.20.8
+
+I due host sono:  
+* nella stessa VLAN  
+* ma in reti IP diverse  
+
+Quindi:  
+* Ethernet funziona  
+* ma la comunicazione IP richiede comunque routing  
+
+Questo scenario può capitare ad esempio:  
+* durante migrazioni di rete  
+* in reti legacy  
+* in ambienti di laboratorio  
+
+---
+
+Ripetiamo:  
+
+Nelle reti ben progettate si usa **una subnet IP per ogni VLAN**, ma non è una regola obbligatoria.
+
 
 ---
 

@@ -1,29 +1,21 @@
 ## VLAN – Concetti essenziali
 
 
-<div style="background-color: white; display: inline-block; padding: 10px;">
-    <img src="https://images.wondershare.com/edrawmax/templates/vlan-network-diagram.png">
-</div>
+<img src="https://images.wondershare.com/edrawmax/templates/vlan-network-diagram.png" width="75%" />
 
 &nbsp;
 
-<div style="background-color: white; display: inline-block; padding: 10px;">
-    <img src="https://i.adroitacademy.com/blog/43604421.png">
-</div>
+<img src="https://i.adroitacademy.com/blog/43604421.png" style="background-color: white; display: inline-block; padding: 10px;" width="75%" />
 
 &nbsp;
 
-<div style="background-color: white; display: inline-block; padding: 10px;">
-    <img src="https://images.ctfassets.net/aoyx73g9h2pg/3Bv0UJzi0ZOIpeIDn4SvEM/7f63324da001b246a7e263860cb9d89a/What-is-802-1Q-Port-Tagging-Diagram.jpg">
-</div>
+<img src="https://images.ctfassets.net/aoyx73g9h2pg/3Bv0UJzi0ZOIpeIDn4SvEM/7f63324da001b246a7e263860cb9d89a/What-is-802-1Q-Port-Tagging-Diagram.jpg" width="75%" />
 
 &nbsp;
 
-<div style="background-color: white; display: inline-block; padding: 10px;">
-    <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/802-1q-vlan-tagging.gif">
-</div>
+<img src="https://cdn.networkacademy.io/sites/default/files/2025-06/802-1q-vlan-tagging.gif" width="75%" />
 
-
+"
 ## 1. Che cos’è una VLAN
 
 Una **VLAN (Virtual LAN)** è una suddivisione logica di una rete fisica a livello 2 (Data Link).
@@ -42,7 +34,7 @@ Anche se tutti i dispositivi sono collegati allo stesso switch, non possono comu
 Per ribadire il livello a cui sono le VLAN, livello 2, conviene fare riferimento a queste frasi:  
 - Una VLAN **separa il traffico Ethernet**.  
 - Il routing **collega le reti IP**.  
-- VLAN e sotto/reti IP sono a livelli diversi, solitamente si faranno coincidere VLAN diverse con reti IP diverse ma tecnicamente non è una proprietà intrinseca delle VLAN.
+- VLAN e sotto/reti IP sono a livelli diversi, solitamente si faranno coincidere VLAN diverse con reti IP diverse ma tecnicamente non è una proprietà intrinseca delle VLAN.  
 
 
 ---

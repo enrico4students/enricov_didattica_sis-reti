@@ -15,7 +15,7 @@
 
 <img src="https://cdn.networkacademy.io/sites/default/files/2025-06/802-1q-vlan-tagging.gif" width="75%" />
 
-"
+
 ## 1. Che cos’è una VLAN
 
 Una **VLAN (Virtual LAN)** è una suddivisione logica di una rete fisica a livello 2 (Data Link).
@@ -41,21 +41,18 @@ Per ribadire il livello a cui sono le VLAN, livello 2, conviene fare riferimento
 
 ## 2. Concetti principali
 
-### Access Port
+**Access Port**:  
+Porta assegnata a una sola VLAN.  
+Usata per collegare PC, stampanti, server.  
 
-Porta assegnata a una sola VLAN.
-Usata per collegare PC, stampanti, server.
+**Trunk Port**:  
+Porta che trasporta più VLAN contemporaneamente.  
+Usata tra switch o tra switch e router.  
+Utilizza il tagging IEEE 802.1Q.  
 
-### Trunk Port
-
-Porta che trasporta più VLAN contemporaneamente.
-Usata tra switch o tra switch e router.
-Utilizza il tagging IEEE 802.1Q.
-
-### VLAN ID
-
-Numero identificativo (1–4094).
-Serve a distinguere i frame.
+**VLAN ID**:  
+Numero identificativo (1–4094).  
+Serve a distinguere i frame.  
 
 ### Separazione logica
 
@@ -63,7 +60,7 @@ I dispositivi in VLAN diverse:
 
 * non vedono i broadcast reciproci
 * non comunicano direttamente
-* necessitano di routing Layer 3
+* **necessitano di routing Layer 3**
 
 ---
 
@@ -78,29 +75,19 @@ In una rete senza VLAN:
 
 Con VLAN:
 
-### 1. Riduzione broadcast
-
+**Riduzione broadcast**  
 Ogni VLAN è un dominio di broadcast separato.
 
-### 2. Maggiore sicurezza
+**Maggiore sicurezza**  
+Separazione tra: utenti, server, ospiti, reparti
 
-Separazione tra:
+**Migliore organizzazione**  
+La rete riflette la struttura aziendale.  
 
-* utenti
-* server
-* ospiti
-* reparti
-
-### 3. Migliore organizzazione
-
-La rete riflette la struttura aziendale.
-
-### 4. Flessibilità
-
+**Flessibilità**  
 Spostare un utente di reparto richiede solo cambiare VLAN sulla porta, non il cablaggio.
 
-### 5. Controllo del traffico
-
+**Controllo del traffico**  
 È possibile applicare:
 
 * ACL

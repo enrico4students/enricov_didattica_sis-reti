@@ -1,12 +1,16 @@
 ## RADIUS AAA Server
 
-![Image](https://www.inkbridgenetworks.com/web/image/3558-fb43d2bc/radius_diagram_auth_3324x2535.webp?access_token=01528220-784d-49e6-b2ee-f9ed2fc16e95)
 
-![Image](https://miro.medium.com/0%2A9WZnM_foBQEql8nh.png)
+<img src="https://www.inkbridgenetworks.com/web/image/3558-fb43d2bc/radius_diagram_auth_3324x2535.webp?access_token=01528220-784d-49e6-b2ee-f9ed2fc16e95" width="80%"/>
 
-![Image](https://upload.wikimedia.org/wikipedia/commons/1/1f/802.1X_wired_protocols.png)
 
-![Image](https://media.licdn.com/dms/image/v2/D5612AQEr5797TWza-w/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1713631795614?e=2147483647\&t=XHmyBBcYsC2Of8oZjvMddVOmFca4mZCWMm4gRxkw6o8\&v=beta)
+<img src="https://miro.medium.com/0%2A9WZnM_foBQEql8nh.png" width="80%"/>
+
+<img src="https://upload.wikimedia.org/wikipedia/commons/1/1f/802.1X_wired_protocols.png" width="80%"/>
+
+
+<img src="https://media.licdn.com/dms/image/v2/D5612AQEr5797TWza-w/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1713631795614?e=2147483647\&t=XHmyBBcYsC2Of8oZjvMddVOmFca4mZCWMm4gRxkw6o8\&v=beta" width="80%"/>
+
 
 
 RADIUS (protocollo): Remote Authentication Dial-In User Service  

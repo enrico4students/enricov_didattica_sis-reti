@@ -1,0 +1,51 @@
+@startuml
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+entity "CLIENTE" as CLIENTE {
+    * id_cliente
+    --
+    nome
+    cognome
+    email
+    telefono
+    documento_identita
+}
+
+entity "PRENOTAZIONE" as PRENOTAZIONE {
+    * id_prenotazione
+    --
+    data_prenotazione
+    data_check_in
+    data_check_out
+    numero_ospiti
+    stato_prenotazione
+}
+
+entity "CAMERA" as CAMERA {
+    * id_camera
+    --
+    numero_camera
+    piano
+    tipologia
+    capienza
+    stato
+}
+
+entity "CREDENZIALE_WIFI" as WIFI {
+    * id_credenziale_wifi
+    --
+    username_wifi
+    password_wifi
+    data_inizio_validita
+    data_fine_validita
+    stato_credenziale
+}
+
+CLIENTE ||--o{ PRENOTAZIONE : effettua
+PRENOTAZIONE }|--o{ CAMERA : riguarda
+PRENOTAZIONE ||--o{ WIFI : genera
+
+@enduml

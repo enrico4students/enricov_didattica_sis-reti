@@ -1,6 +1,8 @@
 {
     "markdown.marp.themes": [
-        "https://example.com/foo/bar/custom-theme.css",
         "./themes/portrait.css" 
-  ]
+],
+"markdown.styles": [
+    "themes/portrait.css"
+]
 }

@@ -1,11 +1,5 @@
----
-
-marp: false
-theme: portrait
 
 <link rel="stylesheet" href="./themes/portrait.css">
-
---- 
 
 
 ## VLAN – Concetti essenziali
@@ -37,7 +31,7 @@ IP network → livello 3
 
 Una VLAN **non definisce necessariamente una rete IP**, anche se nella pratica spesso si configurano in modo che coincidano.
 
----
+
 
 # 2. Concetti principali
 
@@ -48,7 +42,7 @@ Usata per collegare: PC, stampanti, server Etc.
 
 Il dispositivo collegato non "vede" il tagging VLAN.
 
----
+
 
 ### Trunk Port
 
@@ -76,7 +70,7 @@ Normalmente i frame sono **taggati**, mentre la **native VLAN** può essere tras
 _La **native VLAN** è la VLAN associata al traffico **non taggato** su una trunk port._
 
 
----
+
 
 ### Separazione logica
 
@@ -87,7 +81,7 @@ I dispositivi in VLAN diverse:
 
 Questo vale anche nel caso, frequente, in cui sono connessi ad uno stesso switch su cui sono state considerate le VLAN a cui i dispositivi appartengono.  
 
----
+
 
 # 3. Benefici rispetto a una rete senza VLAN
 
@@ -110,7 +104,7 @@ Il traffico tra VLAN deve passare da un dispositivo Layer 3 che può applicare:
   * firewall e ACL  
   * QoS
 
----
+
 
 ### VLAN distribuite su più switch
 
@@ -154,7 +148,7 @@ Per i due PC sembra quindi di trovarsi **nella stessa rete locale**, anche se so
 
 <img src="https://i.adroitacademy.com/blog/43604421.png" style="background-color: white; display: inline-block; padding: 10px;" width="50%" />
 
----
+
 
 #### Configurazione tipica
 
@@ -197,7 +191,7 @@ Quando un frame proveniente dal PC entra nello switch:
 
 In questo modo dispositivi collegati a switch diversi possono comportarsi come se fossero nella **stessa rete locale**.
 
----
+
 
 #### Vantaggi delle VLAN distribuite
 
@@ -207,7 +201,7 @@ Questa architettura permette di:
 - mantenere la stessa subnet IP per dispositivi distribuiti nell’edificio  
 - ridurre la necessità di routing interno  
 
----
+
 
 #### Possibili problemi e limiti
 
@@ -223,7 +217,7 @@ Una VLAN è un **broadcast domain**. Se la VLAN è distribuita su molti switch, 
 
 Per questo motivo nelle reti grandi si tende a **limitare l’estensione delle VLAN**.
 
----
+
 
 **2. Maggiore complessità di configurazione**
 
@@ -238,7 +232,7 @@ Un errore di configurazione può causare:
 * perdita di connettività
 * traffico che finisce nella VLAN sbagliata.
 
----
+
 
 **3. Problemi di sicurezza**
 
@@ -252,7 +246,7 @@ Per questo motivo spesso si applicano politiche come:
 * limitare le VLAN consentite sul trunk  
 * disabilitare trunk automatici.  
 
----
+
 
 **4. Architetture moderne preferiscono VLAN locali**
 
@@ -266,7 +260,7 @@ Questo modello:
 * migliora la scalabilità
 * semplifica il troubleshooting.
 
----   
+   
 
 # 4. VLAN e subnet IP
 
@@ -281,7 +275,7 @@ ma **non** è un vincolo tecnico.
 
 A scopo puramente didattico esaminiamo alcuni casi in cui non vi è mapping 1:1
 
----
+
 
 ## 4.1 Caso inusuale: Più subnet IP nella stessa VLAN
 
@@ -309,7 +303,7 @@ router interface
 
 In questo modo basta collegare una sola porta dello switch al router.
 
----
+
 
 ## 4.2 Caso inusuale: Più VLAN con la stessa subnet IP
 
@@ -347,7 +341,7 @@ Esistono tecniche che possono far funzionare questa configurazione, ma:
 * rendono difficile il troubleshooting
 * violano il modello di progettazione standard
 
----
+
 
 
 # 5. Inter-VLAN routing
@@ -358,7 +352,7 @@ Per permettere la comunicazione tra VLAN serve **routing Layer 3** Questo proces
 * router-on-a-stick
 * switch Layer 3
 
----
+
 
 ## 5.1 Router con più interfacce fisiche
 
@@ -373,7 +367,7 @@ Il router inoltra i pacchetti tra le reti.
 
 Soluzione semplice ma poco scalabile.
 
----
+
 
 ## 5.2 Router-on-a-stick
 
@@ -395,7 +389,7 @@ Il router crea un nuovo frame Ethernet con **tag VLAN 20** e lo invia allo switc
 Lo switch inoltra il frame solo alle porte della VLAN 20.  
 PC3 lo riceve.  
 
----
+
 
 ## 5.3 Switch Layer 3
 
@@ -421,7 +415,7 @@ Il processo è lo stesso di un router:
 
 La differenza è che lo switch lo fa **in hardware ASIC**, quindi molto velocemente.
 
----
+
 
 # 6. Dispositivi coinvolti
 
@@ -450,7 +444,7 @@ Gestione tramite:
 <br/>
 https://www.cisco.com/c/en/us/products/switches/business-350-series-managed-switches/index.html  
 
----
+
 
 ## Switch non gestito
 
@@ -486,7 +480,7 @@ Tipico utilizzo: router/firewall → switch unmanaged da rack → PC, stampanti,
 
 switch unmanaged Gigabit a 8 porte molto comune in uffici, piccole infrastrutture di rete e laboratori.
 
----
+
 
 ## Router
 
@@ -496,7 +490,7 @@ Esempio tipico:
 
 router-on-a-stick.
 
----
+
 
 ## Firewall
 
@@ -508,7 +502,7 @@ Permette applicazione di:
 * filtraggio traffico
 * segmentazione.
 
----
+
 
 ## Access Point
 
@@ -518,7 +512,7 @@ Esempio:
 SSID aziendale → VLAN 10  
 SSID guest → VLAN 30  
 
----
+
 
 # 7. Quando usare VLAN
 
@@ -534,7 +528,7 @@ Le VLAN sono consigliabili quando:
 
 Non sono generalmente necessarie in reti domestiche molto piccole.
 
----
+
 
 # 8. Esempi tipici nei test di informatica
 
@@ -548,9 +542,9 @@ Richiesta:
 
 Soluzione:
 
-VLAN 10 → 192.168.10.0/24
-VLAN 20 → 192.168.20.0/24
-VLAN 30 → 192.168.30.0/24
+VLAN 10 → 192.168.10.0/24  
+VLAN 20 → 192.168.20.0/24  
+VLAN 30 → 192.168.30.0/24  
 
 Domande tipiche:
 
@@ -558,7 +552,7 @@ Domande tipiche:
 * identificare trunk
 * motivare isolamento guest
 
----
+
 
 ## Caso 2 — Azienda con server
 
@@ -570,16 +564,16 @@ Richiesta:
 
 Soluzione:
 
-VLAN 10 → LAN utenti
-VLAN 20 → server interni
-VLAN 30 → DMZ
+VLAN 10 → LAN utenti  
+VLAN 20 → server interni  
+VLAN 30 → DMZ  
 
 Esempio policy firewall:
 
-VLAN 10 → può accedere al DB
-VLAN 30 → non può accedere alla LAN
+VLAN 10 → può accedere al DB  
+VLAN 30 → non può accedere alla LAN  
 
----
+
 
 ## Caso 3 — Ufficio su due piani
 
@@ -596,7 +590,7 @@ Domande tipiche:
 * funzione di 802.1Q
 * comportamento di una porta trunk con PC collegato
 
----
+
 
 # Conclusione
 

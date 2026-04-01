@@ -549,6 +549,312 @@ Schema semplificato:
 
 ---   
 
+## Architettura di rete tipica di un campus aziendale
+
+NB Ripete quanto esposto precedentemente, in modo un po' più focalizzato  
+
+Una **campus network** è la rete di un’organizzazione distribuita su uno o più edifici vicini (azienda, università, ospedale, ente pubblico).
+Queste reti possono avere **centinaia o migliaia di dispositivi** e sono progettate per essere:
+
+* scalabili
+* altamente disponibili
+* facilmente gestibili
+
+Il modello più diffuso per le campus network è il **modello gerarchico**.
+
+---
+
+### 1. Struttura generale di una campus network
+
+Schema logico tipico:
+
+```
+                Internet
+                   |
+               Edge Router
+                   |
+                Firewall
+                   |
+                Core Layer
+               /          \
+      Distribution A    Distribution B
+        /      \          /      \
+     Access   Access   Access   Access
+      |        |        |        |
+     PC       WiFi     VoIP    Stampanti
+```
+
+I livelli principali sono:
+
+* **Access layer**
+* **Distribution layer**
+* **Core layer**
+
+Questo modello è usato da molti vendor (Cisco, Juniper, Arista, HPE) nelle reti campus.
+
+---
+
+### 2. Access layer
+
+L’**access layer** è il livello più vicino agli utenti.
+
+Qui si trovano gli **access switch** che collegano:
+
+* PC
+* telefoni VoIP
+* access point Wi-Fi
+* stampanti
+* telecamere IP
+* IoT
+
+Funzioni principali:
+
+* assegnazione VLAN
+* PoE per telefoni e access point
+* port security
+* autenticazione 802.1X
+
+Tipicamente le porte sono configurate come:
+
+* **access port**
+* associate a una VLAN.
+
+Esempio:
+
+```id="9j0s2c"
+porta 1 → VLAN 10 utenti
+porta 2 → VLAN 20 VoIP
+porta 3 → VLAN 30 WiFi
+```
+
+---
+
+### 3. Distribution layer
+
+Il **distribution layer** collega gli access switch al core.
+
+Questo livello svolge funzioni molto importanti.
+
+Funzioni tipiche:
+
+* routing tra VLAN
+* ACL
+* QoS
+* aggregazione degli access switch
+* isolamento dei domini di broadcast
+
+Per questo motivo viene spesso chiamato anche:
+
+**policy layer**
+
+Esempio:
+
+```id="q1b3e7"
+VLAN 10 → rete utenti
+VLAN 20 → rete server
+VLAN 30 → VoIP
+VLAN 40 → guest WiFi
+```
+
+Il distribution switch possiede interfacce virtuali:
+
+```id="w6m4t2"
+interface vlan 10
+interface vlan 20
+interface vlan 30
+```
+
+che fungono da **gateway delle VLAN**.
+
+---
+
+### 4. Core layer
+
+Il **core layer** è il cuore della rete.
+
+Il suo compito è:
+
+* collegare i distribution switch
+* trasportare grandi volumi di traffico
+* garantire latenza minima
+
+Il core deve essere:
+
+* molto veloce
+* ridondato
+* semplice (poche policy)
+
+Velocità tipiche:
+
+* 10 Gbit
+* 40 Gbit
+* 100 Gbit
+
+Il core è quindi il **backbone della campus network**.
+
+---
+
+### 5. Ridondanza nella campus network
+
+Le campus network reali sono quasi sempre ridondate.
+
+Schema tipico:
+
+```id="o7n9x4"
+                 Core 1
+                /      \
+           Dist A      Dist B
+           /   \        /   \
+        Access Access Access Access
+```
+
+Caratteristiche:
+
+* due core switch
+* due distribution switch
+* collegamenti multipli
+
+Questo permette:
+
+* continuità del servizio
+* failover automatico
+* manutenzione senza downtime.
+
+---
+
+### 6. Collegamenti trunk
+
+Tra gli switch vengono usati collegamenti **trunk 802.1Q**.
+
+Servono per trasportare più VLAN su un singolo collegamento.
+
+Esempio:
+
+```id="r3v8k1"
+Access switch
+     |
+ trunk
+     |
+Distribution switch
+```
+
+Le VLAN possono quindi estendersi su più switch.
+
+---
+
+### 7. Collegamento verso Internet
+
+La campus network si collega a Internet tramite:
+
+* **edge router**
+* **firewall**
+
+Schema tipico:
+
+```id="u2k4g8"
+Internet
+   |
+Edge router
+   |
+Firewall
+   |
+Core layer
+```
+
+Il firewall separa:
+
+* WAN
+* LAN
+* DMZ
+
+---
+
+### 8. Presenza di una DMZ
+
+Nelle reti campus è molto comune una **DMZ**.
+
+La DMZ ospita server pubblici:
+
+* web server
+* reverse proxy
+* mail gateway
+* VPN gateway
+
+Schema tipico:
+
+```id="p6d5h0"
+Internet
+   |
+Firewall
+ |      |
+LAN    DMZ
+```
+
+La DMZ è isolata dalla LAN.
+
+---
+
+### 9. Esempio realistico di VLAN in un campus
+
+Un campus aziendale può avere VLAN come queste:
+
+| VLAN | funzione       |
+| ---- | -------------- |
+| 10   | utenti         |
+| 20   | server         |
+| 30   | VoIP           |
+| 40   | WiFi aziendale |
+| 50   | WiFi guest     |
+| 60   | management     |
+
+Il routing tra queste VLAN avviene nel distribution layer.
+
+---
+
+### 10. Architettura completa di esempio
+
+Diagramma riassuntivo:
+
+```id="p9x6t1"
+                Internet
+                    |
+               Edge Router
+                    |
+                 Firewall
+                /       \
+             Core1     Core2
+              |          |
+       -------------------------
+       |                       |
+    Dist1                   Dist2
+     |  |                    |  |
+   Acc Acc                Acc Acc
+    |   |                  |   |
+   PC  AP                PC  VoIP
+```
+
+Caratteristiche:
+
+* ridondanza del core
+* ridondanza del distribution
+* access switch distribuiti negli edifici
+
+---
+
+### 11. Perché questo modello è molto usato
+
+Questo modello permette:
+
+* crescita graduale della rete
+* manutenzione più semplice
+* isolamento dei problemi
+* prestazioni elevate
+
+Per questo è stato per anni **lo standard delle reti campus aziendali**.
+
+
+---   
+
 
 [1]: https://networklessons.com/network-fundamentals/cisco-campus-network-design-basics?utm_source=chatgpt.com "Cisco Campus Network Design Basics"
 [2]: https://www.alliedtelesis.com/us/en/foundations/what-network-router?utm_source=chatgpt.com "What is a network router?"

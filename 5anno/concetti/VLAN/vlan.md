@@ -2,10 +2,10 @@
 <link rel="stylesheet" href="./themes/portrait.css">
 
 
-## VLAN – Concetti essenziali
+# VLAN – Concetti essenziali
 
 
-# 1. Che cos’è una VLAN
+# Che cos’è una VLAN  
 
 Una **VLAN (Virtual LAN)** è una suddivisione di una rete fisica a **livello 2 (Data Link)**.
 
@@ -17,36 +17,29 @@ Esempio:
 * VLAN 20 → Reparto tecnico
 * VLAN 30 → Wi-Fi ospiti
 
-Anche se tutti i dispositivi sono collegati allo stesso switch, **non possono comunicare tra VLAN diverse senza routing**.
+Anche se tutti i dispositivi sono collegati allo **stesso switch**, **non** possono comunicare tra VLAN diverse senza routing.
 
 <br/>
-Per chiarire il livello a cui operano le VLAN:
 
-* una VLAN **separa il traffico Ethernet**
-* il **routing collega reti IP**
-* VLAN e reti IP operano **a livelli diversi**
+VLAN e reti IP operano a livelli diversi:  
+* una VLAN **separa** il traffico **Ethernet**  → livello 2  
+* il routing **collega** reti **IP**            → livello 3   
 
-VLAN → livello 2  
-IP network → livello 3  
-
-Una VLAN **non definisce necessariamente una rete IP**, anche se nella pratica spesso si configurano in modo che coincidano.
+Una VLAN **non** definisce necessariamente una rete IP, anche se nella pratica spesso si configurano in modo che coincidano.
 
 
 
-# 2. Concetti principali
+# Concetti principali
 
 ### Access Port
 
-La normale porta assegnata a **una sola VLAN**.  
-Usata per collegare: PC, stampanti, server Etc.
-
-Il dispositivo collegato non "vede" il tagging VLAN.
-
+La normale porta assegnata a **una sola VLAN**, usata per collegare: PC, stampanti, server Etc.
+( Il dispositivo collegato non "vede" il tagging VLAN)  
 
 
 ### Trunk Port
 
-Porta configurata per **trasportare traffico di più VLAN sullo stesso collegamento fisico**.
+Porta configurata per trasportare traffico di **più** VLAN sullo **stesso** collegamento fisico.
 
 Usata tipicamente tra:
 
@@ -59,6 +52,8 @@ Usata tipicamente tra:
 Le VLAN vengono identificate tramite **tag IEEE 802.1Q** inserito nei frame Ethernet.  
 Il tag contiene, oltre ad altre informazioni, il VLAN ID, il numero identificativo della VLAN.  
 Il range utilizzabile: è 1 – 4094 questo perchè Il campo è lungo **12 bit** (valori 0-4095), ma 0 e 4095 sono riservati quindi non sono utilizzabili come VLAN normali.  
+
+<br/><br/>
 
 
 <img src="./imgs/802-1q-vlan-tagging.gif" width="50%" />
@@ -74,7 +69,7 @@ _La **native VLAN** è la VLAN associata al traffico **non taggato** su una trun
 
 ### Separazione logica
 
-I dispositivi in VLAN diverse:  
+Ripetiamo che i dispositivi in VLAN diverse, anche se sono collegati allo stesso switch:  
 
 * non vedono i broadcast reciproci
 * non comunicano direttamente ma richiedono **routing di livello 3** per comunicare fra loro.  
@@ -83,7 +78,7 @@ Questo vale anche nel caso, frequente, in cui sono connessi ad uno stesso switch
 
 
 
-# 3. Benefici rispetto a una rete senza VLAN
+# Benefici rispetto a una rete senza VLAN
 
 In una rete senza VLAN (rete piatta):  
 
@@ -184,12 +179,19 @@ porta `gig0/10` → collega un PC e appartiene alla VLAN 10
 porta `gig0/1` → collega un altro switch e trasporta più VLAN tramite trunk 802.1Q  
 
 Quando un frame proveniente dal PC entra nello switch:
-
+* Il frame non contiene alcun tag VLAN, perché i dispositivi finali normalmente non usano 802.1Q.  
 * lo switch sa che la porta appartiene alla VLAN 10
 * se il frame deve attraversare il trunk, lo switch inserisce il **tag VLAN 10**
-* lo switch remoto legge il tag e inoltra il traffico alle porte della VLAN 10.
-
+* lo switch remoto legge il tag, lo rimuove, e inoltra il invia il frame Ethernet normale alle porte della VLAN 10.
 In questo modo dispositivi collegati a switch diversi possono comportarsi come se fossero nella **stessa rete locale**.
+
+Il tag non viene rimosso se il frame esce da una porta trunk verso: 
+- un altro switch
+- un router-on-a-stick
+- un firewall
+- un hypervisor
+- alcuni access point.
+In questo caso il frame resta taggato.
 
 
 
@@ -262,7 +264,7 @@ Questo modello:
 
    
 
-# 4. VLAN e subnet IP
+# VLAN e subnet IP
 
 VLAN e subnet operano a livelli diversi.
 - VLAN → separazione **Layer 2**  
@@ -277,7 +279,7 @@ A scopo puramente didattico esaminiamo alcuni casi in cui non vi è mapping 1:1
 
 
 
-## 4.1 Caso inusuale: Più subnet IP nella stessa VLAN
+## Caso inusuale: Più subnet IP nella stessa VLAN
 
 È possibile avere host appartenenti a subnet diverse **nella stessa VLAN**.
 
@@ -305,7 +307,7 @@ In questo modo basta collegare una sola porta dello switch al router.
 
 
 
-## 4.2 Caso inusuale: Più VLAN con la stessa subnet IP
+## Caso inusuale: Più VLAN con la stessa subnet IP
 
 È tecnicamente possibile configurare VLAN diverse che appartengono alla **stessa subnet IP**, ma è una configurazione **anomala e generalmente sconsigliata**.
 
@@ -344,7 +346,7 @@ Esistono tecniche che possono far funzionare questa configurazione, ma:
 
 
 
-# 5. Inter-VLAN routing
+# Inter-VLAN routing
 
 Per permettere la comunicazione tra VLAN serve **routing Layer 3** Questo processo si chiama **inter-VLAN routing**, può essere implementato con tre modalità principali:  
 
@@ -354,7 +356,7 @@ Per permettere la comunicazione tra VLAN serve **routing Layer 3** Questo proces
 
 
 
-## 5.1 Router con più interfacce fisiche
+## Router con più interfacce fisiche
 
 Ogni VLAN è collegata a una porta diversa del router.
 
@@ -369,7 +371,7 @@ Soluzione semplice ma poco scalabile.
 
 
 
-## 5.2 Router-on-a-stick
+## Router-on-a-stick
 
 Si utilizza **un solo collegamento fisico tra switch e router**, configurato come **trunk 802.1Q**. Su questo collegamento passano tutte le VLAN.  
 Il router crea **subinterfacce VLAN**.
@@ -391,7 +393,7 @@ PC3 lo riceve.
 
 
 
-## 5.3 Switch Layer 3
+## Switch Layer 3
 
 Molti switch moderni possono fare **routing direttamente**.
 
@@ -417,7 +419,7 @@ La differenza è che lo switch lo fa **in hardware ASIC**, quindi molto veloceme
 
 
 
-# 6. Dispositivi coinvolti
+# Dispositivi coinvolti
 
 ## Switch gestito (Managed Switch)
 
@@ -471,7 +473,9 @@ Switch unmanaged da 24 porte, tipologia di switch molto usata perché:
 - consentono di collegare molti dispositivi con un solo apparato
 - possono essere installati negli armadi rack di rete
 - non richiedono configurazione o manutenzione
-- hanno costo relativamente basso.
+- hanno costo relativamente basso.  
+
+<br/>  
 Tipico utilizzo: router/firewall → switch unmanaged da rack → PC, stampanti, access point.
 
 ##### NETGEAR GS108 
@@ -486,17 +490,13 @@ switch unmanaged Gigabit a 8 porte molto comune in uffici, piccole infrastruttur
 
 Può effettuare **routing tra VLAN**.
 
-Esempio tipico:
-
-router-on-a-stick.
+Esempio tipico: router-on-a-stick.
 
 
 
 ## Firewall
 
-Controlla il traffico tra VLAN.
-
-Permette applicazione di:
+Controlla il traffico tra VLAN. Permette applicazione di:
 
 * policy di sicurezza
 * filtraggio traffico
@@ -530,7 +530,7 @@ Non sono generalmente necessarie in reti domestiche molto piccole.
 
 
 
-# 8. Esempi tipici nei test di informatica
+# Esempi tipici nei test di informatica
 
 ## Caso 1 — Piccola azienda
 

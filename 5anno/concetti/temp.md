@@ -1,138 +1,113 @@
 
----
+### Il NGFW è “on-line”? Fa routing?
 
-### 1. Pensare che il router esterno gestisca tutta la rete interna
+Nelle architetture enterprise reali il **Next Generation Firewall (NGFW)** è molto spesso **inline (on-line)**, cioè posizionato direttamente nel percorso del traffico tra reti o zone diverse.
 
-Molti studenti immaginano una rete aziendale come una rete domestica ingrandita:
+Esistono due modalità principali di funzionamento.
 
-```
-Internet - Router - Switch - PC
-```
+#### 1. Routed mode (Layer 3)
 
-Questo schema è **quasi sempre falso nelle reti professionali**.
+In questa modalità il firewall:
 
-Nelle aziende il router esterno normalmente:
+* ha **indirizzi IP sulle interfacce**
+* mantiene una **tabella di routing**
+* può fare **routing tra WAN, LAN e DMZ**
+* applica policy di sicurezza durante l’inoltro dei pacchetti.
 
-* termina la connessione con l’ISP
-* gestisce protocolli WAN
-* inoltra il traffico verso la rete aziendale
+Documentazione Palo Alto Networks:
+[https://docs.paloaltonetworks.com/ngfw/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces](https://docs.paloaltonetworks.com/ngfw/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces)
 
-Ma **non gestisce direttamente le VLAN interne**.
+In questo caso il firewall funziona **in modo simile a un router**, ma con capacità di sicurezza molto più avanzate.
 
-Molto spesso vede solo una o poche reti interne, ad esempio:
 
-```
-10.0.0.0/16 → rete aziendale
-```
+#### 2. Transparent mode / Virtual Wire
 
-Il routing tra le VLAN interne avviene invece su:
+In questa modalità il firewall è comunque **inline**, ma lavora in modo **trasparente**.
 
-* switch Layer 3
-* firewall
-* distribution switch
+Il firewall:
 
----
+* non partecipa al routing
+* non assegna indirizzi IP alle interfacce del traffico
+* analizza e filtra i pacchetti mentre attraversano il dispositivo.
 
-### 2. Pensare che tutte le VLAN passino dal router
+Documentazione Palo Alto Networks:
+[https://docs.paloaltonetworks.com/pan-os/11-0/pan-os-networking-admin/configure-interfaces/virtual-wire-interfaces](https://docs.paloaltonetworks.com/pan-os/11-0/pan-os-networking-admin/configure-interfaces/virtual-wire-interfaces)
 
-Gli studenti spesso immaginano qualcosa del genere:
-
-```
-PC VLAN 10
-      \
-       Router
-      /
-PC VLAN 20
-```
-
-Questa configurazione esiste (router-on-a-stick), ma **non è quella più comune nelle reti medio-grandi**.
-
-Nelle reti aziendali reali il routing tra VLAN viene quasi sempre fatto da:
-
-* **switch Layer 3**
-
-Esempio reale:
-
-```
-Access switch
-      |
-Distribution switch (routing VLAN)
-      |
-Core switch
-```
-
-Il router esterno **non è coinvolto nel traffico interno tra VLAN**.
+Questo modello viene usato quando si vuole aggiungere sicurezza **senza modificare l’architettura IP esistente**.
 
 ---
 
-### 3. Pensare che il firewall sia sempre separato dal routing
+#### Architettura enterprise realistica con NGFW
 
-Un errore molto comune è credere che:
+In molte reti aziendali moderne la struttura è simile alla seguente.
 
-* il router faccia routing
-* il firewall faccia solo filtraggio
-
-Nelle reti moderne **il firewall fa quasi sempre anche routing**.
-
-Schema reale tipico:
+##### Schema logico (diagramma testuale)
 
 ```
 Internet
    |
-Router ISP
    |
-Firewall
- |   |
-LAN  DMZ
+Edge Router / ISP Router
+   |
+   | rete di transito
+   |
+NGFW (inline)
+   |        \
+   |         \
+   |          DMZ
+   |
+rete interna di transito
+   |
+Core / Distribution Layer 3 switch
+   |
+   + VLAN utenti
+   + VLAN server
+   + VLAN VoIP
+   + VLAN WiFi
+   + VLAN management
 ```
 
-Il firewall possiede più interfacce:
+Interpretazione:
 
-```
-porta WAN
-porta LAN
-porta DMZ
-```
-
-Poiché queste appartengono a reti diverse, il firewall:
-
-* mantiene una **tabella di routing**
-* inoltra pacchetti tra queste reti
-* applica **policy di sicurezza prima dell’inoltro**
-
-Quindi il firewall è contemporaneamente:
-
-* router
-* filtro di sicurezza
-* punto di controllo della rete.
+* il **router edge** gestisce la connessione verso ISP o WAN
+* il **NGFW è inline** e controlla il traffico tra zone
+* il **NGFW può fare routing tra WAN, LAN e DMZ**
+* il **core/distribution switch Layer 3** gestisce il routing tra VLAN interne.
 
 ---
 
-### 4. Errore molto frequente: credere che tutte le VLAN attraversino tutta la rete
-
-Gli studenti spesso immaginano VLAN estese ovunque:
+# Diagramma PlantUML
 
 ```
-VLAN 10
-presente su tutti gli switch
+@startuml
+
+title Architettura enterprise con NGFW inline
+
+left to right direction
+skinparam linetype ortho
+
+cloud "Internet" as NET
+
+rectangle "Edge Router\n(ISP / WAN)" as ER
+rectangle "NGFW\nSecurity + inspection\n(routed mode)" as FW
+rectangle "DMZ\nWeb / reverse proxy\nmail gateway" as DMZ
+
+package "Core / Distribution Layer 3" {
+
+rectangle "SVI VLAN 10\nUtenti"
+rectangle "SVI VLAN 20\nServer"
+rectangle "SVI VLAN 30\nVoIP"
+rectangle "SVI VLAN 40\nWiFi"
+
+}
+
+NET --> ER
+ER --> FW
+FW --> DMZ
+FW --> "Core / Distribution Layer 3"
+
+@enduml
 ```
-
-In molte reti moderne invece si cerca di **limitare l’estensione delle VLAN**.
-
-Motivi principali:
-
-* ridurre i domini di broadcast
-* migliorare la scalabilità
-* semplificare il troubleshooting
-
-Quindi è comune trovare:
-
-```
-piano 1 → VLAN 10
-piano 2 → VLAN 20
-piano 3 → VLAN 30
-```
-
-Il traffico tra queste VLAN viene gestito da routing.
 
 ---
+

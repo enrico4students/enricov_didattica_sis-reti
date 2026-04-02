@@ -1,0 +1,101 @@
+body {
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+  color: #000000;
+}
+
+h1 {
+font-size: 24pt;
+font-weight: 600;
+margin: 10px 0 18px 0;
+}
+
+h2 {
+font-size: 22pt;
+font-weight: 600;
+margin: 20px 0 14px 0;
+}
+
+h3 {
+font-size: 20pt;
+font-weight: 600;
+margin: 18px 0 12px 0;
+}
+
+h4 {
+font-size: 18pt;
+font-weight: 600;
+margin: 16px 0 10px 0;
+}
+
+h5 {
+font-size: 16pt;
+font-weight: 600;
+margin: 14px 0 8px 0;
+}
+
+h6 {
+font-size: 14pt;
+font-weight: 600;
+margin: 12px 0 6px 0;
+}
+
+p { 
+  margin: 5px; 
+  color: #000000;
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+}
+
+pre, code {
+font-family: Consolas, "Courier New", monospace;
+font-size: 10pt;
+
+  
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+
+}
+
+pre {
+padding: 8px;
+border: 1px solid #000000;
+overflow: auto;
+}
+
+table {
+border-collapse: collapse;
+font-size: 10pt;
+margin: 10px 0;
+  
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+}
+
+th, td {
+border: 1px solid #000000;
+padding: 4px 6px;
+vertical-align: top;
+}
+
+blockquote {
+margin: 10px 0;
+padding: 6px 10px;
+border-left: 3px solid #000000;
+}
+
+
+ul, ol { 
+  margin-top: 0; margin-bottom: 0; 
+    
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+
+}
+p + ul, p + ol { 
+  margin-top: 0px; 
+    
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+
+}
+ul + p, ol + p { 
+  margin-top: 0.5em; 
+    
+  background-image: url("../imgs/sfondocopyright.png") , url("../../authoring/imgs/sfondocopyright.png");
+
+}

@@ -1,0 +1,28 @@
+@startuml Architettura enterprise con NGFW inline
+
+title Architettura enterprise con NGFW inline
+
+left to right direction
+skinparam linetype ortho
+
+cloud "Internet" as NET
+
+rectangle "Edge Router\n(ISP / WAN)" as ER
+rectangle "NGFW\nSecurity + inspection\n(routed mode)" as FW
+rectangle "DMZ\nWeb / reverse proxy\nmail gateway" as DMZ
+
+package "Core / Distribution Layer 3" {
+
+rectangle "SVI VLAN 10\nUtenti"
+rectangle "SVI VLAN 20\nServer"
+rectangle "SVI VLAN 30\nVoIP"
+rectangle "SVI VLAN 40\nWiFi"
+
+}
+
+NET --> ER
+ER --> FW
+FW --> DMZ
+FW --> "Core / Distribution Layer 3"
+
+@enduml

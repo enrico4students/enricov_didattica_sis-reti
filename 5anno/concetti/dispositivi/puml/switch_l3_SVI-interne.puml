@@ -1,0 +1,61 @@
+@startuml
+title Relazione tra VLAN, subnet IP e SVI (gateway) nello switch Layer 3
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam linetype ortho
+skinparam roundcorner 12
+skinparam packageStyle rectangle
+
+skinparam rectangle {
+  BorderColor #333333
+  FontColor #111111
+}
+
+package "Layer 3 Switch" #CFE2F3 {
+
+    rectangle "SVI VLAN 10\nGateway 192.168.10.1" as SVI10 #D9EAD3
+    rectangle "SVI VLAN 20\nGateway 192.168.20.1" as SVI20 #D9EAD3
+
+    rectangle "Routing Engine\nTabella di routing\nForwarding hardware ASIC" as ROUTER #FFF2CC
+
+    SVI10 -- ROUTER
+    SVI20 -- ROUTER
+}
+
+rectangle "Access Switch\nVLAN 10" as A1 #E2F0D9
+rectangle "Access Switch\nVLAN 20" as A2 #E2F0D9
+
+rectangle "PC1\n192.168.10.10" as PC1 #FFFFFF
+rectangle "PC2\n192.168.10.20" as PC2 #FFFFFF
+
+rectangle "PC3\n192.168.20.10" as PC3 #FFFFFF
+rectangle "PC4\n192.168.20.20" as PC4 #FFFFFF
+
+SVI10 -- A1 : trunk / VLAN 10
+SVI20 -- A2 : trunk / VLAN 20
+
+A1 -- PC1
+A1 -- PC2
+
+A2 -- PC3
+A2 -- PC4
+
+note right of ROUTER
+Lo switch Layer 3 contiene
+un motore di routing interno.
+
+Le SVI sono interfacce virtuali
+associate alle VLAN e funzionano
+come gateway IP delle subnet.
+end note
+
+legend right
+|= Elemento |= Significato |
+|<#CFE2F3>| Switch Layer 3 |
+|<#D9EAD3>| SVI (gateway VLAN) |
+|<#E2F0D9>| Access switch |
+|<#FFF2CC>| Routing engine |
+endlegend
+
+@enduml

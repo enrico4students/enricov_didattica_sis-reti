@@ -1,0 +1,108 @@
+@startuml Rete aziendale gerarchica
+title Rete aziendale gerarchica - versione slide compatibile
+
+left to right direction
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultTextAlignment center
+skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam nodesep 45
+skinparam ranksep 35
+skinparam roundcorner 18
+
+skinparam rectangle {
+  BorderColor #333333
+  FontColor #111111
+  FontSize 16
+}
+
+skinparam note {
+  BackgroundColor #FFF8DC
+  BorderColor #B8860B
+  FontSize 13
+}
+
+rectangle "Internet" as INTERNET #DDEBF7
+rectangle "Router / ONT ISP" as ISP #E2F0D9
+rectangle "Firewall / NGFW\nNAT - VPN - Filtering" as FW #F4CCCC
+rectangle "DMZ\nVLAN 50\nWeb / Reverse Proxy" as DMZ #FCE4D6
+
+rectangle "CORE SWITCH\nBackbone LAN\nAlta velocità" as CORE #CFE2F3
+
+rectangle "Distribution 1\nRouting inter-VLAN\nACL / QoS" as DIST1 #D9D2E9
+rectangle "Distribution 2\nRouting inter-VLAN\nACL / QoS" as DIST2 #D9D2E9
+
+rectangle "Access Switch 1\nPiano 1" as ACC1 #D9EAD3
+rectangle "Access Switch 2\nPiano 1" as ACC2 #D9EAD3
+rectangle "Access Switch 3\nPiano 2" as ACC3 #D9EAD3
+rectangle "Access Switch 4\nPiano 2 / Guest" as ACC4 #D9EAD3
+
+rectangle "PC utenti\nVLAN 10" as PC1 #FFF2CC
+rectangle "Telefono IP\nVoice VLAN 30" as PH1 #FFE599
+rectangle "Access Point\nCorp VLAN 10\nGuest VLAN 40" as AP1 #D0E0E3
+
+rectangle "PC sala riunioni\nVLAN 10" as PC2 #FFF2CC
+rectangle "Stampante\nVLAN 10" as PRN #FCE5CD
+rectangle "PC piano 2\nVLAN 10" as PC3 #FFF2CC
+rectangle "Server interni\nVLAN 20" as SRV #FCE5CD
+rectangle "Client guest\nVLAN 40" as GUEST #EAD1DC
+
+INTERNET --> ISP : WAN
+ISP --> FW : accesso Internet
+FW --> CORE : uplink LAN
+FW --> DMZ : zona separata
+
+CORE ..> DIST1 : trunk 802.1Q / uplink
+CORE ..> DIST2 : trunk 802.1Q / uplink
+
+DIST1 ..> ACC1 : trunk 802.1Q
+DIST1 ..> ACC2 : trunk 802.1Q
+DIST2 ..> ACC3 : trunk 802.1Q
+DIST2 ..> ACC4 : trunk 802.1Q
+
+CORE ..> SRV : trunk o link dedicato server
+
+ACC1 --> PC1 : access VLAN 10
+ACC1 --> PH1 : voice VLAN 30
+ACC1 --> AP1 : trunk o access
+ACC2 --> PC2 : access VLAN 10
+ACC2 --> PRN : access VLAN 10
+ACC3 --> PC3 : access VLAN 10
+ACC4 --> GUEST : rete guest
+
+note top of CORE
+Backbone interno della LAN.
+Collegare i distribution switch
+con alta capacità e bassa latenza.
+end note
+
+note bottom of DIST1
+Livello intermedio:
+aggregazione, ACL, QoS,
+routing tra VLAN.
+end note
+
+note bottom of ACC4
+Livello vicino agli utenti:
+PC, telefoni, AP, stampanti.
+end note
+
+note right of FW
+Protezione perimetrale:
+NAT, VPN, filtraggio,
+separazione DMZ.
+end note
+
+legend right
+|= Tipo |= Significato |
+| linea continua | access link |
+| linea tratteggiata | trunk 802.1Q / uplink |
+|<#CFE2F3>| core |
+|<#D9D2E9>| distribution |
+|<#D9EAD3>| access |
+|<#F4CCCC>| firewall |
+|<#FCE4D6>| DMZ |
+endlegend
+
+@enduml

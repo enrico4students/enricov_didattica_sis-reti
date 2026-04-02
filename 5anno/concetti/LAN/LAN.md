@@ -1,3 +1,6 @@
+
+<link rel="stylesheet" href="../../../authoring/imgs/sfondocopyright.png">
+
 ## Reti locali (LAN) e loro evoluzione
 
 ---

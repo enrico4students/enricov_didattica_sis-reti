@@ -1,5 +1,4 @@
 
-<link rel="stylesheet" href="../../../authoring/imgs/sfondocopyright.png">
 
 ## Reti locali (LAN) e loro evoluzione
 
@@ -63,35 +62,29 @@ Il collegamento dei PC al cavo backbone avveniva utilizzando tre componenti prin
 
 Il T-connector è un piccolo connettore metallico a forma di T. La parte centrale si collega alla scheda di rete del computer mentre le due estremità collegano il tratto di cavo che arriva dal computer precedente e quello che prosegue verso il successivo.
 
-<p align="center">
-<img src="./imgs/BNC_Tee_connector_for_10BASE2-92164.jpg" style="max-width:70%;">
-</p>
+![](./imgs/BNC_Tee_connector_for_10BASE2-92164.jpg){width=70%}
 
-<p align="center">
-<img src="./imgs/s-l400.jpg" style="max-width:70%;">
-</p>
 
-<p align="center">
-<img src="./imgs/10BASE2-1BW.webp" style="max-width:70%;">
-</p>
+![](./imgs/s-l400.jpg){width=70%}
 
-<p align="center">
-<img src="./imgs/10base2_BNC_Terminator.jpg" style="max-width:70%;">
-</p>
+
+![](./imgs/10BASE2-1BW.webp){width=70%}
+
+
+![](./imgs/10base2_BNC_Terminator.jpg){width=70%}
+
 
 Il backbone era un cavo coassiale simile a quello utilizzato nelle antenne televisive, ma progettato per la trasmissione dati.
 
-<p align="center">
-<img src="./imgs/BNC_connector_with_10BASE2_cable-92170.jpg" style="max-width:70%;">
-</p>
 
-<p align="center">
-<img src="./imgs/03fig02.gif" style="max-width:70%;">
-</p>
+![](./imgs/BNC_connector_with_10BASE2_cable-92170.jpg){width=70%}
 
-<p align="center">
-<img src="./imgs/JPG-197965_1__34855.jpg" style="max-width:70%;">
-</p>
+
+![](./imgs/03fig02.gif){width=70%}
+
+
+![](./imgs/JPG-197965_1__34855.jpg){width=70%}
+
 
 Alle due estremità del cavo dovevano essere installati terminatori da 50 ohm. Questi dispositivi servivano ad assorbire il segnale e impedire la riflessione elettrica lungo il cavo. Se un terminatore mancava oppure se un connettore veniva scollegato, l'intera rete smetteva di funzionare.
 
@@ -119,21 +112,24 @@ Ogni computer ha un cavo dedicato che lo collega direttamente allo switch. Tutto
 
 Immaginare un laboratorio scolastico con venti computer. Ogni computer ha un cavo Ethernet che arriva allo switch installato in un armadio di rete.
 
-<p align="center">
-<img src="./imgs/DGS1024DFront.png" style="max-width:70%;">
-</p>
+
+![](./imgs/DGS1024DFront.png){width=70%}
+
 
 <p align="center">
 <img src="./imgs/IXR-G4804X-perspective-final__51076.jpg" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 <p align="center">
 <img src="./imgs/cisco-small-business-sf110-24-ports-unmanaged-rackmountable-switch_871_grande.webp" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 <p align="center">
 <img src="./imgs/wLlQC.png" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 Il vantaggio principale di questa struttura è l'affidabilità. Se un cavo o un computer si guasta, solo quel dispositivo smette di funzionare mentre il resto della rete continua a operare.
 
@@ -148,18 +144,22 @@ I tipi più diffusi sono Cat5e, Cat6 e Cat6a. Il connettore utilizzato è il con
 <p align="center">
 <img src="./imgs/network_connector.jpg" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 <p align="center">
 <img src="./imgs/Y-OT19TP_04_Keypoint-03.webp" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 <p align="center">
 <img src="./imgs/Types_of_Twisted_Pair_Cables.webp" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 <p align="center">
 <img src="./imgs/1024x576-1_f9cc1299-52e6-4912-9464-f24e72ae7591_1024x1024.webp" style="max-width:70%;">
 </p>
+![](){width=70%}
 
 ---
 

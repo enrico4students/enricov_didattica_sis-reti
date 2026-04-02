@@ -1,5 +1,4 @@
 
-
 ## DISPOSITIVI DI RETE COMUNI IN UNA LAN AZIENDALE
 
 In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante nell’architettura della rete:
@@ -19,12 +18,12 @@ Questi dispositivi svolgono funzioni diverse ma complementari e spesso sono inst
 Lo **switch** è il dispositivo **principale** della rete locale (LAN).
 Il suo compito è collegare tra loro i dispositivi interni della rete:
 
-* **altri switch**  
-* computer  
-* server  
-* stampanti  
-* telefoni VoIP  
-* access point Wi-Fi  
+* **altri switch**
+* computer
+* server
+* stampanti
+* telefoni VoIP
+* access point Wi-Fi
 
 Lo switch opera normalmente al **livello 2 del modello OSI (Data Link)**, inoltrando i frame Ethernet in base agli **indirizzi MAC**.
 
@@ -64,13 +63,13 @@ Oltre alle funzionalità di livello 2 offre anche:
 
 Internamente usa delle **SVI (Switched Virtual Interface)**, cioè interfacce virtuali associate alle VLAN che funzionano come gateway IP delle relative subnet.
 
-![](./IMGS/switch_l3_SVI-ext.png) {width = 40%}  
+![](./IMGS/switch_l3_SVI-ext.png){width=60%}  
 
 Le SVI vengono spesso rappresentate esternamente nei diagrammi, ma in realtà sono interne allo switch: sono interfacce logiche cioè non sono porte fisiche, ma configurazioni software associate alle VLAN e utilizzate come gateway IP delle subnet.
 <br/><br/>
 
 
-![](./IMGS/switch_l3_SVI-int-dettagli.png) {width = 60%}  
+![](./IMGS/switch_l3_SVI-int-dettagli.png){width=75%}  
 <br/>  
 Esempio didattico di switch che fa routing fra 3 VLAN
 
@@ -209,7 +208,7 @@ Immagine online
 [https://www.cisco.com/c/dam/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-series-switches.jpg](https://www.cisco.com/c/dam/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-series-switches.jpg)
 
 
-![](./IMGS/cisco-catalyst_9500_ks17112-car9500-600x300.avif) {width=70%}
+![](./IMGS/cisco-catalyst_9500_ks17112-car9500-600x300.jpg){width=70%}
 
 
 Caratteristiche principali:
@@ -235,7 +234,7 @@ Pagina ufficiale produttore
 Immagine online
 [https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9300-series-switches/images/ks14049-car9500-600x300.png](https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9300-series-switches/images/ks14049-car9500-600x300.png)
 
-![](./IMGS/cisco_catalyst-9300ks14049-car9500-600x300.webp) {width=70%}
+![](./IMGS/cisco_catalyst-9300ks14049-car9500-600x300.jpg){width=70%}
 
 
 Caratteristiche:
@@ -259,7 +258,7 @@ Pagina ufficiale produttore
 [https://www.cisco.com/site/us/en/products/networking/switches/catalyst-9200-series-switches/index.html](https://www.cisco.com/site/us/en/products/networking/switches/catalyst-9200-series-switches/index.html)
 
 
-![](./imgs/nb-06-cat9200-ser-data-sheet-cte-en_0.webp) {width = 60%}
+![](./imgs/nb-06-cat9200-ser-data-sheet-cte-en_0.jpg){width=60%}
 
 Caratteristiche principali:
 
@@ -295,7 +294,7 @@ Pagina ufficiale produttore
 Immagine online
 [https://www.zyxel.com/sites/zyxel/files/library/assets/products/xgs1935-series/img_xgs1935-28hp_p_600x600.jpg](https://www.zyxel.com/sites/zyxel/files/library/assets/products/xgs1935-series/img_xgs1935-28hp_p_600x600.jpg)
 
-![](./imgs/img_xgs1935-28hp_p_600x600.jpg) {width=70%}
+![](./imgs/img_xgs1935-28hp_p_600x600.jpg){width=70%}
 
 
 Caratteristiche:
@@ -322,7 +321,7 @@ Immagine online
 [https://static.tp-link.com/upload/image-line/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg](https://static.tp-link.com/upload/image-line/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg)
 
 
-![](./imgs/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg) {width=70%}
+![](./imgs/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg){width=70%}
 
 
 
@@ -366,7 +365,7 @@ Immagine online
 [https://www.netgear.com/media/GS108v4_tcm148-73992.png](https://www.netgear.com/media/GS108v4_tcm148-73992.png)
 
 
-![](./IMGS/B3_gs108_32.png) {width=70%}
+![](./IMGS/B3_gs108_32.png){width=70%}
 
 
 
@@ -486,7 +485,7 @@ Immagine online
 [https://www.cisco.com/c/dam/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.docx/_jcr_content/renditions/datasheet-c78-731632_0.png](https://www.cisco.com/c/dam/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.docx/_jcr_content/renditions/datasheet-c78-731632_0.png)
 
 
-![](./IMGS/cisco_asr-1000_datasheet-c78-731632_0.webp) {width=70%} 
+![](./IMGS/cisco_asr-1000_datasheet-c78-731632_0.jpg){width=70%} 
 
 Caratteristiche:
 
@@ -520,7 +519,7 @@ Immagine online
 [https://i.mt.lv/cdn/product_files/RB5009UGS-IN_220903.png](https://i.mt.lv/cdn/product_files/RB5009UGS-IN_220903.png)
 
 
-![](./imgs/2065_lg.webp) {width=70%}
+![](./imgs/2065_lg.jpg){width=70%}
 
 
 
@@ -550,7 +549,7 @@ Immagine online
 [https://static.tp-link.com/upload/image-line/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg](https://static.tp-link.com/upload/image-line/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg)
 
 
-![](./IMGS/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg) {width=70%}
+![](./IMGS/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg){width=70%}
 
 
 Caratteristiche:
@@ -576,9 +575,9 @@ Pagina ufficiale produttore
 [https://fritz.com/en-it/products/fritz-box-7530-ax-20002944](https://fritz.com/en-it/products/fritz-box-7530-ax-20002944)
 
 Immagine online
-[https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.webp?v=1773999787&width=1000](https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.webp?v=1773999787&width=1000)
+[https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.jpg?v=1773999787&width=1000](https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.webp?v=1773999787&width=1000)
 
-![](./IMGS/fritzbox_7530_ax_dsl_2000x2000px.webp) {width=70%}
+![](./IMGS/fritzbox_7530_ax_dsl_2000x2000px.jpg){width=70%}
 
 Caratteristiche:
 
@@ -647,7 +646,7 @@ Immagine online
 
 ./imgs/t40_compare.png
 
-![](./imgs/t40_compare.png) { width=70% }
+![](./imgs/t40_compare.png){ width=70% }
 
 Caratteristiche:
 
@@ -668,7 +667,7 @@ Immagine online
 
 
 
-![](./IMGS/61YoNT4HPZL._AC_SL1500_.jpg) { width=70% }
+![](./IMGS/61YoNT4HPZL._AC_SL1500_.jpg){ width=70% }
 
 
 

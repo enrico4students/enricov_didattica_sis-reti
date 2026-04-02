@@ -1,5 +1,5 @@
 % --------------------------------------------------
-% Margini pagina
+% Margini pagina (del testo)
 % --------------------------------------------------
 \usepackage[
   a4paper,
@@ -32,19 +32,22 @@
 \usepackage{hyperref}
 
 % --------------------------------------------------
-% Sfondo pagina
+% Sfondo pagina a tutto schermo (senza margini)
 % --------------------------------------------------
 \usepackage{background}
+
 \backgroundsetup{
   scale=1,
   angle=0,
   opacity=1,
-  position=current page.center,
+  position=current page.center, % Centra l'immagine sulla pagina fisica
+  nodeanchor=center,            % Forza l'ancoraggio al centro esatto
   pages=all,
   contents={
     \includegraphics[
-      width=\paperwidth,
-      height=\paperheight
-    ]{authoring/imgs/sfondocopyright.png}
+      width=\paperwidth,        % Larghezza totale del foglio
+      height=\paperheight,      % Altezza totale del foglio
+      keepaspectratio=false     % Forza la copertura totale
+    ]{./authoring/imgs/sfondocopyright.png}     % Usa solo il nome file se usi --resource-path
   }
 }

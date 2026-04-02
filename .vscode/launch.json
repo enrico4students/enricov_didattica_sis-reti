@@ -1,41 +1,39 @@
 {
     "version": "0.2.0",
     "configurations": [
-
-
     {
         "name": "Pandoc → PDF file corrente",
         "type": "node-terminal",
         "request": "launch",
-        "command": "pandoc \"${file}\" -o \"${fileDirname}\\${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex --resource-path=\"${fileDirname};${fileDirname}\\imgs\" -H \"${workspaceFolder}\\authoring\\latex\\header1.tex\"",
+        "command": "pandoc \"${file}\" -f markdown+link_attributes -o \"${fileDirname}/${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex --resource-path=\"${fileDirname};${fileDirname}/imgs\" -H \"${workspaceFolder}/authoring/latex/header1.tex\"",
         "cwd": "${workspaceFolder}"
     },
 
-        {
-            "name": "TCP Receiver",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/tcp/tcp_receiver.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/tcp",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "miDebuggerPath": "gdb"
-        },
-        {
-            "name": "UDP Receiver",
-            "type": "cppdbg",
-            "request": "launch",
-            "program": "${workspaceFolder}/udp/udp_receiver.exe",
-            "args": [],
-            "stopAtEntry": false,
-            "cwd": "${workspaceFolder}/udp",
-            "environment": [],
-            "externalConsole": true,
-            "MIMode": "gdb",
-            "miDebuggerPath": "gdb"
-        }
-    ]
+    {
+        "name": "TCP Receiver",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/tcp/tcp_receiver.exe",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/tcp",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb"
+    },
+    {
+        "name": "UDP Receiver",
+        "type": "cppdbg",
+        "request": "launch",
+        "program": "${workspaceFolder}/udp/udp_receiver.exe",
+        "args": [],
+        "stopAtEntry": false,
+        "cwd": "${workspaceFolder}/udp",
+        "environment": [],
+        "externalConsole": true,
+        "MIMode": "gdb",
+        "miDebuggerPath": "gdb"
+    }
+]
 }

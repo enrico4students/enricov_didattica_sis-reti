@@ -122,7 +122,7 @@ Immaginare un laboratorio scolastico con venti computer. Ogni computer ha un cav
 ![](){width=70%}
 
 <p align="center">
-<img src="./imgs/cisco-small-business-sf110-24-ports-unmanaged-rackmountable-switch_871_grande.webp" style="max-width:70%;">
+<img src="./imgs/cisco-small-business-sf110-24-ports-unmanaged.webp" style="max-width:70%;">
 </p>
 ![](){width=70%}
 

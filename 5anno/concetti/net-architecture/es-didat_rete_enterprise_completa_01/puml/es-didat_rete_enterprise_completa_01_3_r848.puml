@@ -1,0 +1,29 @@
+@startuml
+skinparam componentStyle rectangle
+    skinparam shadowing false
+    left to right direction
+
+    rectangle "Internet" as ZI
+    rectangle "DMZ\n10.32.250.0/27" as ZDMZ
+    rectangle "Internal App Zone\n10.32.40.0/27" as ZAPP
+    rectangle "Data Zones\n10.32.40.32/27\n10.32.40.64/27" as ZDATA
+    rectangle "User VLANs\n10.32.16.0/22\n10.32.20.0/25\n10.32.21.0/24\n10.32.22.0/26\n10.32.22.64/26\n10.32.22.128/25" as ZUSERS
+    rectangle "Management\n10.32.41.64/27" as ZMGMT
+    rectangle "Security Management\n10.32.41.32/27" as ZSEC
+
+    ZI --> ZDMZ : HTTPS only
+    ZDMZ --> ZAPP : HTTPS/app ports only
+    ZAPP --> ZDATA : DB ports only
+    ZUSERS --> ZAPP : only where required
+    ZUSERS --> ZDATA : denied by default
+    ZUSERS --> ZMGMT : denied
+    ZUSERS --> ZSEC : denied
+    ZMGMT --> ZAPP : admin only
+    ZMGMT --> ZDATA : admin only
+    ZMGMT --> ZSEC : admin only
+
+    note bottom of ZUSERS
+    I reparti sono separati in VLAN e subnet dedicate.
+    Le eccezioni vengono definite con policy esplicite.
+    end note
+@enduml

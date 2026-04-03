@@ -1,0 +1,109 @@
+@startuml
+skinparam linetype ortho
+    skinparam shadowing false
+    hide stereotype
+
+    frame "Ospedale - Infrastruttura rete" {
+
+    node "Piano 1" as P1 {
+        node "Reparto A" as RA {
+        device "AP A (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APA
+        }
+        node "Reparto B" as RB {
+        device "AP B (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APB
+        }
+        node "Armadio Piano 1" as RACK1 {
+        device "Switch L2 Piano 1\nPoE per AP\nTrunk 802.1Q verso Core" as SW1
+        }
+    }
+
+    node "Piano 2" as P2 {
+        node "Reparto C" as RC {
+        device "AP C (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APC
+        }
+        node "Reparto D" as RD {
+        device "AP D (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APD
+        }
+        node "Armadio Piano 2" as RACK2 {
+        device "Switch L2 Piano 2\nPoE per AP\nTrunk 802.1Q verso Core" as SW2
+        }
+    }
+
+    node "Piano 3" as P3 {
+        node "Reparto E" as RE {
+        device "AP E (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APE
+        }
+        node "Reparto F" as RF {
+        device "AP F (PoE)\nSSID: MEDICI\nWPA2/WPA3-Enterprise\n802.1X/RADIUS" as APF
+        }
+        node "Armadio Piano 3" as RACK3 {
+        device "Switch L2 Piano 3\nPoE per AP\nTrunk 802.1Q verso Core" as SW3
+        }
+    }
+
+    node "Piano Seminterrato" as PS {
+        node "Locale Tecnico" as LT {
+        device "Core Switch L3\nSVI VLAN 10/20/30/99\nRouting inter-VLAN\nACL di base" as CORE
+        device "Firewall\nPolicy inter-VLAN\nNAT/Internet (se presente)\nLogging" as FW
+        device "Proxy filtrante\nWhitelist siti" as PROXY
+        node "DMZ/Server VLAN 30" as DMZ {
+            device "Web Server (HTTPS/TLS)\nApp Terapie" as WEB
+            database "DB Server\nTerapie" as DB
+        }
+        device "RADIUS/AAA\n(AD/LDAP)" as RAD
+        device "DNS interno" as DNS
+        device "DHCP (VLAN 10)\n(oppure su Core/FW)" as DHCP
+        device "NTP" as NTP
+        }
+
+        node "Farmacia" as FARM {
+        device "PC Farmacia\nAccesso applicazione" as PCF
+        }
+    }
+
+    cloud "Internet\n(opzionale)" as NET
+
+    device "Tablet Medico\nsolo aziendali" as TAB
+
+    TAB ..> APA : WiFi\nVLAN 10
+    TAB ..> APB : WiFi\nVLAN 10
+    TAB ..> APC : WiFi\nVLAN 10
+    TAB ..> APD : WiFi\nVLAN 10
+    TAB ..> APE : WiFi\nVLAN 10
+    TAB ..> APF : WiFi\nVLAN 10
+
+    APA -- SW1
+    APB -- SW1
+    APC -- SW2
+    APD -- SW2
+    APE -- SW3
+    APF -- SW3
+
+    SW1 -- CORE : Fibra (1/10G)\nTrunk 802.1Q
+    SW2 -- CORE : Fibra (1/10G)\nTrunk 802.1Q
+    SW3 -- CORE : Fibra (1/10G)\nTrunk 802.1Q
+
+    PCF -- CORE : Ethernet\nVLAN 20
+
+    CORE -- FW : uplink\nVLAN trunk / routed
+    FW -- PROXY : HTTP/HTTPS\npolicy di uscita
+    PROXY -- NET : (se consentito)
+
+    FW -- WEB : HTTPS (TLS)\nconsentito da VLAN 10/20
+    WEB -- DB : SQL\nsolo VLAN 30
+
+    RAD -- FW : AAA (RADIUS)
+    RAD -- CORE : 802.1X/RADIUS
+    DNS -- WEB
+    DHCP -- CORE
+    NTP -- WEB
+    NTP -- DB
+
+    note right of CORE
+        VLAN 10: Medici WiFi 192.168.10.0/24
+        VLAN 20: Farmacia  192.168.20.0/24
+        VLAN 30: Server    192.168.30.0/24
+        VLAN 99: Mgmt      192.168.99.0/24
+    end note
+    }
+@enduml

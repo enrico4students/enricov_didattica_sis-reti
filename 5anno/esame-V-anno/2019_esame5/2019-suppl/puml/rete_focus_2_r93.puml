@@ -1,0 +1,21 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+node "Tecnico in trasferta\nNotebook aziendale\n(4G/5G o rete cliente)" as TECH
+
+cloud "Internet" as NET
+
+node "Firewall Sede\n(VPN Server)" as FW
+
+node "Web Server Ticketing\n(HTTPS)" as WEB
+
+TECH -- NET
+NET -- FW
+FW -- WEB
+
+note right of FW
+Tunnel VPN cifrato
+Autenticazione tecnico
+end note
+@enduml

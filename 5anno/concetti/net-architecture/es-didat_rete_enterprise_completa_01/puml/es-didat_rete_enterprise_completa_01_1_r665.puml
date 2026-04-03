@@ -1,0 +1,105 @@
+@startuml
+skinparam componentStyle rectangle
+    skinparam shadowing false
+    skinparam defaultTextAlignment center
+    left to right direction
+
+    cloud "Internet" as INTERNET
+    cloud "ISP 1" as ISP1
+    cloud "ISP 2" as ISP2
+
+    rectangle "FortiGate Cluster A\nNGFW + IPS + Remote Access VPN\n+ Site-to-Site VPN" as FW
+
+    rectangle "DMZ\n10.32.250.0/27" as DMZ {
+        rectangle "NGINX Plus\nReverse Proxy\n10.32.250.10" as RP
+    }
+
+    rectangle "APP_WEB\n10.32.40.0/27" as APPWEB {
+        rectangle "Web Server\n10.32.40.10" as WEB1
+    }
+
+    rectangle "DB_RDBMS\n10.32.40.32/27" as DBSQL {
+        database "RDBMS\n10.32.40.40" as RDBMS
+    }
+
+    rectangle "DB_NOSQL\n10.32.40.64/27" as DBNOSQL {
+        database "MongoDB\n10.32.40.70" as MONGO
+    }
+
+    rectangle "APP_MEDIA\n10.32.40.96/27" as MEDIAZONE {
+        rectangle "Media Server\n10.32.40.100" as MEDIA
+    }
+
+    rectangle "APP_DEV\n10.32.40.128/27" as DEVZONE {
+        rectangle "Dev 1\n10.32.40.130" as D1
+        rectangle "Dev 2\n10.32.40.131" as D2
+        rectangle "Dev 3\n10.32.40.132" as D3
+        rectangle "Dev 4\n10.32.40.133" as D4
+        rectangle "Dev 5\n10.32.40.134" as D5
+    }
+
+    rectangle "APP_SALES\n10.32.40.160/27" as SALESZONE {
+        rectangle "Sales Server\n10.32.40.170" as SALESAPP
+    }
+
+    rectangle "INFRA_CORE\n10.32.41.0/27" as INFRA {
+        rectangle "AD/DNS 1\n10.32.41.10" as AD1
+        rectangle "AD/DNS 2\n10.32.41.11" as AD2
+        rectangle "DHCP\n10.32.41.12" as DHCP
+        rectangle "NPS 1\n10.32.41.13" as NPS1
+        rectangle "NPS 2\n10.32.41.14" as NPS2
+        rectangle "NTP\n10.32.41.15" as NTP
+    }
+
+    rectangle "SEC_MGMT\n10.32.41.32/27" as SEC {
+        rectangle "Security Console\n10.32.41.34" as SECCON
+    }
+
+    rectangle "NET_MGMT\n10.32.41.64/27" as MGMT {
+        rectangle "Core SW A\n10.32.41.66" as COREA
+        rectangle "Core SW B\n10.32.41.67" as COREB
+        rectangle "FW A mgmt\n10.32.41.68" as FWA
+        rectangle "FW B mgmt\n10.32.41.69" as FWB
+    }
+
+    rectangle "Wireless Infrastructure\n10.32.41.96/27" as WLAN {
+        rectangle "WLC\n10.32.41.98" as WLC
+    }
+
+    rectangle "Sede B\n10.33.0.0/16\nstessa struttura" as SITEB
+    rectangle "Remote users\nFortiClient IPsec" as REMOTE
+
+    INTERNET -- ISP1
+    INTERNET -- ISP2
+    ISP1 -- FW
+    ISP2 -- FW
+
+    FW -- RP
+    RP -- WEB1 : HTTPS / App proxy
+    WEB1 -- RDBMS : SQL only
+    WEB1 -- MONGO : Mongo only
+    WEB1 -- MEDIA : Media only
+
+    FW -- APPWEB
+    FW -- DBSQL
+    FW -- DBNOSQL
+    FW -- MEDIAZONE
+    FW -- DEVZONE
+    FW -- SALESZONE
+    FW -- INFRA
+    FW -- SEC
+    FW -- MGMT
+    FW -- WLAN
+    FW -- SITEB
+    FW -- REMOTE
+
+    note right of DMZ
+    Solo il reverse proxy è esposto.
+    I backend restano nella rete interna.
+    end note
+
+    note bottom of FW
+    La VPN site-to-site e la VPN utenti
+    terminano sul cluster firewall.
+    end note
+@enduml

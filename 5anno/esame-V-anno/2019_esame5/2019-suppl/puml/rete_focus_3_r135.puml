@@ -1,0 +1,23 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+node "Cliente\nBrowser Web" as CLIENT
+
+cloud "Internet" as NET
+
+node "Firewall" as FW
+node "Web Server Ticketing\n(HTTPS)" as WEB
+database "Database Server" as DB
+
+CLIENT -- NET
+NET -- FW
+FW -- WEB
+WEB -- DB
+
+note right of CLIENT
+- Login con credenziali
+- Visualizza report
+- Conferma + commento
+end note
+@enduml

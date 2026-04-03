@@ -1,113 +1,191 @@
+## Patch panel Ethernet
 
-### Il NGFW è “on-line”? Fa routing?
+![Image](https://assets.tripplite.com/large-image/n062024kj-front-l.jpg)
 
-Nelle architetture enterprise reali il **Next Generation Firewall (NGFW)** è molto spesso **inline (on-line)**, cioè posizionato direttamente nel percorso del traffico tra reti o zone diverse.
+![Image](https://infinity-cable-products.com/cdn/shop/products/cat6-24-port-patch-panel-close-up_1024x1024.jpg?v=1651519496)
 
-Esistono due modalità principali di funzionamento.
+![Image](https://i.sstatic.net/jXHI4.jpg)
 
-#### 1. Routed mode (Layer 3)
-
-In questa modalità il firewall:
-
-* ha **indirizzi IP sulle interfacce**
-* mantiene una **tabella di routing**
-* può fare **routing tra WAN, LAN e DMZ**
-* applica policy di sicurezza durante l’inoltro dei pacchetti.
-
-Documentazione Palo Alto Networks:
-[https://docs.paloaltonetworks.com/ngfw/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces](https://docs.paloaltonetworks.com/ngfw/networking/configure-interfaces/layer-3-interfaces/configure-layer-3-interfaces)
-
-In questo caso il firewall funziona **in modo simile a un router**, ma con capacità di sicurezza molto più avanzate.
+![Image](https://m.media-amazon.com/images/S/aplus-media-library-service-media/b1ebf002-7274-43a8-beeb-90d3387984a0.__CR0%2C0%2C1940%2C1200_PT0_SX970_V1___.jpg)
 
 
-#### 2. Transparent mode / Virtual Wire
 
-In questa modalità il firewall è comunque **inline**, ma lavora in modo **trasparente**.
 
-Il firewall:
+Un **patch panel Ethernet** è un dispositivo passivo utilizzato negli armadi di rete per **terminare e organizzare i cavi Ethernet del cablaggio strutturato** di un edificio.
 
-* non partecipa al routing
-* non assegna indirizzi IP alle interfacce del traffico
-* analizza e filtra i pacchetti mentre attraversano il dispositivo.
 
-Documentazione Palo Alto Networks:
-[https://docs.paloaltonetworks.com/pan-os/11-0/pan-os-networking-admin/configure-interfaces/virtual-wire-interfaces](https://docs.paloaltonetworks.com/pan-os/11-0/pan-os-networking-admin/configure-interfaces/virtual-wire-interfaces)
+### Terminare
 
-Questo modello viene usato quando si vuole aggiungere sicurezza **senza modificare l’architettura IP esistente**.
+In ambito di cablaggio di rete, **terminare un cavo** significa collegare in modo stabile e definitivo i fili del cavo a un connettore o a un dispositivo.
+Nel caso dei cavi Ethernet, la terminazione consiste nel collegare i singoli fili del cavo:
 
----
+* ai contatti di una presa di rete
+  oppure
+* ai contatti di un patch panel
 
-#### Architettura enterprise realistica con NGFW
+Questa operazione viene normalmente eseguita tramite sistemi chiamati **IDC (Insulation Displacement Contact)** o **punch-down**.
 
-In molte reti aziendali moderne la struttura è simile alla seguente.
+Il cavo Ethernet contiene **8 fili (4 coppie)**. Durante la terminazione questi fili vengono inseriti nei contatti metallici del patch panel seguendo uno schema standard di cablaggio (T568A oppure T568B).
 
-##### Schema logico (diagramma testuale)
+Una volta terminato, il cavo diventa parte permanente dell’infrastruttura dell’edificio e non viene più scollegato.
 
-```
-Internet
-   |
-   |
-Edge Router / ISP Router
-   |
-   | rete di transito
-   |
-NGFW (inline)
-   |        \
-   |         \
-   |          DMZ
-   |
-rete interna di transito
-   |
-Core / Distribution Layer 3 switch
-   |
-   + VLAN utenti
-   + VLAN server
-   + VLAN VoIP
-   + VLAN WiFi
-   + VLAN management
-```
+---  
 
-Interpretazione:
+Il patch panel è installato normalmente in un **rack standard da 19 pollici** insieme ad altri dispositivi di rete come switch, router e firewall.
 
-* il **router edge** gestisce la connessione verso ISP o WAN
-* il **NGFW è inline** e controlla il traffico tra zone
-* il **NGFW può fare routing tra WAN, LAN e DMZ**
-* il **core/distribution switch Layer 3** gestisce il routing tra VLAN interne.
+La sua funzione principale è quella di fornire un punto ordinato in cui arrivano tutti i cavi di rete provenienti dalle prese Ethernet delle varie stanze dell’edificio.
+
+Da questo punto i collegamenti vengono poi effettuati verso gli switch o altri dispositivi tramite cavi più corti chiamati **patch cord**.
 
 ---
 
-# Diagramma PlantUML
 
-```
-@startuml
+### Struttura di un patch panel Ethernet
 
-title Architettura enterprise con NGFW inline
+Un patch panel Ethernet è un pannello metallico montabile su rack che contiene una serie di porte RJ45.
 
-left to right direction
-skinparam linetype ortho
+I modelli più comuni hanno:
 
-cloud "Internet" as NET
+* **24 porte RJ45**
+* **48 porte RJ45**
 
-rectangle "Edge Router\n(ISP / WAN)" as ER
-rectangle "NGFW\nSecurity + inspection\n(routed mode)" as FW
-rectangle "DMZ\nWeb / reverse proxy\nmail gateway" as DMZ
+Il dispositivo ha due lati con funzioni diverse.
 
-package "Core / Distribution Layer 3" {
+### lato frontale
 
-rectangle "SVI VLAN 10\nUtenti"
-rectangle "SVI VLAN 20\nServer"
-rectangle "SVI VLAN 30\nVoIP"
-rectangle "SVI VLAN 40\nWiFi"
+Il lato frontale contiene le **porte RJ45** visibili nel rack.
 
-}
+Qui vengono collegati i **patch cord** che portano il traffico verso gli switch di rete.
 
-NET --> ER
-ER --> FW
-FW --> DMZ
-FW --> "Core / Distribution Layer 3"
+### lato posteriore
 
-@enduml
-```
+Sul lato posteriore si trovano i terminali IDC nei quali vengono inseriti i fili dei cavi Ethernet provenienti dalle stanze dell’edificio.
+
+Ogni porta frontale è collegata internamente a uno di questi terminali.
 
 ---
 
+### Come si inserisce in una rete
+
+In un edificio con cablaggio strutturato ogni presa Ethernet è collegata con un cavo che arriva fino alla sala server o all’armadio di rete.
+
+Questi cavi non vengono collegati direttamente allo switch.
+
+Vengono invece terminati nel patch panel.
+
+Il collegamento completo diventa quindi:
+
+presa Ethernet nella stanza
+→ cavo Ethernet nel muro
+→ terminazione nel patch panel
+→ patch cord
+→ switch di rete
+
+Questo sistema permette di separare chiaramente:
+
+* il cablaggio **permanente** dell’edificio  
+* i collegamenti **variabili** verso gli apparati di rete
+
+---
+
+### Differenza tra cavo strutturato e patch cord
+
+Il cavo che arriva al patch panel fa parte del **cablaggio strutturato** dell’edificio.
+
+Questo cablaggio è pensato per rimanere installato per molti anni.
+
+Per questo motivo i cavi strutturati:
+
+* non devono essere piegati o scollegati frequentemente
+* vengono terminati nel patch panel
+
+I collegamenti che invece possono cambiare frequentemente sono i **patch cord**, cioè cavi Ethernet corti che collegano il patch panel allo switch.
+
+Se cambia la configurazione della rete è sufficiente spostare questi patch cord.
+
+![](./imgs/)
+
+---
+
+### Posizione del patch panel nel rack
+
+In un armadio di rete il patch panel è normalmente posizionato nella parte superiore del rack, mentre gli switch sono montati subito sotto.
+
+Questo consente di usare patch cord molto corti e di mantenere il cablaggio ordinato.
+
+Un esempio di disposizione tipica potrebbe essere:
+
+patch panel 24 porte
+patch panel 24 porte
+switch 48 porte
+router o firewall
+UPS
+
+In questo modo tutte le connessioni provenienti dalle stanze entrano nei patch panel e poi vengono distribuite agli switch.
+
+---
+
+### Numerazione ed etichettatura
+
+Un elemento molto importante nell’uso dei patch panel è la **numerazione delle porte**.
+
+Ogni porta del patch panel viene associata a una presa Ethernet nell’edificio.
+
+Ad esempio:
+
+porta 1 → ufficio 101
+porta 2 → ufficio 102
+porta 3 → sala riunioni
+
+Questo permette agli amministratori di rete di identificare rapidamente la posizione fisica di ogni collegamento.
+
+L’etichettatura è quindi una parte fondamentale della gestione del cablaggio.
+
+---
+
+### Vantaggi dell’uso di patch panel
+
+L’utilizzo di patch panel è uno standard nelle infrastrutture di rete professionali perché offre diversi vantaggi.
+
+Organizzazione del cablaggio
+tutti i cavi arrivano in un punto ordinato
+
+Maggiore flessibilità
+è possibile cambiare rapidamente i collegamenti spostando i patch cord
+
+Manutenzione più semplice
+i guasti possono essere individuati più facilmente
+
+Protezione degli apparati
+gli switch non vengono collegati direttamente ai cavi permanenti dell’edificio
+
+---
+
+### Esempio pratico
+
+Immaginare un edificio con 20 uffici, ciascuno con una presa Ethernet.
+
+Tutti i cavi delle prese arrivano nella sala server e vengono terminati in un patch panel da 24 porte.
+
+Per attivare la rete nell’ufficio 103 basta collegare con un patch cord:
+
+porta 3 del patch panel
+→ porta dello switch
+
+Se un giorno l’ufficio cambia funzione, è sufficiente spostare il patch cord senza modificare il cablaggio dell’edificio.
+
+---
+
+### Alcuni riferimenti
+
+Patch Panel – Wikipedia
+[https://en.wikipedia.org/wiki/Patch_panel](https://en.wikipedia.org/wiki/Patch_panel)
+
+Structured Cabling Basics – Cisco
+[https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html](https://www.cisco.com/c/en/us/support/docs/lan-switching/ethernet/10561-3.html)
+
+Patch Panel vs Switch – FS
+[https://www.fs.com/blog/patch-panel-vs-switch-understanding-their-role-in-the-network-7846.html](https://www.fs.com/blog/patch-panel-vs-switch-understanding-their-role-in-the-network-7846.html)
+
+Structured Cabling Guide – RackSolutions
+[https://www.racksolutions.com/news/blog/patch-panel/](https://www.racksolutions.com/news/blog/patch-panel/)

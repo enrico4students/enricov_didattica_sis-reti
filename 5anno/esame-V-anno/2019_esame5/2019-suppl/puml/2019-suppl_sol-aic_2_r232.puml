@@ -1,0 +1,14 @@
+@startuml
+cloud "Internet" as NET
+rectangle "Router" as RTR
+rectangle "Firewall/UTM" as FW
+rectangle "Web Server (DMZ)" as WEB
+rectangle "App Server" as APP
+rectangle "DB Server" as DB
+
+NET --> RTR
+RTR --> FW
+FW --> WEB
+WEB --> APP
+APP --> DB
+@enduml

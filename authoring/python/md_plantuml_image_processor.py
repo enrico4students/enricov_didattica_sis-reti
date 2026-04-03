@@ -799,9 +799,11 @@ def main() -> int:
         logging.getLogger().setLevel(logging.DEBUG)
 
     root = Path(args.root).expanduser().resolve()
+    custom_root = False
     # Se vuoi un default personale per testing, scommenta la riga seguente:
-    # if root == Path("./").resolve():
-    #     root = Path("D:\\...\\tuo_path")
+    if root == Path("./").resolve():        
+        root = Path("D:\\00_data\\08-dev\\didattica\\enricov_didattica_sis-reti\\5anno\\concetti\\dispositivi").resolve()
+        custom_root = True
 
     plantuml_jar = resolve_plantuml_jar(args.plantuml_jar)
     if plantuml_jar is None:
@@ -813,7 +815,9 @@ def main() -> int:
     except Exception as exc:
         logger.error(f"ERRORE FATALE: {exc}")
         return 1
-
+    finally:
+        if custom_root:
+            logger.info(f"Nota: è stato usato un percorso di root personalizzato per testing:\n{root}")
 
 if __name__ == "__main__":
     raise SystemExit(main())

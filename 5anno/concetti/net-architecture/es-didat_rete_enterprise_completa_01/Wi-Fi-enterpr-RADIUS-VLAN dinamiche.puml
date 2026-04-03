@@ -1,0 +1,40 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+left to right direction
+
+actor "Utente Wi-Fi" as USER
+rectangle "Access Point" as AP
+rectangle "WLC 9800" as WLC
+rectangle "NPS / RADIUS" as RADIUS
+rectangle "Active Directory" as AD
+rectangle "Firewall / Policy" as FW
+rectangle "VLAN 10\nProgrammatori" as V10
+rectangle "VLAN 20\nHR" as V20
+rectangle "VLAN 30\nVendite" as V30
+rectangle "VLAN 40\nProcurement" as V40
+rectangle "VLAN 50\nMarketing" as V50
+rectangle "VLAN 60\nIT" as V60
+
+USER -- AP : 802.1X
+AP -- WLC
+WLC -- RADIUS : RADIUS auth/accounting
+RADIUS -- AD : group lookup
+WLC -- V10 : dynamic assignment
+WLC -- V20 : dynamic assignment
+WLC -- V30 : dynamic assignment
+WLC -- V40 : dynamic assignment
+WLC -- V50 : dynamic assignment
+WLC -- V60 : dynamic assignment
+FW -- V10
+FW -- V20
+FW -- V30
+FW -- V40
+FW -- V50
+FW -- V60
+
+note right of RADIUS
+Il gruppo dell'utente determina
+la VLAN assegnata.
+end note
+@enduml

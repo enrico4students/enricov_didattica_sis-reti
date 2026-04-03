@@ -1,0 +1,72 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+top to bottom direction
+
+rectangle "Server Room - Piano 0" as SR {
+    rectangle "Core/Distribution A\nCatalyst 9500" as CDA
+    rectangle "Core/Distribution B\nCatalyst 9500" as CDB
+    rectangle "FortiGate Cluster" as FG
+    rectangle "WLC 9800" as WLC9800
+    rectangle "Server Farm" as SF
+}
+
+frame "Armadio Piano 1" as F1 {
+    rectangle "Access Switch P1-A\nCatalyst 9300" as P1A
+    rectangle "Access Switch P1-B\nCatalyst 9300" as P1B
+    rectangle "AP Piano 1" as AP1
+    rectangle "Utenti Programmatori" as U1
+}
+
+frame "Armadio Piano 2" as F2 {
+    rectangle "Access Switch P2-A\nCatalyst 9300" as P2A
+    rectangle "Access Switch P2-B\nCatalyst 9300" as P2B
+    rectangle "AP Piano 2" as AP2
+    rectangle "Utenti Programmatori + HR" as U2
+}
+
+frame "Armadio Piano 3" as F3 {
+    rectangle "Access Switch P3-A\nCatalyst 9300" as P3A
+    rectangle "Access Switch P3-B\nCatalyst 9300" as P3B
+    rectangle "AP Piano 3" as AP3
+    rectangle "Utenti Vendite" as U3
+}
+
+frame "Armadio Piano 4" as F4 {
+    rectangle "Access Switch P4-A\nCatalyst 9300" as P4A
+    rectangle "Access Switch P4-B\nCatalyst 9300" as P4B
+    rectangle "AP Piano 4" as AP4
+    rectangle "Utenti Vendite + Procurement + Marketing" as U4
+}
+
+CDA -- P1A
+CDA -- P2A
+CDA -- P3A
+CDA -- P4A
+
+CDB -- P1B
+CDB -- P2B
+CDB -- P3B
+CDB -- P4B
+
+FG -- CDA
+FG -- CDB
+WLC9800 -- CDA
+WLC9800 -- CDB
+SF -- CDA
+SF -- CDB
+
+P1A -- AP1
+P1B -- U1
+P2A -- AP2
+P2B -- U2
+P3A -- AP3
+P3B -- U3
+P4A -- AP4
+P4B -- U4
+
+note right of SR
+Il core è centralizzato nella server room.
+Ogni piano ha uplink ridondati verso i due core.
+end note
+@enduml

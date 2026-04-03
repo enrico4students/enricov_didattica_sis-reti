@@ -1,0 +1,27 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+left to right direction
+
+rectangle "Sede A\n203.0.113.20\n10.32.0.0/16" as SA
+rectangle "FortiGate A\nIPsec / IKEv2" as FGA
+cloud "ISP A1 / ISP A2" as ISPA
+cloud "Internet" as NET
+cloud "ISP B1 / ISP B2" as ISPB
+rectangle "FortiGate B\nIPsec / IKEv2" as FGB
+rectangle "Sede B\n198.51.100.20\n10.33.0.0/16" as SB
+
+SA -- FGA
+FGA -- ISPA
+ISPA -- NET
+NET -- ISPB
+ISPB -- FGB
+FGB -- SB
+
+note bottom of NET
+Tunnel IPsec route-based.
+La selezione dei flussi ammessi tra reparti
+avviene tramite routing e policy firewall,
+non creando un tunnel separato per ogni VLAN.
+end note
+@enduml

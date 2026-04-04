@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import logging
 import os
 import re
 import shutil
@@ -17,6 +18,10 @@ from urllib.parse import urlparse, unquote
 import requests
 from PIL import Image
 
+# Configurazione logging
+logging.basicConfig(level=logging.INFO, format="%(levelname)s: %(message)s")
+logger = logging.getLogger(__name__)
+
 
 @dataclass
 class MarkdownTypeInfo:
@@ -28,7 +33,7 @@ class MarkdownTypeInfo:
 class PlantUMLBlock:
     ordinal: int
     start_line: int
-    fence: Optional[str]      # None se blocco libero (senza backtick)
+    fence: Optional[str]
     info: str
     body: str
     start_idx: int
@@ -145,11 +150,6 @@ class ConfirmManager:
 
 
 def find_plantuml_blocks(text: str, md_file: Path) -> List[PlantUMLBlock]:
-    """
-    Trova blocchi PlantUML in due forme:
-    1. Fenced code blocks: ```plantuml ... ```
-    2. Plain blocks: @startuml ... @enduml (non annidati in fence)
-    """
     blocks: List[PlantUMLBlock] = []
     ordinal = 0
     base_name = sanitize_name(md_file.stem)
@@ -158,14 +158,13 @@ def find_plantuml_blocks(text: str, md_file: Path) -> List[PlantUMLBlock]:
     ensure_dir(puml_dir)
     ensure_dir(img_dir)
 
-    # 1. Rilevamento blocchi con fence (```plantuml, ```puml, ```uml)
+    # Fenced blocks
     fence_pattern = re.compile(
         r"(?ms)^(?P<fence>`{3,}|~{3,})[ \t]*(?P<info>[^\n`]*)\n(?P<body>.*?)^\1[ \t]*$"
     )
     for match in fence_pattern.finditer(text):
         info = (match.group("info") or "").strip().lower()
-        # Accetta plantuml, puml, uml
-        if not any(keyword in info for keyword in ("plantuml", "puml", "uml")):
+        if not any(kw in info for kw in ("plantuml", "puml", "uml")):
             continue
         ordinal += 1
         start_idx = match.start()
@@ -185,13 +184,11 @@ def find_plantuml_blocks(text: str, md_file: Path) -> List[PlantUMLBlock]:
             )
         )
 
-    # 2. Rilevamento blocchi liberi @startuml ... @enduml (non all'interno di fence)
-    #    Per evitare doppioni, escludiamo le aree già coperte dai blocchi con fence.
-    #    Costruiamo una lista di intervalli già processati.
-    occupied_intervals = [(b.start_idx, b.end_idx) for b in blocks]
+    # Free @startuml/@enduml blocks (non nested)
+    occupied = [(b.start_idx, b.end_idx) for b in blocks]
 
     def is_occupied(pos: int) -> bool:
-        return any(start <= pos < end for start, end in occupied_intervals)
+        return any(start <= pos < end for start, end in occupied)
 
     free_pattern = re.compile(
         r"(?ms)^[ \t]*@startuml[ \t]*(?P<info>[^\n]*)\n(?P<body>.*?)^[ \t]*@enduml[ \t]*$"
@@ -224,17 +221,17 @@ def write_text_file(path: Path, content: str) -> None:
     ensure_dir(path.parent)
     path.write_text(content, encoding="utf-8", newline="\n")
 
+
 def render_plantuml_to_jpg(puml_path: Path, jpg_path: Path, plantuml_jar: Path) -> None:
     if not plantuml_jar.exists():
         raise FileNotFoundError(f"PlantUML jar non trovato: {plantuml_jar}")
 
-    # Genera PNG (affidabile, poi convertiamo in JPG)
+    # Genera PNG (affidabile), poi converti in JPG
     result = subprocess.run(
         ["java", "-jar", str(plantuml_jar), "-tpng", str(puml_path)],
         capture_output=True,
-        text=True
+        text=True,
     )
-
     if result.returncode != 0:
         raise RuntimeError(
             f"PlantUML fallito con codice {result.returncode}\n"
@@ -243,20 +240,18 @@ def render_plantuml_to_jpg(puml_path: Path, jpg_path: Path, plantuml_jar: Path) 
             f"Stdout: {result.stdout.strip()}"
         )
 
-    # Il PNG viene generato nella stessa directory del .puml
     generated_png = puml_path.with_suffix(".png")
     if not generated_png.exists():
         raise RuntimeError(f"PlantUML non ha generato il PNG atteso: {generated_png}")
 
-    # Converti PNG in JPG nella destinazione desiderata
     ensure_dir(jpg_path.parent)
     with Image.open(generated_png) as img:
         if img.mode != "RGB":
             img = img.convert("RGB")
         img.save(jpg_path, "JPEG", quality=95)
 
-    # Rimuovi il PNG temporaneo
     generated_png.unlink()
+
 
 def build_image_markdown(md_type: str, alt: str, rel_path: str, width_percent: Optional[int] = None) -> str:
     alt = alt or "immagine"
@@ -342,7 +337,6 @@ def parse_markdown_image(inner: str) -> Tuple[str, Optional[str]]:
 
 def find_markdown_images(text: str) -> List[ImageReference]:
     pattern = re.compile(r'''(?s)!\[(?P<alt>[^\]]*)\]\((?P<inner>.*?)\)(?P<attrs>\{[^}]*\})?''')
-
     refs: List[ImageReference] = []
     ordinal = 0
     for match in pattern.finditer(text):
@@ -351,7 +345,6 @@ def find_markdown_images(text: str) -> List[ImageReference]:
         src, title = parse_markdown_image(inner)
         if not src:
             continue
-
         ordinal += 1
         refs.append(
             ImageReference(
@@ -411,12 +404,6 @@ def local_image_to_jpg(src_path: Path, target_jpg_path: Path) -> None:
     copy_or_convert_to_jpg(src_path, target_jpg_path)
 
 
-def make_target_image_name(md_file: Path, ordinal: int, line_no: int, source: str) -> str:
-    base = sanitize_name(md_file.stem)
-    source_name = sanitize_name(Path(source).stem) if not is_remote_url(source) else "remote"
-    return f"{base}_img{ordinal}_r{line_no}_{source_name}_{sha1_short(source)}.jpg"
-
-
 def process_plantuml_blocks(
     text: str,
     md_file: Path,
@@ -425,10 +412,6 @@ def process_plantuml_blocks(
     plantuml_jar: Optional[Path],
     replace_block: bool = False,
 ) -> Tuple[str, List[str]]:
-    """
-    replace_block: se True, il blocco PlantUML originale viene rimosso e sostituito dall'immagine.
-                   se False (default), l'immagine viene aggiunta DOPO il blocco.
-    """
     blocks = find_plantuml_blocks(text, md_file)
     if not blocks:
         return text, []
@@ -452,22 +435,18 @@ Immagine JPG da generare:
     {block.jpg_path}
 Il file _processed riceverà un link all'immagine {'in sostituzione del blocco' if replace_block else 'subito dopo il blocco PlantUML'}."""
         if confirm.ask(desc):
+            # Sovrascrivi sempre il file .puml (nessun controllo di esistenza)
+            body_content = block.body.strip()
+            if not body_content:
+                body_content = 'note "Diagramma vuoto"'
 
-            if block.puml_path.exists():
-                actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: file .puml già esistente, preservato")
+            if not re.match(r'^\s*@startuml', body_content, re.IGNORECASE):
+                puml_content = f"@startuml\n{body_content}\n@enduml"
             else:
-                body_content = block.body.strip()
-                if not body_content:
-                    body_content = 'note "Diagramma vuoto"'
+                puml_content = body_content
 
-                # Aggiungi @startuml/@enduml se non già presenti (ignorando spazi iniziali)
-                if not re.match(r'^\s*@startuml', body_content, re.IGNORECASE):
-                    puml_content = f"@startuml\n{body_content}\n@enduml"
-                else:
-                    puml_content = body_content
-
-                write_text_file(block.puml_path, puml_content)
-                actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: creato {block.puml_path.name}")
+            write_text_file(block.puml_path, puml_content)
+            actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: creato/aggiornato {block.puml_path.name}")
 
             if plantuml_jar is None:
                 raise RuntimeError("Specificare --plantuml-jar oppure impostare PLANTUML_JAR.")
@@ -479,17 +458,13 @@ Il file _processed riceverà un link all'immagine {'in sostituzione del blocco' 
 
             rel_img = relative_posix_path(block.jpg_path, md_file.parent)
             img_md = build_image_markdown(md_type.kind, f"PlantUML {block.ordinal}", rel_img, 70)
-            print(f"[DEBUG] img_md = {img_md}")
             if replace_block:
-                # Sostituisci il blocco con l'immagine
                 result_parts.append(img_md)
                 actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: blocco originale rimosso e sostituito con immagine")
             else:
-                # Mantieni il blocco e aggiungi immagine dopo
                 result_parts.append(text[block.start_idx:block.end_idx] + "\n\n" + img_md)
                 actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: aggiunta immagine dopo il blocco")
         else:
-            # Non elaborare questo blocco: lascialo invariato
             result_parts.append(text[block.start_idx:block.end_idx])
             actions.append(f"PlantUML blocco {block.ordinal} riga {block.start_line}: operazione saltata")
 
@@ -723,13 +698,13 @@ def process_markdown_file(
     if not md_file.exists():
         raise FileNotFoundError(f"File Markdown non trovato: {md_file}")
 
-    original_text = md_file.read_text(encoding="utf-8")
+    # Leggi con utf-8-sig per rimuovere eventuale BOM
+    original_text = md_file.read_text(encoding="utf-8-sig")
     md_type = detect_markdown_type(original_text)
     confirm = ConfirmManager(assume_yes=assume_yes)
 
-    print(f"\nFile: {md_file}")
-    print(f"Tipo Markdown rilevato: {md_type.kind}")
-    print(f"Motivo: {md_type.reason}")
+    logger.info(f"File: {md_file}")
+    logger.info(f"Tipo Markdown rilevato: {md_type.kind} ({md_type.reason})")
 
     processed_path = create_processed_copy_path(md_file)
     desc = f"""Verrà creata una copia del file Markdown con suffisso _processed.
@@ -740,30 +715,31 @@ Destinazione:
     if not confirm.ask(desc):
         raise RuntimeError("Creazione file _processed annullata.")
 
-    text_after_puml, actions_puml = process_plantuml_blocks(
-        original_text, md_file, md_type, confirm, plantuml_jar, replace_block=replace_plantuml
+    # Prima normalizza tutte le immagini esistenti (esclusi i blocchi PlantUML)
+    text_after_img, actions_img = replace_images_in_text(original_text, md_file, md_type, confirm)
+    # Poi aggiungi i blocchi PlantUML con le loro immagini
+    final_text, actions_puml = process_plantuml_blocks(
+        text_after_img, md_file, md_type, confirm, plantuml_jar, replace_block=replace_plantuml
     )
-    final_text, actions_img = replace_images_in_text(text_after_puml, md_file, md_type, confirm)
 
     processed_path.write_text(final_text, encoding="utf-8", newline="\n")
     actions = [f"Tipo markdown rilevato: {md_type.kind} ({md_type.reason})"]
-    actions.extend(actions_puml)
     actions.extend(actions_img)
+    actions.extend(actions_puml)
     actions.append(f"Creato file elaborato: {processed_path}")
 
     return ProcessResult(final_text, actions)
 
 
 def process_tree(root: Path, plantuml_jar: Optional[Path], assume_yes: bool = False, replace_plantuml: bool = False) -> int:
-
     if not root.exists():
         raise FileNotFoundError(f"Radice non trovata: {root}")
     if not root.is_dir():
         raise NotADirectoryError(f"La radice non è una directory: {root}")
 
     files = iter_markdown_files(root)
-    print(f"Radice scansione: {root}")
-    print(f"File Markdown trovati da elaborare: {len(files)}")
+    logger.info(f"Radice scansione: {root}")
+    logger.info(f"File Markdown trovati da elaborare: {len(files)}")
 
     if not files:
         return 0
@@ -779,9 +755,9 @@ def process_tree(root: Path, plantuml_jar: Optional[Path], assume_yes: bool = Fa
                 print(f" - {action}")
         except Exception as exc:
             failures += 1
-            print(f"\nERRORE nel file {md_file}: {exc}", file=sys.stderr)
+            logger.error(f"ERRORE nel file {md_file}: {exc}", exc_info=False)
 
-    print(f"\nRiepilogo finale: elaborati {total} file, errori {failures}.")
+    logger.info(f"Riepilogo finale: elaborati {total} file, errori {failures}.")
     return 1 if failures else 0
 
 
@@ -802,6 +778,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Sostituisci il blocco PlantUML originale con l'immagine generata (default: aggiunge l'immagine dopo il blocco).",
     )
+    parser.add_argument("--verbose", action="store_true", help="Mostra output dettagliato (debug).")
     return parser
 
 
@@ -818,22 +795,29 @@ def main() -> int:
     parser = build_arg_parser()
     args = parser.parse_args()
 
+    if args.verbose:
+        logging.getLogger().setLevel(logging.DEBUG)
+
     root = Path(args.root).expanduser().resolve()
-    
-    # Questo è ok per testing:
-    if root == Path("./").resolve(): 
-        root = Path("D:\\00_data\\08-dev\\didattica\\enricov_didattica_sis-reti\\5anno\\concetti\\net-architecture\\es-didat_rete_enterprise_completa_01")
+    custom_root = False
+    # Se vuoi un default personale per testing, scommenta la riga seguente:
+    if root == Path("./").resolve():        
+        root = Path("D:\\00_data\\08-dev\\didattica\\enricov_didattica_sis-reti\\5anno\\concetti\\dispositivi").resolve()
+        custom_root = True
 
     plantuml_jar = resolve_plantuml_jar(args.plantuml_jar)
-    # Opzionale: se ancora None, imposta un path di default
     if plantuml_jar is None:
-        plantuml_jar = Path("D:\\programs\\plantuml\\plantuml.jar")
+        logger.error("Nessun plantuml.jar specificato. Usa --plantuml-jar o imposta la variabile d'ambiente PLANTUML_JAR.")
+        return 1
 
     try:
         return process_tree(root, plantuml_jar, args.yes, args.replace_plantuml)
     except Exception as exc:
-        print(f"\nERRORE: {exc}", file=sys.stderr)
+        logger.error(f"ERRORE FATALE: {exc}")
         return 1
+    finally:
+        if custom_root:
+            logger.info(f"Nota: è stato usato un percorso di root personalizzato per testing:\n{root}")
 
 if __name__ == "__main__":
     raise SystemExit(main())

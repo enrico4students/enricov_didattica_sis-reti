@@ -1,1110 +1,415 @@
 
 
+# Sottoreti, precisazione
 
-Il punto difficile, di solito, è questo: 
-core switch e distribution switch non sono “due switch uno sopra l’altro” che fanno quasi la stessa cosa.  
-In una architettura gerarchica a 3 layer hanno ruoli diversi, anche se in prodotti moderni alcune funzioni possono sovrapporsi.
+**Si parla di sottoreti anche con CIDR**, ma il significato del termine  leggermente rispetto al modello classful.
 
-Conviene immaginare i 3 layer così:
+Bisogna distinguere tre concetti **storici** diversi:
 
-- access layer: collegare i dispositivi finali  
-- distribution layer: organizzare, separare, controllare, instradare localmente
-- core layer: trasportare il traffico molto velocemente tra le varie parti della rete
+1. indirizzamento **classful**  
+2. **subnetting** delle reti classful  
+3. **CIDR e indirizzamento classless**   
 
-La relazione fra core e distribution è quindi soprattutto questa:
-- il distribution è il punto in cui le reti locali vengono raccolte, separate e spesso instradate;
-- il core è il dorsale centrale ad alta velocità che collega tra loro tutti i distribution.  
+---
 
-In altre parole, 
-- il distribution “sa” molto bene cosa c’è nella propria zona della rete; 
-- il core “non vuole sapere troppi dettagli”, ma deve portare i pacchetti rapidamente da una zona all’altra.
-!EV ritornarci
+# 1. Nel modello classful il concetto di sottorete è fondamentale
 
+Nel modello IPv4 originale le reti erano divise in classi:
 
-Una buona analogia è questa.
+| Classe | Prefisso | Esempio     |
+| ------ | -------- | ----------- |
+| A      | /8       | 10.0.0.0    |
+| B      | /16      | 172.16.0.0  |
+| C      | /24      | 192.168.1.0 |
 
-L’access layer è fatto dalle strade di quartiere.
-Il distribution layer è fatto dagli svincoli o dalle tangenziali locali che raccolgono il traffico di più quartieri.
-Il core layer è fatto dall’autostrada principale che collega città o grandi zone.
+Qui esisteva una **rete “naturale”** definita dalla classe.
 
-Il traffico non parte normalmente dal core. 
-- Parte quasi sempre da un host collegato all’access,  
-- sale al distribution, 
-- e solo se necessario attraversa il core per raggiungere un’altra parte della rete.
+Esempio, rete classe C: 192.168.1.0 /24
 
-#### 1. Ruolo concettuale del distribution layer
+Se si voleva dividere questa rete si **prendevano bit dalla parte host** per creare subnet.
 
-Il distribution layer è il livello in cui spesso si trovano le funzioni “intelligenti” di controllo del traffico. Per esempio:
+Esempio: 192.168.1.0 /26 ottenendo ad esempio le sottoreti:  
+192.168.1.0  
+192.168.1.64  
+192.168.1.128  
+192.168.1.192  
 
-- aggregare più access switch
-- fare routing tra VLAN
-- applicare ACL
-- applicare policy di sicurezza e QoS
-- fare summarization delle rotte verso il core !EV spiegare
-- essere default gateway delle VLAN di una certa area o edificio
+Qui il termine **subnet** è letterale:
 
-Quindi il distribution è spesso il punto in cui il traffico viene “capito” dal punto di vista logico.
+una **sottorete di una rete classe C**.
 
-Esempio.
+---
 
-In un edificio scolastico o aziendale si possono avere:
+# 2. Con CIDR le classi non esistono più
 
-VLAN 10 amministrazione
-VLAN 20 laboratori
-VLAN 30 docenti
-VLAN 40 ospiti
+Con l'introduzione di **Classless Inter-Domain Routing (CIDR)** RFC 4632 le classi A, B e C **non hanno più alcun significato operativo**. Gli indirizzi sono semplicemente:
+rete + prefisso
 
-Gli access switch collegano PC, stampanti e access point.
-I distribution switch ricevono i trunk dagli access switch, conoscono le VLAN e spesso ospitano le SVI, cioè le interfacce logiche di routing come:
+esempio:  
+10.10.20.0 /24  
+172.16.8.0 /21  
+192.168.100.0 /26  
 
-VLAN 10 -> 10.10.10.1
-VLAN 20 -> 10.10.20.1
-VLAN 30 -> 10.10.30.1
-VLAN 40 -> 10.10.40.1
+Non esiste più una "rete madre" naturale.
 
-In questo caso il distribution non si limita a inoltrare frame Ethernet: fa anche vero routing IP tra le subnet/VLAN.
-!EV: assunzione non necessaria tecnicamente ma frequente: 1 rete IP <-> VLAN
+---
 
+# 3. Con CIDR la parola sottorete è ancora usata (ma in modo concettuale)
 
-#### 2. Ruolo concettuale del core layer
+Nel linguaggio pratico degli amministratori di rete la parola **sottorete continua ad essere usata**, ma con un significato diverso. Ora significa semplicemente:
 
-Il core layer invece ha l’obiettivo principale di trasportare traffico nel modo più rapido, affidabile e ridondato possibile.
+> una rete ottenuta dividendo un blocco di indirizzi più grande.
 
-Tipicamente il core:
+Esempio, si ha un blocco assegnato 10.0.0.0 /16, si fa la divisione interna:  
+10.0.10.0 /24  
+10.0.20.0 /24  
+10.0.30.0 /24  
 
-- collega i distribution dei diversi edifici, piani o aree
-- fornisce backbone ad alta velocità
-- usa collegamenti molto veloci e spesso ridondati
-- mantiene tabelle di routing meno dettagliate, spesso grazie alla **summarization**
-- cerca di evitare policy troppo pesanti che rallenterebbero il forwarding
+Queste vengono normalmente chiamate **sottoreti**, anche se tecnicamente sono solo **prefissi più specifici**.
 
-Il core quindi è una specie di “spina dorsale” della rete.
+---
 
-Non è il posto ideale per concentrare troppe ACL molto complesse, NAT, filtri applicativi o logiche troppo locali. Quelle di solito stanno prima, cioè nel distribution o nei firewall.
+# 4. Esempio reale
 
-#### 3. Rapporto concreto fra distribution e core
+Supponiamo che un'azienda possieda: 10.0.0.0 /16  All'interno si definiscono reti per VLAN: 
+VLAN 10 → 10.0.10.0 /24  
+VLAN 20 → 10.0.20.0 /24  
+VLAN 30 → 10.0.30.0 /24  
 
-La relazione concreta è questa:
+Formalmente:
 
-- ogni distribution raccoglie il traffico dei propri access switch;
-- se la destinazione è locale alla sua area, il distribution può risolvere tutto da solo;
-- se la destinazione è remota, il distribution inoltra il traffico al core;
-- il core trasporta il traffico fino al distribution corretto;
-- il distribution di destinazione lo porta verso l’access switch finale.
+* sono prefissi CIDR
+* sono anche **sottoreti del blocco 10.0.0.0/16**
 
-Questa è la dinamica fondamentale.
+Entrambe le affermazioni sono corrette.
 
-Quindi il core non “gestisce le VLAN degli utenti finali” nel dettaglio, salvo casi particolari. In genere trasporta traffico tra **blocchi di rete già organizzati dai distribution**. !EV:todo dettagliare
+---
 
-#### 4. Primo esempio pratico: comunicazione dentro la stessa VLAN
+# 5. Differenza concettuale importante
 
-Caso molto tipico.
+Nel modello classful:
 
-PC-A è nella VLAN 20, IP 10.10.20.15
-PC-B è nella VLAN 20, IP 10.10.20.80
+rete principale → definita dalla classe.
 
-Se stanno nello stesso dominio Layer 2, il traffico può anche non arrivare né al distribution né al core, dipende da dove si trovano.
+Nel modello CIDR:
 
-Caso A: i due PC sono sullo stesso access switch
-Il traffico resta nello switch di accesso.
-PC-A fa ARP per sapere il MAC di PC-B, poi invia direttamente i frame Ethernet.
-Distribution e core non intervengono.
-
-Caso B: i due PC sono su access switch diversi ma sempre nella stessa VLAN estesa
-Il traffico sale dagli access switch verso il distribution, ma resta traffico Layer 2.
-Il distribution inoltra i frame verso il ramo corretto.
-Il core, in una rete ben progettata, spesso non è coinvolto se la VLAN è locale al medesimo blocco di distribution.
-
-Qui si vede già una cosa importante: non tutto il traffico “passa dal core”. Anzi, in una buona progettazione si cerca di non mandare inutilmente tutto al core.
-
-#### 5. Secondo esempio pratico: traffico fra VLAN diverse nella stessa area
-
-PC-A:          VLAN 20, IP 10.10.20.15
-Server locale: VLAN 30, IP 10.10.30.50
-
-Il PC vuole parlare con un host che sta in un’altra subnet. Quindi non manda direttamente il frame al server, ma al proprio default gateway, ad esempio 10.10.20.1, che è sul distribution switch.
-
-Succede questo:
-
-1. PC-A vede che 10.10.30.50 non è nella sua subnet.
-2. PC-A fa ARP per il default gateway 10.10.20.1.
-3. Il frame va dall’access switch al distribution.
-4. Il distribution riceve il pacchetto IP, controlla la destinazione, consulta la tabella di routing.
-5. Vede che la rete 10.10.30.0/24 è direttamente connessa tramite la SVI della VLAN 30.
-6. Riscrive l’intestazione Layer 2 e inoltra verso il server nella VLAN 30. !EV:todo dettagliare
-
-In questo caso il core non serve.
-
-Questa è una delle idee più importanti da visualizzare: 
-il distribution non è solo “un passaggio verso il core”. 
-Molto spesso risolve localmente una grande quantità di traffico.
-
-#### 6. Terzo esempio pratico: traffico fra aree diverse, quindi attraverso il core
-
-Immaginare due edifici.
-
-Edificio A
-
-* VLAN 20 studenti: 10.10.20.0/24
-* Distribution A
-
-Edificio B
-
-* VLAN 120 segreteria: 10.20.120.0/24
-* Distribution B
-
-In mezzo c’è il core.
-
-Uno studente del edificio A deve raggiungere un server amministrativo nel edificio B.
-
-Il percorso tipico è questo:
-
-host sorgente -> access A -> distribution A -> core -> distribution B -> access/server B
-
-Vediamolo logicamente.
-
-Il PC sorgente invia al suo default gateway sul Distribution A.
-Il Distribution A guarda la destinazione 10.20.120.x.
-Capisce che quella rete non è locale.
-Ha una route verso il core, oppure una route specifica appresa dal core. EV:todo dettagliare un route verso uno switch non ha senso
-Inoltra il pacchetto al core.
-
-Il core non si occupa del dettaglio del singolo host studente.
-Il core vede che la rete 10.20.120.0/24, oppure magari il blocco riassunto 10.20.0.0/16, è raggiungibile tramite Distribution B. EV:todo dettagliare bloccoo riassunto
-Quindi inoltra il pacchetto verso Distribution B.
-
-Il Distribution B riceve il pacchetto, vede che la subnet di destinazione è direttamente connessa alla sua VLAN o al suo segmento locale, risolve il MAC se serve e lo inoltra al destinatario.
-
-Questa è la **relazione tipica core-distribution**: 
-il distribution porta il traffico “verso il backbone”, il core lo trasporta fino al distribution corretto.
-
-#### 7. Quarto esempio pratico: uscita verso Internet
-
-Un altro caso tipicissimo è il traffico verso Internet.
-
-PC utente -> access -> distribution -> core -> firewall/router edge -> Internet
-
-Perché spesso passa dal core?
-
-Perché il firewall o il router verso Internet si trovano in una zona centrale del campus o del datacenter, collegata al core.
-
-Sequenza logica:
-
-il PC invia al default gateway sul distribution
-il distribution capisce che la destinazione non è una rete interna locale
-inoltra verso il core
-il core sa che la default route o la rete esterna è verso il firewall/router centrale
-inoltra lì
-il firewall applica le policy, poi invia verso Internet
-
-Anche qui il core non prende decisioni “applicative” complesse: fa principalmente transito veloce.
-
-#### 8. Quinto esempio pratico: accesso a server in datacenter o server farm
-
-In molte reti enterprise la server farm è collegata al core oppure a un distribution dedicato del datacenter. EV:todo: precisazione non è il caso solito di accesso esterno a WEB server in una DMZ i server WEB sono collegati ad una interfaccia del firewall router
-
-Caso:
-
-utente in ufficio -> server applicativo centrale
-
-Percorso:
-
-PC -> access -> distribution utente -> core -> distribution datacenter oppure direttamente core -> server farm
-
-Il traffico passa dal core perché sta andando da una zona campus a una zona centralizzata.
-
-Se poi il server applicativo deve interrogare un database nella stessa server farm, quella seconda comunicazione può restare interna al blocco datacenter, senza tornare indietro nel campus.
-
-#### 9. Che cosa “sa” il core e che cosa “sa” il distribution
-
-Questo punto aiuta molto la visualizzazione mentale.
-
-Il distribution sa:
-
-quali VLAN ha sotto di sé
-quali subnet sono direttamente connesse
-quali policy locali applicare
-quali access switch e quali utenti appartengono alla sua area
-
-Il core sa:
-
-quali grossi blocchi di rete stanno dietro ciascun distribution
-come raggiungerli nel modo più veloce e ridondato
-come mantenere la continuità del backbone anche in caso di guasto
-
-Quindi il distribution ha visibilità più “locale e dettagliata”.
-Il core ha visibilità più “globale e sintetica”.
-
-#### 10. Perché non collegare tutti gli access direttamente al core?
-
-Perché il core non deve diventare il punto in cui si concentra tutta la complessità di rete.
-
-Se tutti gli access arrivassero direttamente al core:
-
-il core dovrebbe gestire troppe VLAN e troppi dettagli
-la rete diventerebbe meno scalabile
-aumenterebbe il dominio di guasto
-sarebbe più difficile applicare policy per area
-il backbone perderebbe il suo ruolo pulito di trasporto EV:precisazione stupitdità il ruolo non è un beneficio per se ma conseguenza degli altri benefici
-
-Il distribution serve proprio a fare da livello intermedio di aggregazione e controllo.
-
-#### 11. Ridondanza: perché spesso si vedono due core e due distribution
-
-Nelle reti reali si vede spesso una coppia di core switch e una coppia di distribution switch.
-
-Non è solo per “avere un backup”, ma per evitare singoli punti di guasto e per distribuire il carico.
-
-Per esempio:
-
-Access switch collegato a Distribution 1 e Distribution 2
-Distribution 1 e 2 collegati a Core 1 e Core 2
-
-Così, se cade un link o un apparato, il traffico può passare da un altro percorso.
-
-Qui entrano in gioco protocolli e meccanismi come:
-
-STP nelle parti Layer 2
-link aggregation
-HSRP/VRRP/GLBP per gateway ridondati
-OSPF/EIGRP/IS-IS oppure routing statico nelle parti Layer 3
-ECMP per usare più percorsi
-
-Dal punto di vista concettuale, la cosa importante è questa: 
-la relazione core-distribution non è solo verticale, ma anche ridondata e spesso “a maglia parziale”.
-
-#### 12. Due modi comuni di progettare il rapporto core-distribution
-
-Esistono due approcci tipici.
-
-##### Primo approccio:  
-Layer 2 fino al distribution, routing al distribution
-È molto comune nel campus tradizionale.
-Gli access switch portano VLAN al distribution tramite trunk.
-Le SVI e il routing stanno sul distribution.
-Il core riceve traffico già instradato a Layer 3.
-
-Questo modello è molto chiaro didatticamente.
-
-Secondo approccio: più Layer 3 già verso l’access
-In architetture più moderne, soprattutto grandi campus, si preferisce spesso limitare il Layer 2 e portare il routing più vicino all’edge.
-In questo caso il ruolo del distribution può cambiare o ridursi, e a volte si parla di collapsed core.
-
-Ma nella classica architettura a 3 layer, l’idea base resta: 
-distribution organizza e instrada localmente, core trasporta tra domini diversi.
-
-#### 13. Esempio completo semplice
-
-Immaginare una scuola grande con due edifici.
-
-Edificio A
-
-* laboratori informatici
-* aule
-* access switch ai piani
-* distribution A
-
-Edificio B
-
-* segreteria
-* presidenza
-* server locali
-* distribution B
-
-Centro rete
-
-* core
-* firewall
-* connessione Internet
-
-Caso 1: PC laboratorio A stampa su stampante del laboratorio A
-Il traffico può restare nell’access o nel distribution A. Il core non interviene.
-
-Caso 2: PC laboratorio A accede al registro elettronico interno ospitato nel edificio B
-Il traffico sale a Distribution A, poi passa al core, poi arriva a Distribution B, poi al server.
-
-Caso 3: PC segreteria B naviga su Internet
-Il traffico va da Distribution B al core e poi al firewall centrale.
-
-Caso 4: PC laboratorio A accede a un server DNS locale presente nel proprio edificio
-Il distribution A può inoltrare direttamente senza coinvolgere il core, se il DNS è locale a quel blocco.
-
-#### 14. Dove nasce spesso la confusione
-
-La confusione nasce perché in molti schemi si disegnano solo scatole e linee verticali, e sembra che:
-
-access -> distribution -> core
-
-sia sempre un semplice “salire verso l’alto”.
-
-In realtà ogni livello non è definito dalla posizione nel disegno, ma dalla funzione.
-
-Il distribution non è solo “uno switch intermedio”; è il punto in cui spesso si separano broadcast domain, si fa inter-VLAN routing, si applicano regole, si aggregano access multipli.
-
-Il core non è semplicemente “lo switch più grosso”; è la dorsale di trasporto veloce e affidabile.
-
-Quindi la domanda da porsi è sempre:
-
-questo traffico può essere risolto localmente dal distribution?
-Se sì, il core non serve.
-Se no, il distribution porta il traffico al core.
-
-#### 15. Regola mentale molto utile
-
-Per visualizzare bene il movimento dei pacchetti, usare questa regola:
-
-stessa VLAN e stesso segmento locale: spesso resta in basso EV:todo:chiarire segmento locale
-VLAN diverse ma stessa area servita dallo stesso distribution: sale fino al distribution e lì viene instradato
-destinazione in un’altra area o verso servizi centrali: sale al distribution, poi attraversa il core, poi scende nel distribution corretto
-
-Questa è probabilmente la sintesi più utile.
-
-#### 16. Formula finale molto compatta
-
-Si può riassumere così:
-
-l’access collega gli endpoint,
-il distribution organizza e instrada le reti locali,
-il core collega rapidamente i vari blocchi di distribution.
-
-Oppure, ancora più concretamente:
-
-il distribution decide “se posso consegnare qui oppure devo mandare al backbone”;
-il core decide “a quale distribution devo consegnare questo traffico”.
-
-
-### Diagrammi
-Si consideri una rete campus abbastanza tipica con architettura gerarchica a tre livelli. Lo schema seguente è volutamente semplice ma realistico.
-
-SCHEMA LOGICO
-
-```
-                    INTERNET
-                       |
-                    FIREWALL
-                       |
-                    CORE 1
-                   /      \
-                CORE 2    (ridondanza)
-                 /   \
-         ------------- -------------
-         |                           |
-    DISTRIBUTION A              DISTRIBUTION B
-    (Edificio A)                (Edificio B)
-       /      \                     /      \
- ACCESS A1  ACCESS A2         ACCESS B1  ACCESS B2
-    |           |                |           |
-  PC A1       PC A2           PC B1       SERVER B
-```
-
-Ipotesi tipica:
-
-VLAN 10 studenti   edificio A → 10.10.10.0/24
-VLAN 20 laboratori edificio A → 10.10.20.0/24
-VLAN 110 amministr edificio B → 10.20.110.0/24
-VLAN 120 server    edificio B → 10.20.120.0/24
-
-I gateway delle VLAN sono sugli switch di distribution.
+rete principale → definita **solo dal prefisso scelto**.
 
 Esempio:
 
-Distribution A
-VLAN 10 → 10.10.10.1 EV:todo: non sono indirizzi di rete
-VLAN 20 → 10.10.20.1
+10.0.0.0 /8
+10.0.0.0 /16
+10.0.0.0 /20
 
-Distribution B
-VLAN 110 → 10.20.110.1
-VLAN 120 → 10.20.120.1
+sono **tutte reti valide**.
 
-Il core invece vede le reti in modo più sintetico, ad esempio:
-
-10.10.0.0/16 → Distribution A
-10.20.0.0/16 → Distribution B
+Non esiste più una gerarchia imposta dal protocollo.
 
 ---
 
-CASO 1
-COMUNICAZIONE NELLA STESSA VLAN E STESSO ACCESS SWITCH
+# 6. Linguaggio professionale
 
-PC A1 → PC A2
-Entrambi VLAN 20
-Access A1
-
-Percorso dei pacchetti:
-
-PC A1 -> ACCESS A1 -> PC A2
-
-Il traffico non arriva nemmeno al distribution. Motivo: stesso dominio Layer 2. 
-
-Operazione reale:
-
-1 PC A1 invia ARP
-2 ACCESS A1 impara MAC
-3 frame Ethernet inviato direttamente al PC B
+Nel lavoro quotidiano si usano ancora termini come: subnet, subnetting, subnet mask anche se dal punto di vista teorico CIDR li rende in parte ridondanti. Questo succede per **ragioni storiche e di chiarezza operativa**.
+Un amministratore dirà normalmente: 
+"questa VLAN usa la subnet 10.10.20.0/24"  
+anche se tecnicamente sarebbe più preciso dire:  
+"questa rete ha prefisso /24".  
 
 ---
 
-CASO 2
-STESSA VLAN MA ACCESS SWITCH DIVERSI
+# 7. Sintesi
 
-PC A1 VLAN 20 → PC A2 VLAN 20
+Una formulazione chiara e moderna può essere:
 
-Schema
-
-PC A1
-↓
-ACCESS A1
-↓ trunk VLAN 20
-DISTRIBUTION A
-↓ trunk VLAN 20
-ACCESS A2
-↓
-PC A2
-
-In questo caso il traffico è ancora Layer 2.
-
-Il distribution non fa routing.
-Fa solo forwarding Ethernet tra trunk.
-
-Il core non interviene perché la VLAN è locale al blocco Distribution A.
+Nel modello IPv4 attuale (CIDR) una rete è definita da un **prefisso**.
+Quando si divide un blocco di indirizzi più grande in reti più piccole si parla ancora comunemente di **sottoreti**, anche se non esiste più una rete “di classe” da cui derivano.
 
 ---
 
-CASO 3
-TRAFFICO TRA VLAN DIVERSE NELLO STESSO EDIFICIO
+# 8. Conclusione
 
-PC A1 VLAN 20
-IP 10.10.20.15
-
-Server locale VLAN 10
-IP 10.10.10.50
-
-Gateway VLAN 20
-10.10.20.1 (Distribution A)
-
-Percorso
-
-PC A1
-↓
-ACCESS A1
-↓
-DISTRIBUTION A (routing inter-VLAN)
-↓
-ACCESS A2
-↓
-SERVER
-
-Sequenza logica:
-
-1 PC vede che 10.10.10.50 è fuori subnet
-2 usa il default gateway 10.10.20.1
-3 il pacchetto arriva al Distribution A
-4 Distribution A consulta tabella routing
-5 trova rete 10.10.10.0 direttamente connessa
-6 riscrive MAC destinazione
-7 inoltra verso VLAN 10
-
-Il core non viene usato.
-
-Questa è una funzione tipica del distribution.
+Non è corretto dire che il concetto di sottorete esiste solo nel classful addressing.  
+È corretto dire che:
+* nel modello classful le subnet derivano dalle classi
+* nel modello CIDR le subnet sono semplicemente **prefissi più specifici all'interno di un blocco di indirizzi**
 
 ---
 
-CASO 4
-COMUNICAZIONE TRA EDIFICI (ATTRAVERSO IL CORE)
+## Alcuni riferimenti
 
-PC A1 laboratorio
-10.10.20.15
+RFC 4632 – Classless Inter-Domain Routing (CIDR)
+[https://datatracker.ietf.org/doc/html/rfc4632](https://datatracker.ietf.org/doc/html/rfc4632)
 
-Server amministrativo
-10.20.110.30
+Cisco – Introduction to CIDR
+[https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html](https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html)
 
-Percorso reale
+Cloudflare – What is CIDR
+[https://www.cloudflare.com/learning/network-layer/what-is-cidr/](https://www.cloudflare.com/learning/network-layer/what-is-cidr/)
 
-PC A1
-↓
-ACCESS A1
-↓
-DISTRIBUTION A
-↓
-CORE
-↓
-DISTRIBUTION B
-↓
-ACCESS B1
-↓
-SERVER
-
-Sequenza tecnica
-
-1 PC A1 invia al gateway 10.10.20.1
-2 Distribution A riceve il pacchetto
-3 tabella routing → rete 10.20.0.0 via core
-4 inoltro verso CORE
-5 il CORE guarda la route
-6 rete 10.20.0.0 → Distribution B
-7 inoltro a Distribution B
-8 Distribution B vede subnet locale
-9 inoltra verso ACCESS B1
-10 consegna al server
-
-Il core qui agisce come dorsale di trasporto.
 
 ---
 
-CASO 5
-ACCESSO A INTERNET
+# Come si lavora realmente con i piani di indirizzamento nelle reti professionali
 
-PC A1 → sito web
+Nei libri di testo il subnetting viene spesso insegnato come esercizio matematico: si parte da una rete assegnata, si calcolano i bit di subnet e si ottengono sottoreti consecutive (ad esempio .0, .32, .64, .96 ecc.).
 
-Percorso
+Questo approccio è utile per comprendere il funzionamento tecnico del protocollo IPv4, ma **non riflette completamente il modo in cui si progettano le reti nel mondo professionale**.
 
-PC A1
-↓
-ACCESS A1
-↓
-DISTRIBUTION A
-↓
-CORE
-↓
-FIREWALL
-↓
-INTERNET
-
-Sequenza
-
-1 PC invia al gateway locale
-2 Distribution A vede destinazione esterna
-3 usa route verso core
-4 core inoltra al firewall
-5 firewall applica NAT e policy
-6 traffico esce su Internet
+Nelle infrastrutture reali la progettazione degli indirizzi IP è guidata principalmente da criteri di **leggibilità, organizzazione e crescita futura**, più che dal puro calcolo sui bit.
 
 ---
 
-VISUALIZZAZIONE SEMPLIFICATA DEL FLUSSO
+## Obiettivi di un piano di indirizzamento professionale
 
-tra host stessa VLAN
+Quando si progetta una rete aziendale si cercano soprattutto questi risultati:
 
-HOST
-↓
-ACCESS
-↓
-HOST
+* facilità di comprensione della rete
+* facilità di troubleshooting
+* possibilità di espansione futura
+* coerenza con la struttura organizzativa
+* possibilità di automatizzare configurazioni
 
-tra VLAN nello stesso edificio
-
-HOST
-↓
-ACCESS
-↓
-DISTRIBUTION (routing)
-↓
-ACCESS
-↓
-HOST
-
-tra edifici diversi
-
-HOST
-↓
-ACCESS
-↓
-DISTRIBUTION
-↓
-CORE
-↓
-DISTRIBUTION
-↓
-ACCESS
-↓
-HOST
-
-verso Internet
-
-HOST
-↓
-ACCESS
-↓
-DISTRIBUTION
-↓
-CORE
-↓
-FIREWALL
-↓
-INTERNET
+Per questo motivo il piano di indirizzamento viene progettato **prima della configurazione dei dispositivi**, spesso insieme alla progettazione delle VLAN e della topologia di rete.
 
 ---
 
-IDEA CHIAVE PER VISUALIZZARE CORE E DISTRIBUTION
+## Uso di indirizzi privati nelle reti interne
 
-Distribution
+Nelle reti aziendali quasi sempre si utilizzano **indirizzi IPv4 privati**, definiti dallo standard:
 
-• aggrega access switch
-• gestisce VLAN
-• fa routing inter-VLAN
-• applica policy
-• conosce i dettagli locali
+RFC 1918
 
-Core
+Questi indirizzi non sono instradabili su Internet e sono pensati proprio per reti interne.
 
-• collega i diversi distribution
-• trasporta traffico molto velocemente
-• mantiene routing più semplice
-• minimizza funzioni pesanti
+Gli intervalli sono tre:
 
----
+| Intervallo                    | Dimensione   |
+| ----------------------------- | ------------ |
+| 10.0.0.0 – 10.255.255.255     | molto grande |
+| 172.16.0.0 – 172.31.255.255   | medio        |
+| 192.168.0.0 – 192.168.255.255 | piccolo      |
 
-### Risposta 3
-
-Punto fondamentale: 
-**in una architettura a tre layer il routing IP è presente sia nel core sia nel distribution**.  
-Quello che cambia non è l’esistenza delle routing tables, ma **il tipo di informazioni che contengono e il ruolo che svolgono nel percorso dei pacchetti**.
-
-In altre parole:
-
-* gli **access switch** normalmente non fanno routing (sono Layer-2);
-* i **distribution switch** fanno routing **locale** tra le reti dell’area che servono;
-* i **core switch** fanno routing tra le varie **aree** della rete.
-
-Quindi **sia il core sia il distribution hanno routing tables**.
-
-La differenza è concettuale:
-
-distribution → routing **dettagliato e locale**
-core →         routing **aggregato e di backbone**
+Nella maggior parte delle aziende l’accesso a Internet avviene tramite **NAT sul firewall o sul router**, che traduce gli indirizzi privati in indirizzi pubblici.
 
 ---
 
-#### 1. Routing tables nei distribution switch
+## Quali indirizzi vengono scelti più spesso
 
-In generale, i **distribution switch hanno routing tables complete per le reti locali**.
+Nel mondo professionale esistono alcune scelte molto comuni.
 
-Queste tabelle includono tipicamente:
+### Piccole reti (casa, piccoli uffici)
 
-1. **reti direttamente connesse**
+Molto diffuso:
 
-Sono le VLAN presenti sotto quel distribution.
-Ogni VLAN ha una SVI (Switched Virtual Interface) che funge da gateway.
+192.168.1.0/24
 
-Esempio:
+oppure
 
-VLAN 20 → 10.10.20.1
-VLAN 30 → 10.10.30.1
+192.168.0.0/24
 
-Queste reti appaiono nella routing table come **connected routes**.
+Motivo:
+molti router domestici sono già configurati così.
 
-2. **rotte verso altre aree della rete**
-
-Le reti non locali vengono instradate verso il core.
-
-3. **default route (spesso)**
-
-Il distribution spesso ha una route:
-
-0.0.0.0/0 → core
-
-che indica che tutto ciò che non è locale deve andare al core.
-
-4. **rotte apprese dinamicamente**
-
-Se si usa OSPF, IS-IS o EIGRP, il distribution apprende le reti delle altre aree tramite il core.
+Controindicazione:
+può creare problemi con VPN o reti interconnesse perché è **troppo comune**.
 
 ---
 
-#### 2. Routing tables nei core switch
+### Aziende medie
 
-Il core **fa routing tra distribution**, ma normalmente non ha tutte le subnet dettagliate della rete.
+Molto frequente utilizzare blocchi della rete:
 
-Il core usa spesso **route aggregate (summarization)**.
+10.0.0.0/8
 
-Esempio:
+oppure una porzione come:
 
-**tutte** le reti dell'edificio A
 10.10.0.0/16
-
-**tutte** le reti dell'edificio B
 10.20.0.0/16
 
-In questo modo la routing table del core resta piccola e veloce.
+Motivo:
 
-Una routing table tipica del core contiene:
-
-* route aggregate verso i distribution
-* default route verso firewall / Internet
-* eventuali rotte verso server farm o datacenter
-
-Il core quindi **non ha bisogno di conoscere ogni VLAN**.
+* spazio enorme
+* facile da suddividere
+* possibilità di creare molte sottoreti.
 
 ---
 
-#### 3. Come avviene il routing in pratica
+### Grandi organizzazioni
 
-Quando un pacchetto arriva a uno switch Layer-3 succede questo:
+Spesso viene assegnato un **intero schema gerarchico**, ad esempio:
 
-1. lo switch legge l'indirizzo IP di destinazione
-2. consulta la routing table
-3. sceglie la route più specifica
-4. determina l'interfaccia di uscita
-5. **riscrive** l'intestazione Ethernet
-6. inoltra il pacchetto
+10.0.0.0/8
 
-Questo processo è identico sia nel core sia nel distribution.
+poi suddiviso in modo strutturato:
 
----
+10.sede.rete.host
 
-#### 4. Applicazione all'esempio della rete precedente
+Esempio:
 
-Rete semplificata:
+10.1.10.0/24 → sede Milano VLAN uffici
+10.1.20.0/24 → sede Milano VLAN server
+10.2.10.0/24 → sede Roma VLAN uffici
 
-Edificio A
-Distribution A
-
-VLAN 10 studenti → 10.10.10.0/24
-VLAN 20 laboratori → 10.10.20.0/24
-
-Edificio B
-Distribution B
-
-VLAN 110 amministrazione → 10.20.110.0/24
-VLAN 120 server → 10.20.120.0/24
-
-Il core collega i due distribution.
+Questo permette di **capire immediatamente la funzione della rete guardando l'indirizzo IP**.
 
 ---
 
-#### 5. Routing table del Distribution A
+## Come vengono scelti gli indirizzi delle sottoreti
 
-Distribution A conosce le proprie VLAN.
+Nei libri di testo spesso si vede questo schema:
 
-Routing table tipica:
+rete iniziale:
+192.168.1.0 /24
 
-10.10.10.0/24 → directly connected (VLAN10)
-10.10.20.0/24 → directly connected (VLAN20)
-10.20.0.0/16  → via core
-0.0.0.0/0     → via core
+sottoreti:
 
-Interpretazione:
+192.168.1.0
+192.168.1.32
+192.168.1.64
+192.168.1.96
 
-le reti 10.10.x sono locali
-tutte le reti 10.20.x stanno dietro Distribution B tramite il core
+Questo è corretto dal punto di vista matematico, ma nella pratica **raramente si lavora così**.
 
----
-
-#### 6. Routing table del Distribution B
-
-Routing table:
-
-10.20.110.0/24 → directly connected
-10.20.120.0/24 → directly connected
-10.10.0.0/16   → via core
-0.0.0.0/0      → via core
+Nel mondo reale si preferiscono schemi **più leggibili e regolari**.
 
 ---
 
-#### 7. Routing table del Core
+## Numerazione leggibile delle reti
 
-Il core vede i due blocchi di rete.
+Molti amministratori di rete scelgono di far corrispondere il numero della rete al numero della VLAN o al reparto.
 
-Routing table:
-
-10.10.0.0/16 → Distribution A
-10.20.0.0/16 → Distribution B
-0.0.0.0/0    → firewall
-
-Il core non contiene le singole VLAN.
-
-Non serve sapere:
-
-10.10.10.0
-10.10.20.0
-
-gli basta sapere che **tutto il blocco 10.10.x è dietro Distribution A**.
-
----
-
-#### 10. Riassunto concettuale molto importante
-
-In una architettura a 3 layer:
-
-distribution switch
-
-* hanno routing tables dettagliate
-* conoscono le VLAN locali
-* fanno inter-VLAN routing
-* inviano traffico remoto verso il core
-
-core switch
-
-* hanno routing tables più piccole
-* usano route aggregate
-* trasportano traffico tra distribution
-* mantengono il backbone semplice e veloce
-
----
-
-Una regola molto utile per visualizzare il routing è questa:
-
-distribution decide **se la destinazione è locale o remota**
-core decide **verso quale distribution inviare il traffico**.
-
-#### risposta 4
-
-Quando si parla di **core switch** in una architettura a tre livelli, il termine *zona* non è un termine tecnico di routing standard. È un 
-termine **descrittivo** usato per indicare una **porzione della rete che sta dietro un certo distribution layer**.  
-In pratica significa semplicemente **un blocco logico di rete**.
-
-Una zona può corrispondere a:
-
-* un edificio
-* un piano
-* un reparto aziendale
-* un campus secondario
-* una server farm
-* una rete remota collegata con VPN
-
-Quindi *zona* = **insieme di subnet gestite da uno o più distribution switch**.
-
-Non è una struttura formale del protocollo IP. È solo un modo per descrivere la topologia.
-
----
-
-#### 1. La routing table del core ha una route per ogni distribution?
-
-In generale **no**.
-
-Il core **non ha normalmente una route per ogni distribution switch**,  
-ma piuttosto **una route per ogni blocco di rete** che sta dietro quel distribution.
-
-La routing table contiene **destinazioni di rete**, non dispositivi.
-
-Quindi le entry sono del tipo:
-
-rete → next-hop
-
-non
-
-switch → next-hop
-
----
-
-#### 2. Che cosa rappresentano le route del core
-
-Le route del core rappresentano **blocchi di indirizzi IP**.
-
-Questi blocchi sono spesso **aggregazioni di subnet** (route summarization).
-
-Questo è molto importante perché:
-
-* riduce la dimensione delle routing tables
-* aumenta la velocità del forwarding
-* rende la rete più stabile
-
----
-
-#### 3. Esempio semplice
-
-Supponiamo questa rete.
-
-Edificio A
-Distribution A
+Esempio:
 
 VLAN 10 → 10.10.10.0/24
 VLAN 20 → 10.10.20.0/24
 VLAN 30 → 10.10.30.0/24
 
-Edificio B
-Distribution B
+Oppure:
 
-VLAN 110 → 10.20.110.0/24
-VLAN 120 → 10.20.120.0/24
+VLAN 10 → 192.168.10.0/24
+VLAN 20 → 192.168.20.0/24
+VLAN 30 → 192.168.30.0/24
 
-Il core **non ha bisogno di conoscere ogni VLAN**.
+Questo consente di:
 
-Può avere questa routing table:
+* riconoscere immediatamente la rete
+* evitare confusione
+* ridurre gli errori di configurazione.
 
-10.10.0.0/16 → Distribution A
-10.20.0.0/16 → Distribution B
-
-Quindi solo **due route** invece di cinque.
-
-Questo è il concetto di **route summarization**.
+In altre parole **si preferiscono incrementi di 10, 20, 30 ecc.** invece che incrementi matematici derivati dai bit.
 
 ---
 
-#### 4. Perché non avere tutte le subnet nel core
+## Un esempio realistico
 
-Il core potrebbe anche avere tutte le subnet.
+Una piccola azienda con tre VLAN potrebbe usare:
 
-Esempio:
+VLAN 10 uffici
+192.168.10.0/24
 
-10.10.10.0/24  → Distribution A
-10.10.20.0/24  → Distribution A
-10.10.30.0/24  → Distribution A
-10.20.110.0/24 → Distribution B
-10.20.120.0/24 → Distribution B
+VLAN 20 server
+192.168.20.0/24
 
-Questo funziona.
+VLAN 30 wifi ospiti
+192.168.30.0/24
 
-Ma non è ideale perché:
+Gateway tipico:
 
-* la routing table cresce molto
-* aumenta il traffico dei protocolli di routing
-* aumenta la complessità
-* peggiora la scalabilità
+192.168.10.1
+192.168.20.1
+192.168.30.1
 
-Per questo si preferisce la **summarization**.
+Questo schema è estremamente leggibile.
 
 ---
 
-#### 5. Next-hop nella routing table del core
+## Lasciare spazio per la crescita
 
-Ogni route del core punta a un **next-hop IP**, che è tipicamente un'interfaccia del distribution.
+Un altro principio molto importante nella progettazione reale è **lasciare spazio per reti future**.
 
-Esempio reale.
+Esempio.
 
-Routing table del core:
+Invece di usare:
 
-10.10.0.0/16 → 192.168.1.2
-10.20.0.0/16 → 192.168.1.3
+192.168.1.0
+192.168.1.32
+192.168.1.64
 
-Dove
+si preferisce:
 
-192.168.1.2 = Distribution A
-192.168.1.3 = Distribution B
+192.168.10.0
+192.168.20.0
+192.168.30.0
 
-Quindi la routing table **non contiene il nome dello switch**, ma il suo indirizzo IP.
+così restano disponibili:
 
----
+192.168.40.0
+192.168.50.0
+192.168.60.0
 
-#### 6. Caso con ridondanza
-
-In molte reti il core è collegato a **due distribution** per ridondanza.
-
-Esempio:
-
-Core
-↓
-Distribution A1
-Distribution A2
-
-Entrambi servono lo stesso edificio.
-
-La routing table del core può avere:
-
-10.10.0.0/16 → A1
-10.10.0.0/16 → A2
-
-Questo si chiama **ECMP (Equal Cost Multi Path)**.
-
-Il traffico può essere bilanciato tra i due percorsi.
+per future espansioni.
 
 ---
 
-#### 7. Esempio completo con routing tables
+## Caveats professionali
 
-Architettura:
+Alcune scelte comuni dei professionisti.
 
-PC laboratorio edificio A
-10.10.20.15
+Evitare reti troppo comuni come:
 
-Server amministrativo edificio B
-10.20.110.30
+192.168.0.0/24
+192.168.1.0/24
 
-Distribution A gestisce:
+perché spesso causano problemi con VPN.
 
-10.10.10.0/24
-10.10.20.0/24
+Separare sempre reti diverse tramite VLAN:
 
-Distribution B gestisce:
+uffici
+server
+wifi ospiti
+management
+dispositivi IoT.
 
-10.20.110.0/24
-10.20.120.0/24
+Usare sempre una struttura coerente nel tempo: cambiare schema di indirizzamento durante la crescita della rete può diventare molto costoso.
 
----
-
-Routing table Distribution A
-
-10.10.10.0/24 → connected
-10.10.20.0/24 → connected
-10.20.0.0/16 → core
+Documentare sempre il piano di indirizzamento in un documento di rete.
 
 ---
 
-Routing table Core
+## Riassunto
 
-10.10.0.0/16 → Distribution A
-10.20.0.0/16 → Distribution B
+L'approccio scolastico al subnetting serve per capire il funzionamento dei bit e delle maschere.
 
----
+Nel lavoro reale invece si progettano i piani di indirizzamento privilegiando:
 
-Routing table Distribution B
+* leggibilità
+* organizzazione
+* espandibilità
+* coerenza con VLAN e topologia
 
-10.20.110.0/24 → connected
-10.20.120.0/24 → connected
-10.10.0.0/16 → core
+Per questo motivo nelle reti professionali è molto comune vedere schemi come:
 
----
+192.168.10.0
+192.168.20.0
+192.168.30.0
 
-#### 8. Percorso reale del pacchetto
+oppure
 
-PC 10.10.20.15 → server 10.20.110.30
+10.10.10.0
+10.10.20.0
+10.10.30.0
 
-passo 1
-
-PC invia al gateway 10.10.20.1
-Distribution A
-
-passo 2
-
-Distribution A controlla routing table
-
-destinazione 10.20.110.30
-match → 10.20.0.0/16
-
-next-hop → core
-
-passo 3
-
-Core riceve il pacchetto
-
-match → 10.20.0.0/16
-
-next-hop → Distribution B
-
-passo 4
-
-Distribution B controlla routing table
-
-match → 10.20.110.0/24
-
-rete direttamente connessa
-
-passo 5
-
-inoltro allo switch access e quindi al server
+anche se dal punto di vista matematico non sono la suddivisione "più compatta".
 
 ---
 
-#### 9. Regola fondamentale da ricordare
+## Alcuni riferimenti
 
-La routing table non rappresenta **dispositivi**, ma **reti IP**.
+RFC 1918 – Address Allocation for Private Internets
+[https://datatracker.ietf.org/doc/html/rfc1918](https://datatracker.ietf.org/doc/html/rfc1918)
 
-Quindi il core non instrada verso uno switch perché è uno switch, ma perché **quello switch è il next-hop verso una certa rete**.
+Cisco – Private IP Addressing
+[https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/13772-12.html](https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/13772-12.html)
 
----
-
-#### 10. Formula mentale molto utile
-
-Distribution layer
-
-routing dettagliato delle subnet locali
-
-Core layer
-
-routing aggregato tra blocchi di rete
-
----
-
-Se si desidera, posso anche mostrare **una vera routing table di uno switch Cisco Layer-3 (`show ip route`) in una rete campus**, perché vedere le entry reali chiarisce moltissimo come funzionano core e distribution nella pratica.
-
+Cloudflare – Private IP Addresses Explained
+[https://www.cloudflare.com/learning/network-layer/what-is-a-private-ip-address/](https://www.cloudflare.com/learning/network-layer/what-is-a-private-ip-address/)

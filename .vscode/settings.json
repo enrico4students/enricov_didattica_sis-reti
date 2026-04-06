@@ -1,8 +1,10 @@
 {
     "markdown.marp.themes": [
-        "./authoring/themes/portrait.css" 
+        "./authoring/themes/portrait_marp.css"
 ],
 "markdown.styles": [
     "./authoring/themes/portrait.css"
-]
+],
+"python-envs.defaultEnvManager": "ms-python.python:conda",
+"python-envs.defaultPackageManager": "ms-python.python:conda"
 }

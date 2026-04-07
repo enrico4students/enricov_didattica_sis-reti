@@ -1,0 +1,176 @@
+@startuml
+title Struttura alberghiera con stabilimento balneare - Architettura 3 layer didattica
+
+    left to right direction
+    skinparam backgroundColor white
+    skinparam shadowing false
+    skinparam linetype ortho
+    skinparam packageStyle rectangle
+    skinparam roundcorner 18
+    skinparam nodesep 40
+    skinparam ranksep 35
+    skinparam defaultTextAlignment center
+
+    skinparam rectangle {
+    BorderColor #333333
+    FontColor #111111
+    FontSize 15
+    }
+
+    skinparam cloud {
+    BorderColor #333333
+    FontColor #111111
+    FontSize 15
+    }
+
+    skinparam database {
+    BorderColor #333333
+    FontColor #111111
+    FontSize 14
+    }
+
+    skinparam note {
+    BackgroundColor #FFF8DC
+    BorderColor #B8860B
+    FontSize 13
+    }
+
+    cloud "Internet" as INTERNET #DDEBF7
+    rectangle "ONT / CPE FTTH\nTerminazione operatore" as CPE #E2F0D9
+
+    rectangle "Firewall / UTM\nNAT - ACL - VPN - Routing inter-VLAN\nControllo accessi tra reti" as FW #F4CCCC
+
+    package "DMZ" #FCE4D6 {
+    rectangle "Web Server\nHTTPS 443 / HTTP 80" as WEB
+    }
+
+    package "Core Layer\nDidattico: separato ma non strettamente necessario" #D9EAD3 {
+    rectangle "Core Switch\nBackbone centrale" as CORE
+    }
+
+    package "Distribution Layer" #FFF2CC {
+    rectangle "Distribution Switch Hotel\nAggregazione area hotel" as DIST_H
+    rectangle "Distribution Switch Remoto\nAggregazione collegamento stabilimento" as DIST_R
+    }
+
+    package "Access Layer - Hotel" #D9EAF7 {
+    rectangle "Access Switch Uffici / Reception" as ACC_OFF
+    rectangle "Access Switch Sale Convegni" as ACC_CONF
+    rectangle "Access Switch Servizi / Tecnici" as ACC_SRV
+    rectangle "Access Switch Wi-Fi Hotel" as ACC_WIFI_H
+    }
+
+    package "Access Layer - Stabilimento" #EADCF8 {
+    rectangle "Access Switch Stabilimento" as ACC_BEACH
+    rectangle "Bridge Radio PTP\nlato Hotel" as BR_H
+    rectangle "Bridge Radio PTP\nlato Stabilimento" as BR_B
+    }
+
+    package "Server e servizi interni" #E2F0D9 {
+    rectangle "Server Gestionale Hotel\nVLAN 20 - 10.10.20.10" as APP
+    rectangle "DHCP / DNS / RADIUS / Wi-Fi Controller\nVLAN 20" as INFRA
+    database "RDBMS\nVLAN 20 - 10.10.20.20" as DB
+    rectangle "Management / Monitoraggio\nVLAN 80" as MGMT
+    }
+
+    package "Dispositivi finali hotel" #F3F3F3 {
+    rectangle "PC Uffici\nVLAN 10" as PC_OFF
+    rectangle "Reception / Terminali gestionali\nVLAN 10" as RECEPT
+    rectangle "Sale convegni\nprese dati / apparati\nVLAN 30" as CONF_DEV
+    rectangle "Access Point Ospiti Hotel\nSSID hotel_guest\nVLAN 40" as AP_H_GUEST
+    rectangle "Access Point Staff / Tecnici\nSSID staff\nVLAN 10/80" as AP_H_STAFF
+    rectangle "Colonnine EV\nVLAN 60" as EV
+    }
+
+    package "Dispositivi finali stabilimento" #F3F3F3 {
+    rectangle "Postazioni personale stabilimento\nVLAN 90" as STAFF_BEACH
+    rectangle "Access Point Ospiti Spiaggia\nSSID beach_guest\nVLAN 50" as AP_BEACH
+    }
+
+    INTERNET -down- CPE : WAN
+    CPE -down- FW : Ethernet WAN
+
+    FW -left- WEB : zona DMZ
+    FW -down- CORE : trunk 802.1Q\nVLAN 10,20,30,40,50,60,80,90
+
+    CORE -down- DIST_H : trunk 802.1Q
+    CORE -down- DIST_R : trunk 802.1Q
+
+    DIST_H -down- ACC_OFF : trunk 802.1Q
+    DIST_H -down- ACC_CONF : trunk 802.1Q
+    DIST_H -down- ACC_SRV : trunk 802.1Q
+    DIST_H -down- ACC_WIFI_H : trunk 802.1Q
+    DIST_R -down- BR_H : trunk 802.1Q\nVLAN 50,90
+
+    BR_H .. BR_B : ponte radio punto-punto\n500 m LOS
+    BR_B -down- ACC_BEACH : trunk 802.1Q\nVLAN 50,90
+
+    ACC_OFF -down- PC_OFF : access VLAN 10
+    ACC_OFF -down- RECEPT : access VLAN 10
+
+    ACC_CONF -down- CONF_DEV : access VLAN 30
+
+    ACC_SRV -down- APP : access VLAN 20
+    ACC_SRV -down- INFRA : access VLAN 20
+    ACC_SRV -down- DB : access VLAN 20
+    ACC_SRV -down- MGMT : access VLAN 80
+    ACC_SRV -down- EV : access VLAN 60
+
+    ACC_WIFI_H -down- AP_H_GUEST : trunk/AP multi-SSID\nVLAN 40
+    ACC_WIFI_H -down- AP_H_STAFF : trunk/AP multi-SSID\nVLAN 10,80
+
+    ACC_BEACH -down- STAFF_BEACH : access VLAN 90
+    ACC_BEACH -down- AP_BEACH : trunk/AP multi-SSID\nVLAN 50
+
+    WEB .. DB : solo traffico applicativo consentito
+    STAFF_BEACH .. APP : accesso consentito al gestionale
+    AP_H_GUEST .. INTERNET : solo Internet tramite firewall
+    AP_BEACH .. INTERNET : solo Internet tramite firewall
+
+    note right of FW
+    Il firewall resta il punto centrale
+    per routing inter-VLAN e sicurezza.
+    In una vera soluzione 3 layer,
+    parte del routing potrebbe stare
+    nel distribution layer, ma qui
+    si preferisce mantenerlo sul firewall
+    per controllare meglio i flussi.
+    end note
+
+    note bottom of CORE
+    Core separato inserito solo
+    a fini didattici.
+    Per questa traccia un core distinto
+    porta benefici limitati.
+    end note
+
+    note bottom of DIST_H
+    Distribution layer usato per mostrare
+    l'aggregazione degli access switch.
+    Nella traccia reale non è
+    strettamente necessario.
+    end note
+
+    note right of DIST_R
+    Raccoglie il traffico
+    proveniente dallo stabilimento.
+    Anche questo livello è
+    più didattico che necessario.
+    end note
+
+    legend right
+    |= Colore |= Significato |
+    |<#F4CCCC>| Firewall / sicurezza perimetrale |
+    |<#FCE4D6>| DMZ |
+    |<#D9EAD3>| Core layer e servizi interni |
+    |<#FFF2CC>| Distribution layer |
+    |<#D9EAF7>| Access layer hotel |
+    |<#EADCF8>| Access layer / collegamento stabilimento |
+    |<#F3F3F3>| Dispositivi finali |
+    ----
+    Linea continua: collegamento Ethernet
+    Linea tratteggiata: traffico logico / radio / flusso applicativo
+    Testo "trunk 802.1Q": collegamento con più VLAN
+    Testo "access VLAN X": porta associata a una sola VLAN
+    endlegend
+@enduml

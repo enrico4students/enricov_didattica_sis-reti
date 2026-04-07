@@ -44,8 +44,17 @@ La rete viene suddivisa in tre grandi zone logiche:
 
 Nel PDF può risultare spostato in basso per problemi di impaginazione.  
 
+NB **il diagramma con due access switch è solo schematico, non rappresenta il numero reale**  
+Un singolo access switch tipicamente ha 24 o 48 porte, ci sono:  
+- 2*52 = 104 porte camere  
+- ~15–25 altre porte  
 
-![PlantUML 1](../imgs/simulazione_1_soluzione_02-better_img1_r48_simulazione_1_soluzione_02-better_1_r48_puml.jpg)
+significa 3–4 access switch da 48 porte oppure 4–5 switch da 24 porte.  
+Tali switch sarebbero distribuiti nei piani dell’edificio per collegare le prese LAN delle camere, gli uffici e gli access point Wi-Fi.  
+
+
+
+![PlantUML 1](../imgs/simulazione_1_soluzione_02-better_img1_r57_simulazione_1_soluzione_02-better_1_r57_puml.jpg)
 
 
 
@@ -369,7 +378,7 @@ il DBMS non è esposto e dialoga solo con il web server e con gli eventuali serv
 
 Si replica il diagramma della rete   
 
-![PlantUML 2](../imgs/simulazione_1_soluzione_02-better_img2_r372_simulazione_1_soluzione_02-better_2_r489_puml.jpg)
+![PlantUML 2](../imgs/simulazione_1_soluzione_02-better_img2_r381_simulazione_1_soluzione_02-better_2_r498_puml.jpg)
 
 
 ## 13. Progetto della base di dati
@@ -390,7 +399,7 @@ Si assume che ogni prenotazione sia intestata a un ospite principale.
 
 Diagramma  
 
-![PlantUML 3](../imgs/simulazione_1_soluzione_02-better_img3_r393_simulazione_1_soluzione_02-better_3_r627_puml.jpg)
+![PlantUML 3](../imgs/simulazione_1_soluzione_02-better_img3_r402_simulazione_1_soluzione_02-better_3_r636_puml.jpg)
 
 
 Entità:
@@ -427,7 +436,7 @@ La cardinalità 1:1 tra prenotazione e credenziale Wi-Fi è coerente con il test
 Diagramma
 
 
-![PlantUML 4](../imgs/simulazione_1_soluzione_02-better_img4_r430_simulazione_1_soluzione_02-better_4_r707_puml.jpg)
+![PlantUML 4](../imgs/simulazione_1_soluzione_02-better_img4_r439_simulazione_1_soluzione_02-better_4_r716_puml.jpg)
 
 
     OSPITE(

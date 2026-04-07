@@ -44,6 +44,15 @@ La rete viene suddivisa in tre grandi zone logiche:
 
 Nel PDF può risultare spostato in basso per problemi di impaginazione.  
 
+NB **il diagramma con due access switch è solo schematico, non rappresenta il numero reale**  
+Un singolo access switch tipicamente ha 24 o 48 porte, ci sono:  
+- 2*52 = 104 porte camere  
+- ~15–25 altre porte  
+
+significa 3–4 access switch da 48 porte oppure 4–5 switch da 24 porte.  
+Tali switch sarebbero distribuiti nei piani dell’edificio per collegare le prese LAN delle camere, gli uffici e gli access point Wi-Fi.  
+
+
 
     @startuml
     title Rete hotel con DMZ, VLAN interne e collegamento radio allo stabilimento

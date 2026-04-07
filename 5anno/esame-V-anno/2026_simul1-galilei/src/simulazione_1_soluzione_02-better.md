@@ -6,7 +6,7 @@
 
 ### Struttura/Architettura di rete
 
-#### Nr. of layers
+#### Scelta dell’architettura  
 
 Si adotta una architettura a 2 layer, costituita da access e core, perché la struttura descritta ha dimensioni contenute e non presenta la complessità tipica di un grande campus.  
 L’hotel e lo stabilimento balneare richiedono segmentazione logica, sicurezza e collegamenti ben organizzati, ma non un livello distribution separato.  
@@ -299,10 +299,157 @@ Le interfacce di amministrazione di switch, AP, bridge radio e altri apparati de
 Il personale dello stabilimento ha necessità operative specifiche, per esempio l’accesso al gestionale dell’hotel.  
 È quindi opportuno separarlo sia dagli ospiti sia dal personale amministrativo interno.
 
-1. Routing e gateway
 
-Il routing tra le reti viene effettuato dal firewall mediante subinterfacce 802.1Q sulla porta LAN trunk e una interfaccia separata per la DMZ.  
-Ogni sottorete usa come gateway l’indirizzo .1 della propria rete:
+---
+
+## 5. Piano di indirizzamento
+
+Il piano di indirizzamento è costruito in modo uniforme, associando a ogni VLAN una sottorete `/24` del blocco `10.10.0.0/16`.
+
+La scelta privilegia:
+
+* leggibilità
+* semplicità di configurazione
+* facilità di troubleshooting
+
+Il numero della VLAN coincide con il **terzo ottetto della rete IP**.
+
+Per ogni rete si riserva normalmente:
+
+* `.1` per il gateway
+* una fascia bassa per indirizzi statici
+* una fascia più alta per DHCP.
+
+---
+
+### 5.1 Schema generale
+
+| VLAN    | Funzione           | Rete          | Gateway    | Statici riservati | DHCP             |
+| ------- | ------------------ | ------------- | ---------- | ----------------- | ---------------- |
+| VLAN 10 | Uffici             | 10.10.10.0/24 | 10.10.10.1 | 10.10.10.2–49     | 10.10.10.50–200  |
+| VLAN 20 | Server interni     | 10.10.20.0/24 | 10.10.20.1 | 10.10.20.2–99     | —                |
+| VLAN 30 | Convegni           | 10.10.30.0/24 | 10.10.30.1 | 10.10.30.2–49     | 10.10.30.50–220  |
+| VLAN 40 | Ospiti hotel       | 10.10.40.0/24 | 10.10.40.1 | 10.10.40.2–49     | 10.10.40.50–250  |
+| VLAN 50 | Ospiti spiaggia    | 10.10.50.0/24 | 10.10.50.1 | 10.10.50.2–49     | 10.10.50.50–250  |
+| VLAN 60 | Colonnine EV       | 10.10.60.0/24 | 10.10.60.1 | 10.10.60.2–99     | 10.10.60.100–150 |
+| DMZ     | Web server         | 10.10.70.0/24 | 10.10.70.1 | 10.10.70.2–99     | —                |
+| VLAN 80 | Management         | 10.10.80.0/24 | 10.10.80.1 | 10.10.80.2–99     | —                |
+| VLAN 90 | Staff stabilimento | 10.10.90.0/24 | 10.10.90.1 | 10.10.90.2–49     | 10.10.90.50–180  |
+
+---
+
+### 5.2 Assegnazioni principali
+
+#### VLAN 10 — Uffici
+
+```
+10.10.10.1   gateway firewall
+10.10.10.10  stampante rete
+10.10.10.50–200 client DHCP uffici
+```
+
+
+#### VLAN 20 — Server interni
+
+```
+10.10.20.1   gateway firewall
+10.10.20.10  server gestionale hotel
+10.10.20.20  DBMS
+10.10.20.30  server autenticazione / captive portal
+10.10.20.40  NAS o backup
+```
+
+
+#### VLAN 30 — Convegni
+
+```
+10.10.30.1   gateway
+10.10.30.50–220 client DHCP sale convegni
+```
+
+
+#### VLAN 40 — Ospiti hotel
+
+```
+10.10.40.1   gateway
+10.10.40.50–250 client DHCP ospiti
+```
+
+
+#### VLAN 50 — Ospiti spiaggia
+
+```
+10.10.50.1   gateway
+10.10.50.50–250 client DHCP ospiti spiaggia
+```
+
+
+#### VLAN 60 — Colonnine di ricarica
+
+```
+10.10.60.1   gateway
+10.10.60.10  colonnina 1
+10.10.60.11  colonnina 2
+10.10.60.12  colonnina 3
+10.10.60.13  colonnina 4
+10.10.60.14  colonnina 5
+10.10.60.15  colonnina 6
+```
+
+Le colonnine possono avere indirizzi statici oppure lease DHCP riservati.
+
+
+#### DMZ
+
+```
+10.10.70.1   gateway firewall
+10.10.70.10  web server pubblico
+```
+
+
+#### VLAN 80 — Management
+
+```
+10.10.80.1   gateway
+10.10.80.10  core switch
+10.10.80.20–29 access switch hotel
+10.10.80.40–49 access point hotel
+10.10.80.60  bridge radio hotel
+10.10.80.61  bridge radio spiaggia
+10.10.80.70  switch stabilimento
+10.10.80.80–89 access point spiaggia
+```
+
+
+#### VLAN 90 — Staff stabilimento
+
+```
+10.10.90.1 gateway
+10.10.90.50–180 client DHCP personale stabilimento
+```
+
+---
+
+### 5.3 Motivazione della struttura
+
+Il piano di indirizzamento è volutamente regolare.
+
+Non si è fatto subnetting fine perché:
+
+* lo spazio privato RFC1918 è abbondante
+* la rete non è enorme
+* una struttura uniforme facilita configurazione e troubleshooting.
+
+Le reti client usano **DHCP**, mentre server e apparati infrastrutturali usano **indirizzi statici** per garantire stabilità e identificazione immediata.
+
+---
+
+
+## 6. Routing e gateway
+
+Il routing tra le reti viene effettuato dal firewall mediante **subinterfacce VLAN 802.1Q** sulla porta LAN trunk e una interfaccia separata per la DMZ.
+
+Ogni rete utilizza come gateway l’indirizzo `.1`.
 
 ```
 VLAN 10    10.10.10.1
@@ -316,9 +463,10 @@ VLAN 90    10.10.90.1
 DMZ        10.10.70.1
 ```
 
-La ragione di questa scelta è mantenere coerenza e prevedibilità nella configurazione. In una rete articolata ma non enorme, avere sempre .1 come default gateway riduce la possibilità di errore e semplifica l’amministrazione.
+Questa convenzione semplifica amministrazione e troubleshooting, perché il gateway è sempre facilmente identificabile.
 
-## 6. DHCP e indirizzamento statico
+
+## 7. DHCP e indirizzamento statico
 
 Il DHCP viene fornito dal firewall.  
 Questa scelta è adeguata perché la rete è di dimensioni moderate e il firewall conosce già tutte le reti e tutte le policy.  
@@ -340,7 +488,7 @@ statici per DMZ
 
 Questa distinzione è motivata dal fatto che server e apparati di rete devono avere indirizzi stabili e facilmente documentabili, mentre client e dispositivi temporanei beneficiano del DHCP.
 
-## 7. Trunk 802.1Q e porte access
+## 8. Trunk 802.1Q e porte access
 
 Le tratte trunk principali sono:
 
@@ -373,9 +521,9 @@ Se si volesse distinguere ulteriormente il personale tecnico o di servizio si po
 
 Le porte verso host finali sono porte access nella VLAN appropriata.
 
-## 8. Server web e DBMS: collocazione e motivazione
+## 9. Server web e DBMS: collocazione e motivazione
 
-### 8.1 tipo di DMZ  
+### 9.1 tipo di DMZ  
 
 Si sceglie di usare **una DMZ con un solo firewall** (three-legged firewall), perché:
 
@@ -392,9 +540,9 @@ Il modello non scelto **dual-firewall / screened subnet** è più tipico di:
 * grandi aziende
 
 
-### 8.2 Scelta adottata nella soluzione
+### 9.2 Scelta adottata nella soluzione
 
-#### 8.2.1 Ubicazione Servers WEB e DBMS
+#### 9.2.1 Ubicazione Servers WEB e DBMS
 
 Il server web pubblico viene ovviamente collocato in DMZ dato che deve essere raggiungibile da Internet.  
 
@@ -406,7 +554,7 @@ La comunicazione consentita sarà quindi del tipo:
 - nessun accesso diretto Internet → DBMS  
 - nessun accesso generalizzato da altre VLAN → DBMS  
 
-#### 8.2.2 Connessione al WEB Server  
+#### 9.2.2 Connessione al WEB Server  
 
 Il server web in DMZ può essere raggiunto da Internet in due modi.  
 - il server mantiene un **indirizzo IP privato** e il firewall pubblica il servizio tramite **NAT (port forwarding)**: il traffico destinato all’indirizzo IP pubblico del firewall sulle porte HTTP e HTTPS viene tradotto e inoltrato verso l’indirizzo privato del server nella DMZ.  
@@ -416,7 +564,7 @@ In questa soluzione si sceglie la **pubblicazione tramite NAT**.
 La rete interna dell’hotel utilizza indirizzi privati e il firewall rappresenta l’unico punto di uscita verso Internet; utilizzare NAT permette quindi di esporre il server web mantenendo separato lo spazio di indirizzamento interno, riducendo il consumo di indirizzi pubblici e semplificando la gestione della sicurezza, perché tutte le comunicazioni tra Internet e la rete interna transitano e vengono controllate dal firewall.
 
 
-### 8.3 Sarebbe accettabile mettere anche il DBMS in DMZ?
+### 9.3 Sarebbe accettabile mettere anche il DBMS in DMZ?
 
 Tecnicamente, sì. Si potrebbe collocare in DMZ sia il web server sia il DBMS e impedire al database qualsiasi esposizione diretta verso Internet, autorizzando solo il traffico proveniente dal web server.
 
@@ -425,7 +573,7 @@ Anche se il DBMS non fosse pubblicato, si troverebbe comunque nello stesso segme
 
 
 
-## 9. Regole di sicurezza principali
+## 10. Regole di sicurezza principali
 
 Le principali politiche di filtraggio sono:
 
@@ -443,7 +591,7 @@ DMZ → altre reti interne: negato salvo eccezioni strettamente motivate
 
 Queste regole applicano il classico principio del minimo privilegio  
 
-## 10. Collegamento hotel–stabilimento e confronto tra soluzioni
+## 11. Collegamento hotel–stabilimento e confronto tra soluzioni
 
 Le principali alternative sono:  
 
@@ -466,7 +614,7 @@ Questa scelta permette di offrire due servizi distinti:
 - gli ospiti della spiaggia ottengono accesso Internet con le stesse modalità di identificazione dell’hotel;  
 - il personale dello stabilimento raggiunge il gestionale dell’albergo.  
 
-## 11.  “Stesse modalità di identificazione” del Wi-Fi
+## 12.  “Stesse modalità di identificazione” del Wi-Fi
 
 La traccia richiede che gli ospiti in spiaggia possano accedere con le stesse modalità di identificazione usate in albergo. Questo va reso esplicito anche nella soluzione di rete.
 
@@ -478,7 +626,7 @@ La scelta è utilizzare un sistema di autenticazione centralizzato dell’hotel,
 
 “Stesse modalità di identificazione” non implica “stessa rete IP”, ma “stesso meccanismo di autenticazione e di gestione credenziali”.
 
-## 12. Funzionamento complessivo della rete
+## 13. Funzionamento complessivo della rete
 
 Il traffico segue queste regole operative:
 
@@ -615,7 +763,7 @@ Si replica il diagramma della rete
     @enduml
 
 
-## 13. Progetto della base di dati
+## 14. Progetto della base di dati
 
 La base di dati deve gestire:  
 - anagrafiche degli ospiti con dati personali ed email
@@ -624,12 +772,12 @@ La base di dati deve gestire:
 - credenziali Wi-Fi relative alla prenotazione  
 
 
-La la traccia specifica che le credenziali Wi-Fi sono **relative alla prenotazione e non direttamente all’ospite**.  
+La traccia specifica che le credenziali Wi-Fi sono **relative alla prenotazione e non direttamente all’ospite**.  
 In questo modo si rappresenta correttamente il fatto che le credenziali valgono per uno specifico soggiorno e possono avere attivazione e scadenza coerenti con check-in e check-out.
 
 Si assume che ogni prenotazione sia intestata a un ospite principale.  
 
-## 14. Modello concettuale
+## 15. Modello concettuale
 
 Diagramma  
 
@@ -708,7 +856,7 @@ PRENOTAZIONE 1 : 1 CREDENZIALE_WIFI
 
 La cardinalità 1:1 tra prenotazione e credenziale Wi-Fi è coerente con il testo della traccia, che lega le credenziali alla prenotazione. Se si volesse modellare una credenziale per ciascun ospite o per più dispositivi, il modello andrebbe esteso, ma qui non è necessario.
 
-## 15. Modello logico relazionale
+## 16. Modello logico relazionale
 
 Diagramma
 
@@ -801,7 +949,7 @@ Diagramma
 
 Sulla email si può scegliere se imporre o meno un vincolo UNIQUE. In una soluzione didattica si può anche non imporlo rigidamente, perché casi reali differenti potrebbero condividere una stessa email di contatto. La scelta dipende dal livello di rigidità che si vuole adottare. Se si vuole evitare possibili eccezioni reali, conviene non renderla necessariamente univoca.
 
-## 16. Vincoli applicativi importanti
+## 17. Vincoli applicativi importanti
 
 Servono almeno i seguenti vincoli:
 
@@ -813,7 +961,7 @@ credenziali Wi-Fi attive solo per il periodo autorizzato
 eventuale generazione o attivazione delle credenziali al check-in o immediatamente prima dell’inizio del soggiorno
 ```
 
-## 17. Seconda parte, quesito 1: colonnina e socket
+## 18. Seconda parte, quesito 1: colonnina e socket
 
 Formato possibile del messaggio:
 
@@ -842,7 +990,7 @@ La colonnina:
 Una volta stabilita la connessione, i dati vengono scambiati con send e recv oppure write e read.  
 Al termine, la sessione viene chiusa con close. In un sistema reale sarebbe opportuno proteggere anche la comunicazione con TLS.
 
-## 18. Seconda parte, quesito 2: filtraggio contenuti a scuola  
+## 19. Seconda parte, quesito 2: filtraggio contenuti a scuola  
 
 Una possibile soluzione consiste nell’utilizzare uno switch gestito con VLAN e un firewall/UTM centrale.  
 Lo switch separa la rete in VLAN studenti e VLAN uffici in modo che il traffico dei due gruppi resti logicamente isolato.  
@@ -881,7 +1029,7 @@ VLAN studenti  VLAN uffici
 
 
 
-## 19.  Seconda parte, quesito 3: HTTP e HTTPS
+## 20.  Seconda parte, quesito 3: HTTP e HTTPS
 
 HTTP trasmette i dati in chiaro, mentre HTTPS è HTTP protetto da TLS.  
 I vantaggi principali per il visitatore sono tre:  
@@ -891,15 +1039,7 @@ I vantaggi principali per il visitatore sono tre:
 
 Con HTTPS il browser verifica il certificato del sito e stabilisce una sessione sicura in cui i dati applicativi viaggiano cifrati. Questo protegge credenziali, dati personali e pagamenti e riduce il rischio di intercettazione o alterazione del traffico.
 
-## 20.  Seconda parte, quesito 4: PC che non apre siti esterni ma vede la LAN
-
-La risposta è corretta ma **manca l’elemento operativo richiesto implicitamente dalla traccia**: mostrare come il tecnico esegue le verifiche. Conviene quindi inserire i **comandi tipici di diagnostica di rete**. In un contesto scolastico è ragionevole usare i comandi disponibili su Windows.
-
-Mantengo la struttura originale e aggiungo i comandi dove necessario.
-
----
-
-## 20. Seconda parte, quesito 4: PC che non apre siti esterni ma vede la LAN
+## 21.  Seconda parte, quesito 4: PC che non apre siti esterni ma vede la LAN
 
 La sequenza di verifica deve procedere per esclusione.
 

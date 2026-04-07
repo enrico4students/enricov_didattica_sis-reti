@@ -2,7 +2,7 @@
 
 ### Architettura di rete: apparati, funzioni e collegamenti
 
-Questa sezione descrive **in modo preciso e completo** il funzionamento della rete, specificando apparati, routing, DHCP, trunk 802.1Q e collegamenti tra i dispositivi.
+Questa sezione cerca di descrivere l'architettura e il funzionamento della rete, specificando apparati, routing, DHCP, trunk 802.1Q e collegamenti tra i dispositivi.
 
 ---
 
@@ -488,55 +488,7 @@ Relazioni:
 
 ### 14. PlantUML del modello concettuale
 
-```
-@startuml
-hide circle
-skinparam linetype ortho
-
-entity OSPITE {
-    * id_ospite : INT
-    --
-    nome : VARCHAR
-    cognome : VARCHAR
-    email : VARCHAR
-    telefono : VARCHAR
-    documento : VARCHAR
-}
-
-entity CAMERA {
-    * id_camera : INT
-    --
-    numero : VARCHAR
-    tipologia : VARCHAR
-}
-
-entity PRENOTAZIONE {
-    * id_prenotazione : INT
-    --
-    data_check_in : DATE
-    data_check_out : DATE
-    stato : VARCHAR
-    id_ospite : INT
-    id_camera : INT
-}
-
-entity CREDENZIALE_WIFI {
-    * id_wifi : INT
-    --
-    username : VARCHAR
-    password : VARCHAR
-    data_attivazione : DATETIME
-    data_scadenza : DATETIME
-    id_prenotazione : INT
-}
-
-OSPITE ||--o{ PRENOTAZIONE : effettua
-CAMERA ||--o{ PRENOTAZIONE : riguarda
-PRENOTAZIONE ||--|| CREDENZIALE_WIFI : genera
-@enduml
-
-![PlantUML 1](imgs/simulazione_1_soluzione_1_r492_puml.jpg)
-```
+![PlantUML 1](../imgs/simulazione_1_soluzione_01_img1_r491_simulazione_1_soluzione_01_1_r491_puml.jpg)
 
 ### 15. Motivazione delle cardinalità
 
@@ -583,55 +535,7 @@ CREDENZIALE_WIFI(
 
 ### 17. PlantUML del modello logico
 
-```
-@startuml
-hide circle
-skinparam linetype ortho
-
-entity "OSPITE" as OSP {
-    * id_ospite : INT <<PK>>
-    --
-    nome : VARCHAR(50)
-    cognome : VARCHAR(50)
-    email : VARCHAR(100) <<UQ>>
-    telefono : VARCHAR(20)
-    documento : VARCHAR(30)
-}
-
-entity "CAMERA" as CAM {
-    * id_camera : INT <<PK>>
-    --
-    numero : VARCHAR(10) <<UQ>>
-    tipologia : VARCHAR(30)
-}
-
-entity "PRENOTAZIONE" as PRE {
-    * id_prenotazione : INT <<PK>>
-    --
-    id_ospite : INT <<FK>>
-    id_camera : INT <<FK>>
-    data_check_in : DATE
-    data_check_out : DATE
-    stato : VARCHAR(20)
-}
-
-entity "CREDENZIALE_WIFI" as WIFI {
-    * id_wifi : INT <<PK>>
-    --
-    id_prenotazione : INT <<FK,UQ>>
-    username : VARCHAR(50) <<UQ>>
-    password : VARCHAR(100)
-    data_attivazione : DATETIME
-    data_scadenza : DATETIME
-}
-
-OSP ||--o{ PRE
-CAM ||--o{ PRE
-PRE ||--|| WIFI
-@enduml
-
-![PlantUML 2](imgs/simulazione_1_soluzione_2_r585_puml.jpg)
-```
+![PlantUML 2](../imgs/simulazione_1_soluzione_01_img2_r538_simulazione_1_soluzione_01_2_r584_puml.jpg)
 
 ### 18. Vincoli applicativi importanti
 

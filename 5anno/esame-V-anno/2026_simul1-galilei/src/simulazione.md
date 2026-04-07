@@ -33,13 +33,14 @@ L’albergo è stato oggetto di lavori di manutenzione straordinaria con la real
 In ogni camera sono presenti due prese LAN per la SmartTV ed eventuali PC dei clienti.   
 In  tutti i locali (camere, sale convegni, ristorante e altri spazi comuni) è disponibile la rete wireless  con accesso autenticato e differenziato tra ospiti, dipendenti e partecipanti ai convegni.  
 
-Negli  uffici sono presenti sette postazioni di lavoro, una stampante di rete e un server per il software  gestionale in intranet. È presente anche un secondo server, esposto in internet, per il sito web  della struttura.  
+Negli  uffici sono presenti sette postazioni di lavoro, una stampante di rete e un server per il software  gestionale in intranet.  
+È presente anche un secondo server, esposto in internet, per il sito web  della struttura.  
 
 Dalla terrazza dell’albergo è visibile, a 500m di distanza, lo stabilimento balneare, riservato agli  ospiti, con annesso bar/ristorante sulla spiaggia.  
 
 Il personale in servizio presso lo stabilimento balneare verifica le presenze giornaliere e le prenotazioni del ristorante collegandosi al software  gestionale dell’albergo.  
 
-Gli ospiti in spiaggia possono disporre di accesso ad internet tramite rete wi-fi con le stesse modalità di identificazione con cui accedono in albergo.  
+Gli ospiti in spiaggia possono disporre di accesso ad internet tramite rete wi-fi **con le stesse modalità di identificazione con cui accedono in albergo**.  
 Sia l’albergo che lo stabilimento balneare possono attivare contratti per connessione internet FTTH con i principali provider in quanto la zona risulta coperta dal servizio. 
 
 Il candidato, sulla base delle specifiche fornite e fatte le eventuali ipotesi aggiuntive ritenute  necessarie:  

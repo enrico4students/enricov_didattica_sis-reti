@@ -43,5 +43,3 @@ OSP ||--o{ PRE
 CAM ||--o{ PRE
 PRE ||--|| WIFI
 @enduml
-
-![PlantUML 1](imgs/db_logico_1_r1_puml.jpg)

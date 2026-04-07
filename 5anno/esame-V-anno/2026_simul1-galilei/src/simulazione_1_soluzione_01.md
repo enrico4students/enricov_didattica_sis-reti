@@ -2,7 +2,7 @@
 
 ### Architettura di rete: apparati, funzioni e collegamenti
 
-Questa sezione descrive **in modo preciso e completo** il funzionamento della rete, specificando apparati, routing, DHCP, trunk 802.1Q e collegamenti tra i dispositivi.
+Questa sezione cerca di descrivere l'architettura e il funzionamento della rete, specificando apparati, routing, DHCP, trunk 802.1Q e collegamenti tra i dispositivi.
 
 ---
 

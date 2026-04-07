@@ -5,6 +5,6 @@
 "markdown.styles": [
     "./authoring/themes/portrait.css"
 ],
-"python-envs.defaultEnvManager": "ms-python.python:conda",
+"python-envs.defaultEnvManager": "",
 "python-envs.defaultPackageManager": "ms-python.python:conda"
 }

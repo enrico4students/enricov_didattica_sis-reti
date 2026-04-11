@@ -1,7 +1,7 @@
 
 ## DISPOSITIVI DI RETE COMUNI IN UNA LAN AZIENDALE
 
-In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante nell’architettura della rete:
+In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante per quanto riguarda la funzionalità ed una quarta è utile a fini pratici:
 
 * **Switch** → distribuzione del traffico all’interno della LAN
 * **Router / Edge Gateway** → collegamento tra la LAN e altre reti (Internet o WAN)
@@ -18,13 +18,7 @@ Questi dispositivi svolgono funzioni diverse ma complementari e spesso sono inst
 
 Lo **switch** è il dispositivo **principale** della rete locale (LAN).
 Il suo compito è collegare tra loro i dispositivi interni della rete:
-
-* **altri switch**
-* computer
-* server
-* stampanti
-* telefoni VoIP
-* access point Wi-Fi
+* **altri switch**, computer, server, stampanti, telefoni VoIP, access point Wi-Fi
 
 Lo switch opera normalmente al **livello 2 del modello OSI (Data Link)**, inoltrando i frame Ethernet in base agli **indirizzi MAC**.
 
@@ -108,7 +102,7 @@ Internamente usa delle **SVI (Switched Virtual Interface)**, cioè interfacce vi
     @enduml
 
 
-Le SVI vengono spesso rappresentate esternamente nei diagrammi, ma in realtà sono interne allo switch: sono interfacce logiche cioè non sono porte fisiche, ma configurazioni software associate alle VLAN e utilizzate come gateway IP delle subnet.
+Le SVI vengono spesso rappresentate esternamente nei diagrammi, ma in realtà sono interne allo switch: sono interfacce logiche, non sono porte fisiche, sono configurazioni software associate alle VLAN e utilizzate come gateway IP delle subnet.
 <br/><br/>
 
     @startuml

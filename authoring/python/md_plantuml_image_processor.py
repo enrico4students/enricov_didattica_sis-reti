@@ -1156,7 +1156,7 @@ def main() -> int:
     root = Path(args.root).expanduser().resolve()
     custom_root = False
     if root == Path("./").resolve():
-        root = Path("D:\\00_data\\08-dev\\didattica\\enricov_didattica_sis-reti\\5anno\\esame-V-anno\\2026_simul1-galilei").resolve()
+        root = Path("D:\\00_data\\08-dev\\didattica\\enricov_didattica_sis-reti\\5anno\\concetti\\certificati_dig").resolve()
         custom_root = True
 
     plantuml_jar = resolve_plantuml_jar(args.plantuml_jar)

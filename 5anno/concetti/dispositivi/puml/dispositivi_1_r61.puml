@@ -1,0 +1,41 @@
+@startuml
+title Relazione tra VLAN, subnet IP e gateway
+
+    skinparam backgroundColor white
+    skinparam shadowing false
+    skinparam linetype ortho
+    skinparam roundcorner 12
+
+    rectangle "Layer 3 Switch" as L3 #CFE2F3
+
+    rectangle "SVI VLAN 10\nGateway 192.168.10.1" as V10 #D9EAD3
+    rectangle "SVI VLAN 20\nGateway 192.168.20.1" as V20 #D9EAD3
+
+    rectangle "Access Switch" as A1 #FFF2CC
+    rectangle "Access Switch" as A2 #FFF2CC
+
+    rectangle "PC1\n192.168.10.10" as PC1
+    rectangle "PC2\n192.168.10.20" as PC2
+
+    rectangle "PC3\n192.168.20.10" as PC3
+    rectangle "PC4\n192.168.20.20" as PC4
+
+    L3 -- V10
+    L3 -- V20
+
+    V10 -- A1
+    V20 -- A2
+
+    A1 -- PC1
+    A1 -- PC2
+
+    A2 -- PC3
+    A2 -- PC4
+
+    note right of L3
+    Lo switch Layer 3
+    effettua il routing
+    tra le subnet associate
+    alle diverse VLAN
+    end note
+@enduml

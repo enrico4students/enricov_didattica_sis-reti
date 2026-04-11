@@ -1,7 +1,7 @@
 
-## DISPOSITIVI DI RETE COMUNI IN UNA LAN AZIENDALE
+# DISPOSITIVI DI RETE COMUNI IN UNA LAN AZIENDALE
 
-In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante nell’architettura della rete:
+In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante per quanto riguarda la funzionalità ed una quarta è utile a fini pratici:
 
 * **Switch** → distribuzione del traffico all’interno della LAN
 * **Router / Edge Gateway** → collegamento tra la LAN e altre reti (Internet o WAN)
@@ -12,19 +12,13 @@ Questi dispositivi svolgono funzioni diverse ma complementari e spesso sono inst
 
 ---
 
-# 1. SWITCH DI RETE (Layer 2 / Layer 3)
+# SWITCH DI RETE (Layer 2 / Layer 3)
 
 ## Ruolo nella rete aziendale
 
 Lo **switch** è il dispositivo **principale** della rete locale (LAN).
 Il suo compito è collegare tra loro i dispositivi interni della rete:
-
-* **altri switch**
-* computer
-* server
-* stampanti
-* telefoni VoIP
-* access point Wi-Fi
+* **altri switch**, computer, server, stampanti, telefoni VoIP, access point Wi-Fi
 
 Lo switch opera normalmente al **livello 2 del modello OSI (Data Link)**, inoltrando i frame Ethernet in base agli **indirizzi MAC**.
 
@@ -64,13 +58,13 @@ Oltre alle funzionalità di livello 2 offre anche:
 
 Internamente usa delle **SVI (Switched Virtual Interface)**, cioè interfacce virtuali associate alle VLAN che funzionano come gateway IP delle relative subnet.  
 
-![PlantUML 1](../imgs/dispositivi_1_r67_puml.jpg){ width=70% }
+![PlantUML 1](../imgs/dispositivi_img1_r61_dispositivi_1_r61_puml.jpg){ width=70% }
 
 
-Le SVI vengono spesso rappresentate esternamente nei diagrammi, ma in realtà sono interne allo switch: sono interfacce logiche cioè non sono porte fisiche, ma configurazioni software associate alle VLAN e utilizzate come gateway IP delle subnet.
+Le SVI vengono spesso rappresentate esternamente nei diagrammi, ma in realtà sono interne allo switch: sono interfacce logiche, non sono porte fisiche, sono configurazioni software associate alle VLAN e utilizzate come gateway IP delle subnet.
 <br/><br/>
 
-![PlantUML 2](../imgs/dispositivi_2_r114_puml.jpg){ width=70% }
+![PlantUML 2](../imgs/dispositivi_img2_r67_dispositivi_2_r108_puml.jpg){ width=70% }
 
 
 
@@ -210,7 +204,7 @@ Immagine online
 [https://www.cisco.com/c/dam/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-series-switches.jpg](https://www.cisco.com/c/dam/en/us/products/collateral/switches/catalyst-9500-series-switches/nb-06-cat9500-series-switches.jpg)
 
 
-![image_1](../imgs/dispositivi_img1_r314_cisco-catalyst_9500_ks17112-car9500-600x300.jpg)
+![image_3](../imgs/dispositivi_img3_r207_cisco-catalyst_9500_ks17112-car9500-600x300.jpg){width=70%}
 
 
 Caratteristiche principali:
@@ -236,7 +230,7 @@ Pagina ufficiale produttore
 Immagine online
 [https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9300-series-switches/images/ks14049-car9500-600x300.png](https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9300-series-switches/images/ks14049-car9500-600x300.png)
 
-![image_2](../imgs/dispositivi_img2_r340_cisco_catalyst-9300ks14049-car9500-600x300.jpg)
+![image_4](../imgs/dispositivi_img4_r233_cisco_catalyst-9300ks14049-car9500-600x300.jpg){width=70%}
 
 
 Caratteristiche:
@@ -260,7 +254,7 @@ Pagina ufficiale produttore
 [https://www.cisco.com/site/us/en/products/networking/switches/catalyst-9200-series-switches/index.html](https://www.cisco.com/site/us/en/products/networking/switches/catalyst-9200-series-switches/index.html)
 
 
-![image_3](../imgs/dispositivi_img3_r364_nb-06-cat9200-ser-data-sheet-cte-en_0.jpg)
+![image_5](../imgs/dispositivi_img5_r257_nb-06-cat9200-ser-data-sheet-cte-en_0.jpg){width=60%}
 
 Caratteristiche principali:
 
@@ -296,7 +290,7 @@ Pagina ufficiale produttore
 Immagine online
 [https://www.zyxel.com/sites/zyxel/files/library/assets/products/xgs1935-series/img_xgs1935-28hp_p_600x600.jpg](https://www.zyxel.com/sites/zyxel/files/library/assets/products/xgs1935-series/img_xgs1935-28hp_p_600x600.jpg)
 
-![image_4](../imgs/dispositivi_img4_r400_img_xgs1935-28hp_p_600x600.jpg)
+![image_6](../imgs/dispositivi_img6_r293_img_xgs1935-28hp_p_600x600.jpg){width=70%}
 
 
 Caratteristiche:
@@ -323,7 +317,7 @@ Immagine online
 [https://static.tp-link.com/upload/image-line/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg](https://static.tp-link.com/upload/image-line/TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg)
 
 
-![image_5](../imgs/dispositivi_img5_r427_TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg)
+![image_7](../imgs/dispositivi_img7_r320_TL-SG3218XP-M2_UN_1.0_overview_02_normal_20250126032358m.jpg){width=70%}
 
 
 
@@ -367,7 +361,7 @@ Immagine online
 [https://www.netgear.com/media/GS108v4_tcm148-73992.png](https://www.netgear.com/media/GS108v4_tcm148-73992.png)
 
 
-![image_6](../imgs/dispositivi_img6_r471_B3_gs108_32.jpg)
+![image_8](../imgs/dispositivi_img8_r364_B3_gs108_32.jpg){width=70%}
 
 
 
@@ -382,7 +376,7 @@ Caratteristiche:
 
 ---
 
-# 2. ROUTER AZIENDALI / EDGE GATEWAY
+# ROUTER AZIENDALI / EDGE GATEWAY
 
 ## Ruolo nella rete
 
@@ -487,7 +481,7 @@ Immagine online
 [https://www.cisco.com/c/dam/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.docx/_jcr_content/renditions/datasheet-c78-731632_0.png](https://www.cisco.com/c/dam/en/us/products/collateral/routers/asr-1000-series-aggregation-services-routers/datasheet-c78-731632.docx/_jcr_content/renditions/datasheet-c78-731632_0.png)
 
 
-![image_7](../imgs/dispositivi_img7_r591_cisco_asr-1000_datasheet-c78-731632_0.jpg) 
+![image_9](../imgs/dispositivi_img9_r484_cisco_asr-1000_datasheet-c78-731632_0.jpg){width=70%} 
 
 Caratteristiche:
 
@@ -521,7 +515,7 @@ Immagine online
 [https://i.mt.lv/cdn/product_files/RB5009UGS-IN_220903.png](https://i.mt.lv/cdn/product_files/RB5009UGS-IN_220903.png)
 
 
-![image_8](../imgs/dispositivi_img8_r625_2065_lg.jpg)
+![image_10](../imgs/dispositivi_img10_r518_2065_lg.jpg){width=70%}
 
 
 
@@ -551,7 +545,7 @@ Immagine online
 [https://static.tp-link.com/upload/image-line/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg](https://static.tp-link.com/upload/image-line/ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg)
 
 
-![image_9](../imgs/dispositivi_img9_r655_ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg)
+![image_11](../imgs/dispositivi_img11_r548_ER8411_UN_1.0_overview_01_normal_20220617022403i.jpg){width=70%}
 
 
 Caratteristiche:
@@ -579,7 +573,7 @@ Pagina ufficiale produttore
 Immagine online
 [https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.jpg?v=1773999787&width=1000](https://fritz.com/cdn/shop/files/fritzbox_7530_ax_dsl_2000x2000px.webp?v=1773999787&width=1000)
 
-![image_10](../imgs/dispositivi_img10_r683_fritzbox_7530_ax_dsl_2000x2000px.jpg)
+![image_12](../imgs/dispositivi_img12_r576_fritzbox_7530_ax_dsl_2000x2000px.jpg){width=70%}
 
 Caratteristiche:
 
@@ -592,7 +586,7 @@ Caratteristiche:
 
 ---
 
-# 3. FIREWALL / NEXT-GENERATION FIREWALL (NGFW)
+# FIREWALL / NEXT-GENERATION FIREWALL (NGFW)
 
 ## Ruolo nella rete
 
@@ -648,7 +642,7 @@ Immagine online
 
 ./imgs/t40_compare.png
 
-![image_11](../imgs/dispositivi_img11_r752_t40_compare.jpg)
+![image_13](../imgs/dispositivi_img13_r645_t40_compare.jpg){ width=70% }
 
 Caratteristiche:
 
@@ -669,7 +663,7 @@ Immagine online
 
 
 
-![image_12](../imgs/dispositivi_img12_r773_61YoNT4HPZL._AC_SL1500.jpg)
+![image_14](../imgs/dispositivi_img14_r666_61YoNT4HPZL._AC_SL1500.jpg){ width=70% }
 
 
 
@@ -684,7 +678,7 @@ Caratteristiche:
 
 ---
 
-# 4. Patch Panel  
+# Patch Panel  
 
 ## Patch panel Ethernet
 
@@ -710,9 +704,9 @@ Questa operazione viene normalmente eseguita tramite sistemi chiamati **IDC (Ins
 
 Il cavo Ethernet contiene **8 fili (4 coppie)**. Durante la terminazione questi fili vengono inseriti nei contatti metallici del patch panel seguendo uno schema standard di cablaggio (T568A oppure T568B).
 
-![Image](../imgs/dispositivi_img13_r814_remote_580092d2e2.jpg)
+![Image](../imgs/dispositivi_img15_r707_remote_580092d2e2.jpg){width=60%}
 
-![Image](../imgs/dispositivi_img14_r816_remote_a0268afc7e.jpg)
+![Image](../imgs/dispositivi_img16_r709_remote_a0268afc7e.jpg){width=60%}
 
 
 
@@ -770,10 +764,10 @@ presa Ethernet nella stanza
 → patch cord
 → switch di rete
 
-![image_15](../imgs/dispositivi_img15_r874_patch-panel_switch_schema_02.jpg)
+![image_17](../imgs/dispositivi_img17_r767_patch-panel_switch_schema_02.jpg){width=60%}
 
 
-![image_16](../imgs/dispositivi_img16_r877_path-panel_switch_photo01.jpg)
+![image_18](../imgs/dispositivi_img18_r770_path-panel_switch_photo01.jpg){width=60%}
 
 
 Questo sistema permette di separare chiaramente:
@@ -798,7 +792,7 @@ I collegamenti che invece possono cambiare frequentemente sono i **patch cord**,
 
 Se cambia la configurazione della rete è sufficiente spostare questi patch cord.
 
-![image_17](../imgs/dispositivi_img17_r902_patch-pane_switch_diagram.jpg)
+![image_19](../imgs/dispositivi_img19_r795_patch-pane_switch_diagram.jpg)
 
 ---
 
@@ -902,3 +896,260 @@ Gestione NAT, routing e VPN.
 Firewall NGFW
 Protezione perimetrale della rete.
 Controllo delle applicazioni e prevenzione delle intrusioni.
+
+---
+
+# Access Point
+
+Architettura
+
+* Access Point → collegato a **switch di accesso (managed)**
+* Switch di accesso → collegato al **core di rete o al firewall perimetrale**
+
+
+In architetture più strutturate:
+
+* access switch → distribution/core switch → firewall
+
+---
+
+## Ruolo dei dispositivi
+
+### Switch di accesso (livello 2)
+
+* collega dispositivi finali (AP, PC, telefoni IP)
+* trasporta il traffico dati
+* trasporta le VLAN tramite **trunk 802.1Q**
+* può alimentare l’AP tramite **PoE (se supportato)**
+
+---
+
+### Access Point
+
+* NON effettua routing IP
+* NON assegna indirizzi IP
+* NON crea VLAN
+* associa ogni rete Wi-Fi (SSID) a una VLAN configurata
+
+Funzione reale:
+
+* ponte tra rete wireless e rete cablata
+* mapping **SSID → VLAN**
+
+---
+
+### Firewall / Router (da specificare)
+
+**firewall perimetrale**
+
+* posizionato tra LAN e Internet
+* collegato all’ONT/CPE ISP
+
+Funzioni:
+
+* routing tra VLAN (in architetture 2 layer) oppure solo verso Internet
+* sicurezza (policy, filtering)
+* NAT
+* DHCP (spesso, ma non obbligatorio)
+
+---
+
+### Switch Layer 3 (se presente)
+
+* routing tra VLAN (inter-VLAN routing)
+* tipico in architetture a 3 layer o core avanzati
+
+---
+
+# ✔️ Come funzionano le VLAN sugli access point
+
+L’access point **non rileva automaticamente le VLAN**.
+Le VLAN devono essere:
+
+* definite nell’infrastruttura (switch / firewall / core)
+* configurate esplicitamente nell’access point
+
+1. Lo switch collega l’AP tramite una porta configurata come:
+
+   * **trunk 802.1Q**
+
+2. Sul trunk transitano più VLAN (frame taggati)
+
+3. L’access point:
+
+   * riceve e invia traffico Ethernet con tag VLAN
+   * non “sceglie” le VLAN automaticamente
+
+4. Per ogni SSID:
+
+   * si configura manualmente un **VLAN ID**
+
+👉 Risultato:
+
+* SSID → VLAN → rete IP
+
+---
+
+## Come l’AP gestisce le VLAN
+
+### 1) Associazione SSID → VLAN
+
+Esempio:
+
+* SSID "Ufficio" → VLAN 10
+* SSID "Ospiti" → VLAN 20
+* SSID "IoT" → VLAN 30
+
+---
+
+### 2) Tagging del traffico
+
+Quando un client trasmette:
+
+* il client **non è consapevole delle VLAN**
+* l’AP:
+
+  * incapsula il traffico
+  * aggiunge il **tag VLAN (802.1Q)**
+
+---
+
+### 3) Invio allo switch
+
+Il traffico:
+
+* esce dall’AP sulla porta Ethernet
+* con tag VLAN corretto
+* lo switch inoltra nella VLAN appropriata
+
+---
+
+## ✔️ Sintesi tecnica corretta
+
+* VLAN definite nell’infrastruttura
+* AP configura mapping SSID → VLAN
+* switch trasporta VLAN (L2)
+* routing e IP gestiti da firewall o L3 switch
+
+---
+
+# ✔️ Esempio pratico reale (Ubiquiti UniFi)
+
+## Scenario
+
+* Switch managed UniFi (access layer)
+* Access point UniFi (es. U6 Pro)
+* Firewall perimetrale (es. UniFi Gateway o equivalente)
+
+---
+
+## ✔️ Obiettivo
+
+Creare 3 reti Wi-Fi separate:
+
+| SSID    | VLAN | Rete IP       |
+| ------- | ---- | ------------- |
+| Ufficio | 10   | 10.10.10.0/24 |
+| Ospiti  | 20   | 10.10.20.0/24 |
+| IoT     | 30   | 10.10.30.0/24 |
+
+---
+
+## ✔️ Configurazione passo-passo
+
+### 1) Configurazione rete (firewall o L3)
+
+Due possibili scenari:
+
+#### Caso A (2 layer, tipico PMI)
+
+* gateway e routing su firewall perimetrale
+
+* VLAN 10 → 10.10.10.1
+
+* VLAN 20 → 10.10.20.1
+
+* VLAN 30 → 10.10.30.1
+
+* DHCP attivo su firewall
+
+---
+
+#### Caso B (3 layer)
+
+* routing su switch Layer 3
+
+* firewall usato solo per traffico Internet
+
+---
+
+### 2) Configurazione switch (access layer)
+
+Porta verso AP:
+
+* modalità: **trunk 802.1Q**
+* VLAN consentite: 10, 20, 30
+* (opzionale) VLAN di management non taggata
+
+---
+
+### 3) Configurazione access point
+
+Nel controller:
+
+* SSID "Ufficio"
+
+  * VLAN ID: 10
+
+* SSID "Ospiti"
+
+  * VLAN ID: 20
+
+* SSID "IoT"
+
+  * VLAN ID: 30
+
+👉 L’AP applica il tagging VLAN in base alla configurazione
+
+---
+
+## ✔️ Cosa succede nella pratica
+
+1. dispositivo si connette a SSID "Ospiti"
+2. AP associa VLAN 20
+3. traffico inviato con tag VLAN 20
+4. switch inoltra nella VLAN 20
+5. DHCP assegna IP 10.10.20.x
+6. routing gestito da firewall o L3
+
+---
+
+# ✔️ Errori comuni (ambito professionale)
+
+❌ Porta AP configurata come access → VLAN multiple non funzionano
+❌ VLAN non configurata sull’AP → traffico errato
+❌ DHCP assente → client senza IP
+❌ Routing non configurato → VLAN isolate
+❌ Ambiguità su “firewall” → progettazione incoerente
+
+---
+
+# ✔️ Differenza chiave da ricordare
+
+* VLAN → livello 2 (trasporto su switch)
+* IP → livello 3 (firewall o L3 switch)
+* AP → associazione Wi-Fi ↔ VLAN
+* firewall perimetrale → sicurezza e accesso Internet
+
+---
+
+# ✔️ Nota sulla classificazione della rete Wi-Fi
+
+* SSID aziendale → rete interna (ma spesso segmentata e a fiducia limitata)
+* SSID ospiti → rete esterna / non trusted
+
+---
+
+# ✔️ Sintesi finale (rigorosa)
+
+Un access point professionale opera nell’access layer e si collega a uno switch managed tramite una porta trunk 802.1Q quando sono presenti più SSID associati a VLAN diverse. Le VLAN non sono rilevate automaticamente ma devono essere configurate esplicitamente sia nell’infrastruttura di rete sia nell’access point. L’AP associa ogni SSID a una VLAN e inserisce il traffico nella VLAN corretta, mentre il trasporto avviene tramite lo switch e il routing IP è gestito dal firewall perimetrale o da uno switch Layer 3, a seconda dell’architettura adottata.

@@ -62,9 +62,7 @@ Il suo compito principale è:
 * gestire protocolli WAN
 * scambiare rotte con l’ISP
 
-Gli edge router collegano le reti interne con le reti del provider o con Internet. ([Allied Telesis][2])
-
----
+Gli edge router collegano le reti interne con le reti del provider o con Internet.
 
 ## Fa routing su molte reti interne?
 
@@ -97,9 +95,7 @@ Il routing interno è svolto da:
 * distribution switch
 * core switch
 
----
-
-## Quando invece fa routing complesso
+## Quando fa routing non banale  
 
 In alcune aziende grandi il router può:
 
@@ -135,8 +131,6 @@ LAN
 
 Il firewall quindi è il **punto di controllo principale**.
 
----
-
 ## Il firewall fa routing?
 
 Quasi sempre **sì**.
@@ -165,7 +159,6 @@ La differenza rispetto a un router è che prima applica:
 * filtraggio
 * ispezione del traffico.
 
----
 
 ## Architettura tipica con DMZ
 
@@ -266,21 +259,13 @@ Il traffico tra VLAN passa da qui.
 
 # 6. Access switch
 
-Gli **access switch** sono quelli collegati direttamente ai dispositivi finali.
-
-Dispositivi tipici:
-
-* PC
-* telefoni VoIP
-* stampanti
-* access point Wi-Fi
-* videocamere IP
+Gli **access switch** sono quelli collegati direttamente ai dispositivi finali, ex: PC, telefoni VoIP, stampanti, access point Wi-Fi, videocamere IP  
 
 Funzioni principali:
 
 * assegnazione VLAN
 * PoE
-* sicurezza delle porte.
+* port security
 
 
 ---  
@@ -290,7 +275,7 @@ Funzioni principali:
 
 ### Errore: Pensare che il router esterno gestisca tutta la rete interna
 
-Molti studenti immaginano una rete aziendale come una rete domestica ingrandita:
+Una rete aziendale non è una rete domestica ingrandita:
 
 ```
 Internet - Router - Switch - PC
@@ -322,7 +307,7 @@ Il routing tra le VLAN interne avviene invece su:
 
 ### Errore: Pensare che tutte le VLAN passino dal router
 
-Gli studenti spesso immaginano qualcosa del genere:
+Si può erroneamente mmaginare qualcosa del genere:
 
 ```
 PC VLAN 10
@@ -348,13 +333,13 @@ Distribution switch (routing VLAN)
 Core switch
 ```
 
-Il router esterno **non è coinvolto nel traffico interno tra VLAN**.
+Il router esterno **non** è coinvolto nel traffico **interno ** tra VLAN.
 
 ---
 
 ### Errore: Pensare che il firewall sia sempre separato dal routing
 
-Un errore molto comune è credere che:
+Un possibile errore è credere che:
 
 * il router faccia routing
 * il firewall faccia solo filtraggio
@@ -397,7 +382,7 @@ Quindi il firewall è contemporaneamente:
 
 ### Errore: credere che tutte le VLAN attraversino tutta la rete
 
-Gli studenti spesso immaginano VLAN estese ovunque:
+E' possibile immaginare erroneamente che le VLAN siano estese ovunque o quasi:
 
 ```
 VLAN 10
@@ -499,7 +484,6 @@ In questa modalità il firewall è comunque **inline**, ma lavora in modo **tras
 Il firewall:
 
 * non partecipa al routing
-* non assegna indirizzi IP alle interfacce del traffico
 * analizza e filtra i pacchetti mentre attraversano il dispositivo.
 
 Documentazione Palo Alto Networks:
@@ -938,7 +922,7 @@ Per questo è stato per anni **lo standard delle reti campus aziendali**.
 ---   
 
 
-[1]: https://networklessons.com/network-fundamentals/cisco-campus-network-design-basics?utm_source=chatgpt.com "Cisco Campus Network Design Basics"
-[2]: https://www.alliedtelesis.com/us/en/foundations/what-network-router?utm_source=chatgpt.com "What is a network router?"
-[3]: https://en.wikipedia.org/wiki/Hierarchical_internetworking_model?utm_source=chatgpt.com "Hierarchical internetworking model"
-[4]: https://en.wikipedia.org/wiki/Router_%28computing%29?utm_source=chatgpt.com "Router (computing)"
+[1]: https://networklessons.com/network-fundamentals/cisco-campus-network-design-basics "Cisco Campus Network Design Basics"
+[2]: https://www.alliedtelesis.com/us/en/foundations/what-network-router "What is a network router?"
+[3]: https://en.wikipedia.org/wiki/Hierarchical_internetworking_model "Hierarchical internetworking model"
+[4]: https://en.wikipedia.org/wiki/Router_%28computing%29 "Router (computing)"

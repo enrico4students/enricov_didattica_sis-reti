@@ -1,7 +1,3 @@
-
-# 0. Recap architetturale
-
-
 Nelle reti aziendali medio-grandi si utilizza spesso un’architettura **gerarchica a tre livelli** (hierarchical network design).
 I livelli principali sono:
 
@@ -11,10 +7,7 @@ I livelli principali sono:
 
 Questa architettura serve per migliorare **scalabilità, prestazioni e gestione della rete**. ([GeeksforGeeks][1])
 
-In reti di dimensioni piu' contenute i layers sono due.
-
-
-Nella maggior parte dei casi i layers architetturali sono implementati primariamente tramite switches. Alcuni produttori di dipositivi posizionano esplicitamente i loro switch in un layer architetturale
+Di seguito una spiegazione chiara dei tre livelli e dei dispositivi tipici.
 
 ---
 
@@ -45,13 +38,9 @@ Un core switch professionale ha generalmente:
 
 ## Esempio reale: Cisco Catalyst 9500
 
-![Image](https://dqov5rvavbmnl.cloudfront.net/images/detailed/13/switches-catalyst-c9500-40x-a3-switch_7zta-jn.webp?t=1631924646)
+![Image](../imgs/switch_3layers_img1_r41_remote_0c8ae503a1.jpg)
 
-![Image](https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9500-series-switches/images/kt03085-car9500-600x300.png)
-
-![Image](https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/356001-357000/356905.jpg)
-
-![Image](https://www.cisco.com/c/dam/en/us/td/i/300001-400000/380001-390000/385001-386000/385499.eps/_jcr_content/renditions/385499.jpg)
+![Image](../imgs/switch_3layers_img2_r43_remote_a16f79187c.jpg)
 
 ### Caratteristiche principali
 
@@ -103,13 +92,13 @@ Un distribution switch ha spesso:
 
 ## Esempio reale: Cisco Catalyst 9300
 
-![Image](https://www.cisco.com/content/dam/en/us/products/collateral/switches/catalyst-9300-series-switches/images/ks50033-car9500-600x300.png)
+![Image](../imgs/switch_3layers_img5_r99_remote_56f9e7988b.jpg)
 
-![Image](https://webobjects2.cdw.com/is/image/CDW/6280494?%24product-main%24=)
+![Image](../imgs/switch_3layers_img6_r101_remote_2b064d691e.jpg)
 
-![Image](https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/357001-358000/357357.jpg)
+![Image](../imgs/switch_3layers_img7_r103_remote_40b9445eaf.jpg)
 
-![Image](https://www.cisco.com/c/dam/en/us/td/i/300001-400000/350001-360000/355001-356000/355373.jpg)
+![Image](../imgs/switch_3layers_img8_r105_remote_68c44d1ab6.jpg)
 
 ### Caratteristiche principali
 
@@ -126,7 +115,7 @@ Cisco Catalyst 9300 Series
 
 ---
 
-# 3. Access Switch (altra categoria importante)
+# 3. Access Switch  
 
 Oltre a core e distribution esiste quasi sempre un terzo livello.
 
@@ -274,116 +263,7 @@ Firewall / NGFW
 Proteggere il perimetro, separare Internet dalla LAN, pubblicare servizi in DMZ, filtrare il traffico tra zone.
 
 
-```
-@startuml
-title Rete aziendale gerarchica - versione slide compatibile
-
-left to right direction
-skinparam backgroundColor white
-skinparam shadowing false
-skinparam defaultTextAlignment center
-skinparam linetype ortho
-skinparam packageStyle rectangle
-skinparam nodesep 45
-skinparam ranksep 35
-skinparam roundcorner 18
-
-skinparam rectangle {
-  BorderColor #333333
-  FontColor #111111
-  FontSize 16
-}
-
-skinparam note {
-  BackgroundColor #FFF8DC
-  BorderColor #B8860B
-  FontSize 13
-}
-
-rectangle "Internet" as INTERNET #DDEBF7
-rectangle "Router / ONT ISP" as ISP #E2F0D9
-rectangle "Firewall / NGFW\nNAT - VPN - Filtering" as FW #F4CCCC
-rectangle "DMZ\nVLAN 50\nWeb / Reverse Proxy" as DMZ #FCE4D6
-
-rectangle "CORE SWITCH\nBackbone LAN\nAlta velocità" as CORE #CFE2F3
-
-rectangle "Distribution 1\nRouting inter-VLAN\nACL / QoS" as DIST1 #D9D2E9
-rectangle "Distribution 2\nRouting inter-VLAN\nACL / QoS" as DIST2 #D9D2E9
-
-rectangle "Access Switch 1\nPiano 1" as ACC1 #D9EAD3
-rectangle "Access Switch 2\nPiano 1" as ACC2 #D9EAD3
-rectangle "Access Switch 3\nPiano 2" as ACC3 #D9EAD3
-rectangle "Access Switch 4\nPiano 2 / Guest" as ACC4 #D9EAD3
-
-rectangle "PC utenti\nVLAN 10" as PC1 #FFF2CC
-rectangle "Telefono IP\nVoice VLAN 30" as PH1 #FFE599
-rectangle "Access Point\nCorp VLAN 10\nGuest VLAN 40" as AP1 #D0E0E3
-
-rectangle "PC sala riunioni\nVLAN 10" as PC2 #FFF2CC
-rectangle "Stampante\nVLAN 10" as PRN #FCE5CD
-rectangle "PC piano 2\nVLAN 10" as PC3 #FFF2CC
-rectangle "Server interni\nVLAN 20" as SRV #FCE5CD
-rectangle "Client guest\nVLAN 40" as GUEST #EAD1DC
-
-INTERNET --> ISP : WAN
-ISP --> FW : accesso Internet
-FW --> CORE : uplink LAN
-FW --> DMZ : zona separata
-
-CORE ..> DIST1 : trunk 802.1Q / uplink
-CORE ..> DIST2 : trunk 802.1Q / uplink
-
-DIST1 ..> ACC1 : trunk 802.1Q
-DIST1 ..> ACC2 : trunk 802.1Q
-DIST2 ..> ACC3 : trunk 802.1Q
-DIST2 ..> ACC4 : trunk 802.1Q
-
-CORE ..> SRV : trunk o link dedicato server
-
-ACC1 --> PC1 : access VLAN 10
-ACC1 --> PH1 : voice VLAN 30
-ACC1 --> AP1 : trunk o access
-ACC2 --> PC2 : access VLAN 10
-ACC2 --> PRN : access VLAN 10
-ACC3 --> PC3 : access VLAN 10
-ACC4 --> GUEST : rete guest
-
-note top of CORE
-Backbone interno della LAN.
-Collegare i distribution switch
-con alta capacità e bassa latenza.
-end note
-
-note bottom of DIST1
-Livello intermedio:
-aggregazione, ACL, QoS,
-routing tra VLAN.
-end note
-
-note bottom of ACC4
-Livello vicino agli utenti:
-PC, telefoni, AP, stampanti.
-end note
-
-note right of FW
-Protezione perimetrale:
-NAT, VPN, filtraggio,
-separazione DMZ.
-end note
-
-legend right
-|= Tipo |= Significato |
-| linea continua | access link |
-| linea tratteggiata | trunk 802.1Q / uplink |
-|<#CFE2F3>| core |
-|<#D9D2E9>| distribution |
-|<#D9EAD3>| access |
-|<#F4CCCC>| firewall |
-|<#FCE4D6>| DMZ |
-endlegend
-
-@enduml
-```
+![PlantUML 1](../imgs/switch_3layers_img9_r270_switch_3layers_1_r270_puml.jpg)
 
 Osservazioni didattiche utili da spiegare accanto allo schema
 
@@ -402,273 +282,17 @@ Osservazioni didattiche utili da spiegare accanto allo schema
 
 5. In reti piccole i livelli core e distribution possono anche coincidere nello stesso apparato. In reti grandi invece si tende a separarli.
 
-Versione ultra-sintetica da inserire sotto il diagramma
+### Sintesi
 
-```
-Access layer:
+- Access layer:
 collegare gli endpoint.
-
-Distribution layer:
+- Distribution layer:
 aggregare gli switch di accesso e applicare policy/routing.
-
-Core layer:
+- Core layer:
 fornire dorsale interna ad alte prestazioni.
-
-Firewall:
+- Firewall:
 proteggere il perimetro e separare LAN, WAN e DMZ.
-```
 
-
----  
-
-## Puntualizzazione: Indirizzi IP negli switch
-
-Uno switch può avere uno o più indirizzi IP, ma questo dipende dal tipo di switch e dalla funzione per cui l’indirizzo IP viene utilizzato.
-
-Per comprendere correttamente il comportamento degli switch bisogna distinguere tre categorie:
-
-- switch non gestiti
-- switch gestiti Layer 2
-- switch Layer 3
-
-Inoltre è fondamentale comprendere la separazione tra due componenti interne degli apparati di rete:
-
-- data plane (piano dati)
-- control / management plane (piano di controllo e gestione)
-
-Questa separazione spiega perché uno switch che lavora a livello Ethernet possa comunque avere un indirizzo IP.
-
-
-## Switch non gestiti (unmanaged switch)
-
-Gli switch non gestiti sono dispositivi molto semplici, tipicamente utilizzati in ambito domestico o in piccole reti.
-
-La loro funzione è esclusivamente quella di commutare frame Ethernet.
-
-Il funzionamento è il seguente:
-
-- ricezione di un frame Ethernet
-- lettura dell’indirizzo MAC di destinazione
-- consultazione della tabella MAC
-- inoltro del frame sulla porta corretta
-
-Questi dispositivi:
-
-- non hanno configurazione
-- non hanno interfaccia di gestione
-- non supportano protocolli di amministrazione
-
-Di conseguenza:
-
-❌ non possiedono indirizzi IP
-
-Esempi tipici sono piccoli switch Ethernet da 5 o 8 porte plug-and-play.
-
-
-## Switch gestiti Layer 2
-
-Gli switch gestiti Layer 2 sono molto comuni nelle reti aziendali.
-
-In questi dispositivi è quasi sempre presente un indirizzo IP.
-
-Tuttavia questo indirizzo IP non serve per il traffico degli utenti, ma esclusivamente per la gestione del dispositivo.
-
-
-## Scopo dell’indirizzo IP negli switch Layer 2
-
-L’indirizzo IP permette all’amministratore di accedere allo switch tramite protocolli di amministrazione.
-
-I più comuni sono:
-
-- SSH
-- Telnet
-- interfaccia Web
-- SNMP
-- API di gestione
-- sistemi di monitoraggio di rete
-
-Esempio:
-
-    Switch management IP
-    192.168.10.2
-
-Da un computer di amministrazione è possibile collegarsi allo switch:
-
-    ssh admin@192.168.10.2
-
-oppure tramite browser:
-
-    http://192.168.10.2
-
-L’indirizzo IP serve quindi solo a configurare e monitorare lo switch.
-
-
-## Dove si trova l’indirizzo IP nello switch
-
-Negli switch Layer 2 l’indirizzo IP è associato a una interfaccia virtuale.
-
-Questa interfaccia è spesso collegata a una VLAN.
-
-Viene chiamata:
-
-- management interface
-- VLAN interface
-- SVI (Switched Virtual Interface)
-
-Esempio di configurazione (stile Cisco):
-
-    interface vlan 10
-        ip address 192.168.10.2 255.255.255.0
-
-Lo switch riceve quindi traffico IP destinato alla gestione attraverso questa interfaccia virtuale.
-
-
-## Limiti dell’indirizzo IP negli switch Layer 2
-
-Negli switch Layer 2 l’indirizzo IP non viene utilizzato per fare routing.
-
-Lo switch continua a funzionare come dispositivo Layer 2.
-
-Quindi:
-
-✔ indirizzo IP per gestione  
-❌ nessun routing IP tra reti
-
-
-## Switch Layer 3
-
-Gli switch Layer 3 sono dispositivi più avanzati che possono eseguire routing IP.
-
-In questo caso lo switch può avere molti indirizzi IP.
-
-Questo avviene perché ogni VLAN può avere una propria interfaccia IP.
-
-Queste interfacce sono chiamate SVI (Switched Virtual Interface).
-
-
-## Esempio di configurazione Layer 3
-
-    interface vlan 10
-        ip address 10.10.10.1 255.255.255.0
-
-    interface vlan 20
-        ip address 10.10.20.1 255.255.255.0
-
-    interface vlan 30
-        ip address 10.10.30.1 255.255.255.0
-
-Gli indirizzi IP delle SVI diventano il gateway delle reti appartenenti alle VLAN.
-
-In questo modo lo switch può effettuare routing tra VLAN diverse.
-
-
-## Esempio di rete
-
-VLAN 10 – uffici
-
-    rete: 10.10.10.0/24
-    gateway: 10.10.10.1
-
-VLAN 20 – ospiti
-
-    rete: 10.10.20.0/24
-    gateway: 10.10.20.1
-
-Lo switch Layer 3 possiede entrambi gli indirizzi IP e instrada il traffico tra le due reti.
-
-
-## Data plane e management plane
-
-Per comprendere perché uno switch Layer 2 possa avere un indirizzo IP è necessario distinguere due componenti interne del dispositivo.
-
-
-## Data plane
-
-Il data plane è la parte dello switch che gestisce il traffico degli utenti.
-
-Le operazioni principali sono:
-
-- ricezione dei frame Ethernet
-- apprendimento degli indirizzi MAC
-- consultazione della MAC address table
-- inoltro del frame sulla porta corretta
-
-Questo processo avviene:
-
-- a livello 2 del modello OSI
-- utilizzando indirizzi MAC
-- tramite hardware specializzato (ASIC)
-
-Lo switch non analizza il contenuto IP del pacchetto.
-
-
-## Management plane
-
-Il management plane è la parte dello switch che permette la gestione e configurazione del dispositivo.
-
-All’interno dello switch è presente una CPU con un sistema operativo di rete.
-
-Questa parte del dispositivo utilizza protocolli IP standard.
-
-I servizi tipici sono:
-
-- SSH
-- SNMP
-- HTTPS
-- syslog
-- NTP
-- API di gestione
-
-Per utilizzare questi protocolli è necessario un indirizzo IP.
-
-
-## Esempio di traffico nella rete
-
-Traffico degli utenti:
-
-    PC_A  ---- frame Ethernet ---->  PC_B
-
-Lo switch usa solo indirizzi MAC.
-
-Traffico di gestione:
-
-    PC amministratore  ---- SSH/IP ---->  Switch
-
-In questo caso lo switch usa lo stack TCP/IP.
-
-
-## Separazione della rete di management
-
-Nelle reti professionali la gestione degli apparati viene spesso isolata in una VLAN dedicata.
-
-Esempio:
-
-VLAN 10 – utenti  
-VLAN 20 – server  
-VLAN 30 – Wi-Fi  
-VLAN 99 – management
-
-Gli apparati di rete ricevono indirizzi IP nella VLAN di management.
-
-Esempio:
-
-    Core switch      10.10.99.1
-    Access switch 1  10.10.99.11
-    Access switch 2  10.10.99.12
-    Firewall         10.10.99.254
-
-Solo gli amministratori possono accedere a questa rete.
-
-
-## Riassunto
-
-Tipo di switch | indirizzo IP | funzione
---- | --- | ---
-Unmanaged switch | no | semplice commutazione Ethernet
-Managed switch Layer 2 | sì | gestione e monitoraggio
-Switch Layer 3 | sì, più indirizzi | routing tra VLAN
-
-In conclusione uno switch Layer 2 può avere un indirizzo IP perché il traffico degli utenti è gestito dal data plane hardware, mentre la gestione del dispositivo è gestita dal management plane software.
 
 ---   
 

@@ -1,13 +1,16 @@
 ## Cos’è una DMZ (Demilitarized Zone)
 
-Una **DMZ** è una **rete separata** posta tra la rete interna (LAN) e Internet (WAN), progettata per ospitare servizi che devono essere accessibili dall’esterno, senza esporre direttamente la LAN.
+Una **DMZ** è una **rete separata** destinata a ospitare servizi che devono essere accessibili dall’esterno. E' creata e progettata per non esporre direttamente la LAN.
 
 Obiettivo:
 
 * separare i sistemi pubblici (es. web server) dalla rete interna
 * ridurre l’impatto di una compromissione
 
-La DMZ è una **zona di rete distinta**, con propria subnet IP, proprie regole firewall e routing controllato.
+La DMZ è una **zona di rete distinta**, con 
+- propria subnet IP, 
+- proprie regole firewall e 
+- routing controllato.
 
 ---
 
@@ -23,6 +26,14 @@ Le implementazioni realmente diffuse sono tre:
 
 # 1) DMZ a 3 interfacce (architettura più comune in ambito aziendale)
 
+Le tre zone hanno livelli di fiducia diversi:  
+- WAN → non trusted  
+- DMZ → semi-trusted  
+- LAN → trusted  
+
+Le regole puntuali seguenti sono l'applicazione di questi livelli di fiducia
+
+
 Struttura hardware:
 
 Firewall con 3 interfacce fisiche:
@@ -35,17 +46,17 @@ Collocazione componenti:
 
 WAN
 
-* Router ISP
 * Internet
+* Gateway ISP (router/ONT del provider)
 
-Firewall (dispositivo fisico unico)
+Firewall (dispositivo fisico unico) con  
 
 * Interfaccia WAN
 * Interfaccia LAN
 * Interfaccia DMZ
 * NAT
 * Firewall stateful
-* Routing tra le 3 zone
+* **Routing controllato e filtrato** tra le tre zone
 * Eventuale IPS/IDS
 
 DMZ (rete separata)
@@ -63,54 +74,189 @@ LAN
 
 Logica di funzionamento:
 
-* WAN → DMZ: consentito solo traffico verso servizi pubblici (es. TCP 443)
+* WAN → DMZ: consentito solo traffico verso servizi pubblici,tipicamente  tramite NAT (es. TCP 443 verso web server)
 * WAN → LAN: bloccato
-* DMZ → LAN: normalmente bloccato o fortemente limitato
-* LAN → DMZ: consentito
-* LAN → WAN: consentito con NAT
+* DMZ → LAN: bloccato di default, consentito solo per flussi applicativi specifici (es. web → database)
+* LAN → DMZ: consentito solo per flussi applicativi specifici (principio di minimo privilegio), monitorato/loggato
+* LAN → WAN: consentito con NAT in uscita (PC su lan ha indirizzo privato, l'altro dispositivo non può comunicare direttamente con un indirizzo privato)
+
 
 Il firewall è il punto centrale di controllo.
 
 ---
 
+Di seguito la versione **estesa, rigorosa e allineata** (stesso livello della precedente a 3 interfacce), mantenendo la tua struttura ma aggiungendo i dettagli mancanti.
+
+---
+
 # 2) DMZ con doppio firewall (maggiore isolamento)
 
-Struttura hardware:
+Le zone hanno livelli di fiducia distinti:
 
-Internet
-|
-Firewall esterno
-|
-DMZ
-|
-Firewall interno
-|
-LAN
+* WAN → non trusted
+* DMZ → semi-trusted
+* LAN → trusted
 
-Collocazione componenti:
+La separazione è **fisica e logica**: ogni firewall controlla un confine diverso.
 
-Firewall esterno
+---
+
+## Struttura hardware
+
+Internet  
+|  
+Firewall esterno (perimetro)  
+|  
+DMZ  
+|  
+Firewall interno (core security)  
+|  
+LAN  
+
+Sono presenti **due dispositivi distinti**, spesso anche di vendor diversi (defence-in-depth).
+
+---
+
+## Collocazione componenti
+
+WAN  
+* Internet
+* Gateway ISP (router/ONT del provider)
+
+Firewall esterno (edge firewall)
 
 * Interfaccia WAN
 * Interfaccia DMZ
-* NAT pubblico
-* Regole Internet → DMZ
+* NAT pubblico (DNAT/port forwarding per pubblicazione servizi)
+* Firewall stateful
+* Eventuale IPS/IDS, anti-DDoS, rate limiting
+* Routing controllato tra WAN e DMZ
+* Logging del traffico Internet
 
-DMZ
+**Ruolo principale:**
 
-* Server pubblici
+* esporre i servizi pubblici in modo controllato
+* bloccare completamente l’accesso diretto alla LAN
+
+DMZ (rete esposta)
+
+* Web server
+* Reverse proxy / WAF
+* Mail server (MX)
+* DNS pubblico
+
+Caratteristiche:
+
+* rete isolata sia dalla WAN sia dalla LAN
+* contiene sistemi esposti → **considerata potenzialmente compromettibile**
+* non contiene dati critici (es. database aziendali interni)
 
 Firewall interno
 
 * Interfaccia DMZ
 * Interfaccia LAN
-* Filtri DMZ → LAN
+* Firewall stateful
+* Filtri molto restrittivi DMZ → LAN
+* Logging dettagliato
+* Eventuale IDS/IPS interno
 
-Vantaggio:
+**Ruolo principale:**
 
-* Se compromesso il firewall esterno, la LAN è ancora protetta dal firewall interno.
+* proteggere la LAN anche in caso di compromissione della DMZ
+* applicare il principio di minimo privilegio tra DMZ e rete interna
 
-È una soluzione usata in ambienti ad alta sicurezza.
+LAN
+
+* PC aziendali
+* File server interni
+* Database
+* Sistemi gestionali
+
+Caratteristiche:
+
+* rete ad alta fiducia
+* **mai esposta direttamente verso Internet o DMZ**
+
+---
+
+## Logica di funzionamento
+
+* WAN → DMZ: consentito solo traffico verso servizi pubblici tramite NAT sul firewall esterno (es. TCP 443 verso reverse proxy)
+
+* WAN → LAN: sempre bloccato (non esiste percorso diretto)
+
+* DMZ → WAN: consentito per traffico necessario (es. aggiornamenti, risposte alle connessioni), **generalmente con NAT sul firewall esterno**  
+
+* DMZ → LAN: bloccato di default; consentito solo per flussi applicativi specifici e strettamente controllati (es. web server → database interno su porta specifica)
+
+* LAN → DMZ: consentito solo per flussi necessari, monitorati e loggati (es. amministrazione server, deploy)
+
+* LAN → WAN: consentito con NAT in uscita (PAT/masquerading), gestito tipicamente dal firewall esterno oppure, in alcune architetture, dal firewall interno con routing verso l’esterno
+
+---
+
+## Ruolo dei due firewall
+
+### Firewall esterno
+
+* prima linea di difesa
+* esposto direttamente a Internet
+* gestisce:
+
+  * NAT pubblico
+  * pubblicazione servizi
+  * filtraggio traffico Internet
+
+### Firewall interno
+
+* seconda linea di difesa
+* protegge la LAN da:
+
+  * attacchi provenienti dalla DMZ
+  * movimenti laterali (lateral movement)
+* applica controlli più restrittivi e granulari
+
+---
+
+## Vantaggi
+
+* isolamento forte tra DMZ e LAN
+* compromissione del firewall esterno **non implica accesso alla LAN**
+* difesa a più livelli (defence-in-depth)
+* possibilità di usare tecnologie e policy diverse sui due firewall
+
+---
+
+## Svantaggi
+
+* maggiore costo (due apparati)
+* maggiore complessità di configurazione e gestione
+* necessità di coordinare le policy tra i due firewall
+
+---
+
+## Quando si usa
+
+Questa architettura è tipica di:
+
+* ambienti ad alta sicurezza
+* grandi aziende
+* infrastrutture critiche
+* contesti con requisiti normativi stringenti (es. settori finanziari, PA, sanità)
+
+---
+
+## Confronto sintetico con DMZ a 3 interfacce
+
+* 3 interfacce → soluzione più semplice ed economica
+* doppio firewall → soluzione più sicura e robusta
+
+---
+
+## Conclusione
+
+La DMZ con doppio firewall realizza una separazione più forte tra rete pubblica e rete interna, introducendo un secondo livello di controllo che riduce drasticamente il rischio che una compromissione della DMZ si propaghi verso la LAN.
+
 
 ---
 
@@ -120,23 +266,22 @@ Nei router casalinghi la voce “DMZ” NON è una vera zona di rete separata.
 
 È semplicemente:
 
-* una regola NAT che inoltra tutto il traffico in ingresso verso un singolo IP interno.
+* una o più regole NAT che inoltrano tutto il traffico in ingresso verso uno o alcuni IP interni.
 
 Collocazione reale:
 
-LAN
 
-* PC 192.168.1.100 (esposto)
+WAN  
+* Internet  
 
-Router domestico
-
+Router domestico  
 * NAT
 * Firewall base
 * Regola “DMZ host” → inoltra tutte le porte verso 192.168.1.100
 
-WAN
+LAN  
+* PC 192.168.x.y (esposto)
 
-* Internet
 
 Non esiste una subnet separata.
 Non esiste isolamento reale dalla LAN.
@@ -257,7 +402,7 @@ Il PC è direttamente esposto a Internet tramite NAT completo.
 
 ---
 
-## diagrammi delle tre architetture con evidenziazione delle zone e dei flussi consentiti/bloccati.
+## Diagrammi delle tre architetture con evidenziazione delle zone e dei flussi consentiti/bloccati.
 
 ---
 

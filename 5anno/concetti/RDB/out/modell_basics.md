@@ -1,13 +1,8 @@
 
 ---
 
-# Modellazione dei database – dalle basi al modello ER
+# Modellazione database – Concetti Base e aspetti pratici
 
-* concetti fondamentali della modellazione ER
-* criteri pratici per distinguere entità, relazioni e attributi
-* un procedimento per passare dal testo al modello ER
-* gli errori più comuni
-* un metodo di verifica del modello
 
 ---
 
@@ -17,7 +12,7 @@
 
 Una **entità** rappresenta un oggetto o concetto del dominio reale che ha **identità propria** nel sistema.
 
-Caratteristiche tipiche:
+Caratteristiche **tipiche**:
 
 * può essere identificata con una chiave
 * possiede attributi
@@ -26,7 +21,7 @@ Caratteristiche tipiche:
 Esempi: Studente, Cliente, Prodotto, Camera, Corso
 
 ## Attributi
-Gli **attributi** sono proprietà che descrivono una entità.
+Gli **attributi** sono proprietà che descrivono una entità.  
 non hanno identità autonoma.
 
 Esempio di entità: **Studente**, attributi:  
@@ -42,7 +37,7 @@ Esempio di entità: **Studente**, attributi:
 
 Una **relazione** rappresenta un legame tra due o più entità.
 
-Esempio: Studente — segue — Corso
+Esempio: Studente — **segue** — Corso
 
 Una relazione: 
 * collega entità
@@ -55,27 +50,21 @@ Una relazione:
 
 Un metodo molto usato consiste nell'analizzare il testo del problema.
 
-Regola pratica:
+Regola pratica (NB ipersemplificazione iniziale):
 
-sostantivi → entità
-verbi → relazioni
-proprietà → attributi
+- sostantivi → entità  
+- proprietà → attributi  
+- verbi → relazioni  
 
-Esempio.
+Esempio "Uno studente si iscrive a un corso"
 
-Frase:
-
-Uno studente si iscrive a un corso.
-
-Analisi:
-
-studente → entità
-corso → entità
-si iscrive → relazione
+- studente → entità  
+- corso → entità  
+- si iscrive → relazione  
 
 ---
 
-# 3. Quando qualcosa diventa una entità invece che una relazione
+# 3. Entità (associativa) o Relazione, that is the question
 
 Molte volte un concetto può essere modellato in due modi diversi.
 
@@ -112,41 +101,143 @@ Relazioni:
 Studente — effettua — Iscrizione
 Corso — riguarda — Iscrizione
 
+### Entità o Relazione - Approfondimento
+
+
+Nella modellazione dei database (in particolare nel modello ER), **la scelta tra entità e relazione può dipendere dal contesto, dal punto di vista e dal livello di dettaglio desiderato**. Non è una decisione arbitraria, ma esistono criteri abbastanza consolidati nella letteratura.
+
 ---
 
-# 4. Test pratici usati nella progettazione
+#### Principio generale: dipendenza dal contesto
+
+Nel modello ER introdotto da Peter Chen, si assume che:
+
+* il modello rappresenta **una realtà osservata**
+* ma **la realtà può essere descritta a diversi livelli di astrazione**
+
+Di conseguenza:
+
+* qualcosa può essere modellato come **entità autonoma**
+* oppure come **relazione tra altre entità**
+
+→ dipende da **come si vuole descrivere il dominio**
+
+---
+
+#### Caso tipico: relazione che diventa entità
+
+##### Esempio classico
+
+Relazione:
+
+* Studente — frequenta — Corso
+
+Se si considera solo il fatto che uno studente frequenta un corso:
+
+* "frequenta" è una **relazione**
+
+Ma se si introducono attributi:
+
+* data iscrizione
+* voto finale
+* stato (attivo, ritirato)
+
+allora:
+
+→ la relazione diventa una **entità associativa**
+
+Nuovo modello:
+
+* Studente
+* Corso
+* Iscrizione (entità)
+
+---
+
+#### Criteri pratici (derivati dalla letteratura)
+
+##### Presenza di **attributi propri**  
+
+Se un elemento ha attributi significativi:
+
+* conviene modellarlo come **entità**
+
+Esempio:
+
+* “Contratto” tra Azienda e Dipendente
+  → ha data, tipo, durata → entità
+
+Domanda pratica: "Questo concetto ha molti attributi propri?"  
+Se sì → spesso diventa una entità.  
+
+---
+
+##### Identità **autonoma**
+
+Se qualcosa:
+
+* può essere identificato indipendentemente
+* ha un proprio identificatore
+
+→ è tipicamente una **entità**
+
 
 Quando non è chiaro come modellare un concetto si possono usare alcuni **test mentali**.
 
-## Test dell’identità
-
-Questo oggetto ha una identità propria?
-
+Domanda pratica: "Questo oggetto ha una identità propria?"
 Se sì → probabilmente è una entità.
 
----
 
-## Test dell’esistenza indipendente
+##### Esistenza indipendente
 
-Può esistere da solo nel sistema?
+Domanda Pratica: "Può esistere da solo nel sistema?"
+- Se sì → può essere entità.  
+- Se esiste solo come collegamento → relazione.
 
-Se sì → entità.
-
-Se esiste solo come collegamento → relazione.
 
 ---
 
-## Test degli attributi
+##### Stabilità nel tempo
 
-Questo concetto ha molti attributi propri?
+Se l’oggetto:
 
-Se sì → spesso diventa una entità.
+* ha una propria esistenza nel tempo
+* può essere modificato indipendentemente
+
+→ entità
 
 ---
 
-## Test dell’evento
+##### Cardinalità complessa
 
-Rappresenta un evento nel tempo?
+Se una relazione:
+
+* è molti-a-molti
+* e ha semantica ricca
+
+→ spesso diventa entità
+
+---
+
+##### Ruolo semantico nel dominio
+
+Qui entra il **punto di vista**, ricodiamo che un modello è una rappresentazione semplificata della realtà, sviluppato da un determinato punto di vista:
+
+* in un sistema semplice → relazione
+* in un sistema gestionale complesso → entità
+
+Esempio:
+
+* “Prenotazione”
+
+  * in un sistema minimale → relazione Cliente–Hotel
+  * in un sistema reale → entità centrale
+
+---
+
+##### Test dell’evento
+
+Domanda pratica: "Rappresenta un evento nel tempo?"
 
 Molti eventi diventano entità.
 
@@ -156,6 +247,102 @@ Esempi:
 * pagamento
 * iscrizione
 * ordine
+
+
+---  
+
+#### Formalizzazione nella letteratura
+
+Questi concetti sono trattati in:
+
+##### Testo ""Database System Concepts"
+
+* parla di **entity sets vs relationship sets**
+* introduce il concetto di **aggregation** e **associative entity**
+
+---
+
+##### Testo "Fundamentals of Database Systems"
+
+* esplicita chiaramente:
+
+  * quando una relazione deve diventare entità
+  * il concetto di **weak entity** e **associative entity**
+
+---
+
+##### Testo "Database design"
+
+* sottolinea che il modello ER è:
+
+  * **concettuale**
+  * **dipendente dai requisiti**
+
+---
+
+#### Regola operativa sintetica
+
+Si può sintetizzare così:
+
+* Se serve solo collegare → relazione
+* Se serve descrivere → entità
+
+oppure in forma più tecnica:
+
+* relazione = legame
+* entità = oggetto con identità + attributi
+
+---
+
+#### NB non esiste una scelta “assolutamente giusta”
+
+Questo perchè i modelli sono fatti da deterinati punti di vista e non sono **assoluti**
+
+Due modellazioni diverse possono essere entrambe corrette se:
+
+* soddisfano i requisiti
+* sono coerenti internamente
+
+Questo è un punto fondamentale:
+
+→ la modellazione ER **non è unica**
+
+---
+
+#### Caso reale
+
+Sistema eventi sportivi:
+
+* Utente — partecipa — Evento
+
+Versione semplice:
+
+* relazione
+
+Versione reale:
+
+* Partecipazione:
+
+  * ruolo (portiere, attaccante)
+  * skill
+  * stato (confermato, lista attesa)
+
+→ diventa entità
+
+---
+
+#### Entità o Relazione - Conclusione
+
+La scelta dipende da:
+
+* livello di dettaglio
+* requisiti applicativi
+* punto di vista
+
+Ma non è arbitraria:
+
+
+
 
 ---
 
@@ -195,7 +382,7 @@ Stabilire quante istanze di una entità possono essere collegate a un’altra.
 
 ## Passo 6 – gestire le relazioni molti-a-molti
 
-Le relazioni N:M spesso diventano entità associative.
+Le relazioni N:M spesso, non sempre, diventano entità associative.
 
 ---
 
@@ -207,7 +394,7 @@ Controllare che il modello rappresenti correttamente il sistema reale.
 
 # 6. Esempio completo di modellazione
 
-## Testo
+## Descrizione realtà da modellare  
 
 Una biblioteca gestisce utenti e libri.
 Gli utenti possono prendere in prestito i libri.
@@ -416,8 +603,6 @@ Tipi diversi dello stesso oggetto → gerarchie
 
 # 12. Conclusione
 
-La modellazione ER è uno strumento fondamentale per progettare correttamente un database.
-
 Il processo tipico è:
 
 analisi del dominio
@@ -441,8 +626,3 @@ Stanford Databases Course
 [https://online.stanford.edu/courses/soe-ydatabases-databases](https://online.stanford.edu/courses/soe-ydatabases-databases)
 
 ---
-
-Se lo si desidera, nel passo successivo si può anche creare:
-
-* una **versione migliorata per studenti di 16-17 anni**, più didattica
-* oppure **una seconda lezione** su come trasformare il **modello ER nello schema relazionale** (passaggio tipico nei compiti di basi di dati).

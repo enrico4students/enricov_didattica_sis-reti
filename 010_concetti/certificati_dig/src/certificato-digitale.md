@@ -1,4 +1,6 @@
-## Firma digitale, richiamo
+# Certificati digitali
+
+### Firma digitale, richiamo
 
 Una **firma digitale** è un meccanismo crittografico che consente di:
 
@@ -6,7 +8,7 @@ Una **firma digitale** è un meccanismo crittografico che consente di:
 * garantire che il contenuto **non sia stato modificato** (integrità)
 * impedire al mittente di negare l’invio (**non ripudio**)
 
-### Come funziona (in sintesi)
+Come funziona (in sintesi)
 
 1. si calcola un **hash** del documento (impronta univoca)
 2. l’hash viene **cifrato con la chiave privata** del firmatario
@@ -18,9 +20,9 @@ Una **firma digitale** è un meccanismo crittografico che consente di:
 
 ---
 
-## Tipi più diffusi
+#### Firma digitale - Tipi più diffusi
 
-### 1) Firma digitale con certificato (PKI) - usata nei certificati X.509
+### 1) Firma digitale con certificato (PKI) - **usata nei certificati X.509**
 
 È il caso standard basato su infrastruttura a chiave pubblica.
 

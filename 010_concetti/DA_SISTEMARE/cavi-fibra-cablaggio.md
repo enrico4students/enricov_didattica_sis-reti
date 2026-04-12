@@ -20,7 +20,7 @@ paginate: true
     background-position: center;
 }
 
-# Lezione sui cavi Ethernet in rame
+# Cavi Ethernet in rame
 
 Obiettivo: comprendere quale cavo scegliere in base a velocità, distanza e ambiente di utilizzo.
 
@@ -341,3 +341,234 @@ ISO/IEC 11801:
 * garantisce compatibilità con le tecnologie Ethernet moderne
 
 È la base tecnica di qualsiasi rete aziendale moderna progettata correttamente.
+
+
+---   
+
+## Fibra ottica per la progettazione di rete (approccio pratico)
+
+![Image](https://images.openai.com/static-rsc-4/vKa6XIzH-sWIMw8WWSINiJADS8gSby-7D6IPmOg55d1FzBXpwId5pnR1Wk-__N0fLNb3o_ZRaRJZDrz61BfYdNsvyD_9hZxw5mnPl12l9wkL43ppcxJmnsXm0_dgl279-3ihS_n1UfZ4FHm8Qf-4SNgeAA_3tS_v1z7OcWOeQS5yExjXjSaeLAvjrDAbgHu1?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/xs70vXwyMn54D3mB7HFUoLBlcZbFEO5Rh1aj3MubS2yoM4QaKoiLKHhnGN3s3Co4uEkB-uPsfwWVb5REDUd-d-AyglWxH7CEEE_beDI6jQQudXqQCGA-BDHfF1_2BbEnkFdTHc1a8SBvBxMUXYtFdFPRbtyWk784lu60fZISu2IPvYjdv_MA22HzTg4M7w_i?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/-IP9dQvj4-zZnfh8Yi4tQV5lTWrnhdfW2PwYhM8cgWkMnsxrIqxVKiFawBGHdJLT5xmAfA971WuRpmpozq9WNg_eOXH1jCnDsuKAgHKiKD1j2b7TcinvD8v95mykOIlO70uUY3KZI3-hkd-9HmT9VtxgdoyDIizDYbjX9ZCi0UunhnYShiaNMcwrzPrSkR0M?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/EzsNStErWk36SGikB_qkJH8dl7m2A4xR-ReaRAEjHgRa1PxcgFr7cXobPto61B_SOKl5FaCfvTFSEGv2a9EM0TqFj7zYKMfu6FagXiZ2h7kei-9cgGvJhTpf9IHJtZ5x7iqLwB9gY-cQF6XBzxzhbAnpSDXdGbhDkgm1J-OnFmlwLOSbGytxLdq1yeYE7snY?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/HmfL-ALvD5Hqa51bmgjR6Jmby97fjmnfOXcCmA66uo5DgFSwA8uJ7d_52WyyyejLFhVexTYZ2EZFvaKpENBRyu3jjvrLlv_CMTN43Gch4wF4SvFGFnOucLKhQ-KsOlz5x8JI7DMD4mhL8eHD2kByC3ehYVtpDQ5bSN3xXVGZNp89OI1CZw2nv82OpR_4W8BL?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/joKsPiImAiG6XtWTDeiyZAEIscTnQPQ74HVNWzeS4-r8IUNiCUXyZzDP37duBkI9P0sVdqsZiScKyZoJ4rAlhuEdlOBUKeVaI5-clMLLxj1jObRWS4mslw4rn23AcY95AJ2ce20Oo99lzbE5kiMefeHmYCN5TrgzjMysWgyK6lDfSYy7vpT_CZWOXKZy7NIW?purpose=fullsize)
+
+In ambito professionale, la fibra ottica non si studia dal punto di vista fisico, ma come **strumento progettuale**.
+
+Serve per:
+
+* collegare switch tra loro
+* realizzare uplink ad alta velocità
+* coprire distanze dove il rame non è sufficiente
+
+---
+
+## Tipologie realmente usate (quelle che servono in progettazione)
+
+### Multimodale (MM)
+
+* tipicamente colore **arancione o acqua (OM3/OM4)**
+* usata in LAN e data center
+* costo più basso
+
+Distanze tipiche:
+
+* 1 Gbps → fino a ~550 m
+* 10 Gbps → 300–400 m (OM3/OM4)
+
+Uso tipico:
+
+* access switch → core (stesso edificio)
+* collegamenti tra rack
+
+---
+
+### Monomodale (SM)
+
+* tipicamente colore **giallo**
+* usata per lunghe distanze
+
+Distanze tipiche:
+
+* 1 Gbps / 10 Gbps → da km fino a decine di km
+  (dipende dal modulo SFP)
+
+Uso tipico:
+
+* collegamenti tra edifici
+* campus
+* connessioni WAN / ISP
+
+---
+
+## Dispositivi necessari (fondamentale)
+
+![Image](https://images.openai.com/static-rsc-4/V3eKXCzCh_oWsK6uNl0R7v6HUWWw1l-vULMZTSKyyvmNMQVNZsNCURXj9weMz6wHx0NFBsm-oEQ4HoqRmnpyksi7E5zNBlhv3j7m2Yvxmic2LtuA59dC4cG49UkhW6nStsniMcvQ_Fvi7TCIUzGegYsHjY1z5rGgmKgbLQc9s2RzlWkJ7mKrq3UjgePXUZQ5?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/XAnl81lXD4xivLhnEW5ks-VcJ2TF3MLC9Tr3V7Ckvm4Tu1OqhmA3MVlnrCPPOLtvzPkLmKj4V_ISNNmga8uUd_dGYi4MIp2IFXXVKTzWL3sjfafuBn6w-1o7x6aEu_sbELIN4dtl48N2trpxeHk9mztBKb2Zk9bAYUELwDnYx1C3OCrWXJlBIiIHHurHazMA?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/B0AHbEby-tfTUGWt1sisOQef00UcX9AFhfi4zebuC8a7q_FYMigaPlVabLZ1k3Z2jiW_ClNErcVsAW4aMr6e56GrfE4qUe73q54SAGfXRUDWNRkLIcN5PnpXg__KRiRCgegpMhc-d0BCiAcrNIP-3fN3_gQ5X6CH4EhChRprd6rSlTH9WYzKPQATH_hK8szN?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/KimMruC9eCEKej3O0ziw5oez-WhtNHyuDfQRCfPmrQ0PjG4-WLgqAjJvoxzkYPaaV9Jz_5rICF2RDKf0GyNxwEgzUNyvXZ6L_q5gw7HsrQdeDLo4GR6S27Lh7Aw7861LNhuoZb_Z5eorBflOZtxnvB5OmuQQPV0L35d2tMpqrH9csn5yEMp4NGCz9EPSQ7Dt?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/klVV-Xh6cIGKT5H-oXRu3RE35r-0iXQCFSUCPj8PtBL122USYatz6oeKqRbxyoCOHcNT2FaH_GaTIyPyIzA9hw7rJIkyAxYZLh47m34lUsT_FA-v1f4peujPw2OFNN3mYrE0YIGXyrXmiSMkB0hzLwIKiJGlRAtPHcwBRO49nJz9_YQuctxESFZ6U12-WJe6?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/hxqLuJsCVyer6OIhlfKgmX6JY6D7wdAKFzdDfTb8IQ8cApRl5C6k3FgVBdeh5so01QOaBrNsQU33YbAvpa83y2fzxIqsS7Q_vMUjhQkhH2EmwXy51LYA5pZFHUSYmdCesc2P2BbJJ-Viee-_j9wSSUoxh_CYLLCbDgc7GOkTxk3nISGha4z9LSW2P6XK1Brw?purpose=fullsize)
+
+Per usare la fibra con uno switch servono sempre:
+
+### 1. Slot SFP nello switch
+
+* presenti sugli switch professionali
+* spesso usati per uplink
+
+---
+
+### 2. Modulo SFP / SFP+
+
+* converte segnale elettrico ↔ ottico
+* determina:
+
+  * velocità (1G, 10G, …)
+  * distanza
+  * tipo di fibra
+
+---
+
+### 3. Cavo in fibra
+
+* connettore tipico: **LC duplex**
+* due fibre:
+
+  * TX (trasmissione)
+  * RX (ricezione)
+
+---
+
+## Tabella pratica (da usare nei progetti)
+
+| Scenario                   | Tecnologia consigliata | Motivazione                       |
+| -------------------------- | ---------------------- | --------------------------------- |
+| Stesso rack                | DAC o fibra corta      | economico e semplice              |
+| Stesso edificio            | Multimode (OM3/OM4)    | costo basso, distanza sufficiente |
+| Tra edifici (100 m – 2 km) | Monomode               | evita limiti multimode            |
+| Distanze elevate           | Monomode               | unica soluzione                   |
+
+---
+
+## Come scegliere (criteri reali)
+
+### 1. Distanza
+
+* < 100–300 m → multimode
+* > 300–500 m → monomode
+
+---
+
+### 2. Velocità richiesta
+
+* 1 Gbps → entrambe
+* 10 Gbps → attenzione ai limiti della multimode
+* > 10 Gbps → spesso monomode
+
+---
+
+### 3. Budget
+
+* multimode:
+
+  * cavi più costosi
+  * moduli più economici
+
+* monomode:
+
+  * cavi più economici
+  * moduli più costosi
+
+---
+
+### 4. Scalabilità futura
+
+Scelta tipica professionale:
+
+> usare direttamente **monomode** per evitare rifacimenti futuri
+
+---
+
+## Compatibilità (punto critico negli esami e nella realtà)
+
+### 1. Compatibilità SFP ↔ switch
+
+* standard esistono
+* ma vendor come Cisco Systems o Hewlett Packard Enterprise possono limitare i moduli
+
+Soluzione pratica:
+
+* usare moduli certificati o compatibili
+
+---
+
+### 2. Compatibilità fibra ↔ modulo
+
+* multimode ↔ SFP multimode
+* monomode ↔ SFP monomode
+
+❌ non sono intercambiabili
+
+---
+
+### 3. Compatibilità connettori
+
+* standard più comune: **LC**
+* verificare sempre il tipo prima dell’acquisto
+
+---
+
+### 4. Velocità
+
+* SFP 1G ≠ SFP+ 10G
+* devono essere compatibili su entrambi i lati
+
+---
+
+## Errori tipici (da evitare)
+
+* usare multimode per distanze troppo lunghe
+* scegliere moduli non compatibili con lo switch
+* non verificare TX/RX (fibra invertita)
+* mescolare standard diversi (1G vs 10G)
+* sottodimensionare gli uplink
+
+---
+
+## Sintesi operativa
+
+In progettazione:
+
+* usare **rame per utenti**
+* usare **fibra per collegamenti tra apparati**
+* scegliere:
+
+  * multimode → distanze brevi, costo contenuto
+  * monomode → distanze lunghe, maggiore flessibilità
+
+e ricordare sempre:
+
+> la fibra funziona solo insieme a moduli SFP corretti e compatibili
+
+---
+
+## Alcuni riferimenti
+
+* [https://it.wikipedia.org/wiki/Fibra_ottica](https://it.wikipedia.org/wiki/Fibra_ottica)
+* [https://www.fs.com/blog/what-is-fiber-optic-cable-105.html](https://www.fs.com/blog/what-is-fiber-optic-cable-105.html)
+* [https://www.cisco.com/c/en/us/products/interfaces-modules/transceiver-modules/index.html](https://www.cisco.com/c/en/us/products/interfaces-modules/transceiver-modules/index.html)
+
+---
+

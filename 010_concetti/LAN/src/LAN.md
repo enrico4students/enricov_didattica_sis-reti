@@ -6,8 +6,9 @@
 
 ### 1. Che cos'è una rete locale
 
-Una rete locale (LAN – Local Area Network) è una rete di computer e dispositivi digitali collegati tra loro all'interno di un'area geografica limitata. L'obiettivo è permettere ai dispositivi di comunicare tra loro, condividere risorse e utilizzare servizi comuni.
-Possiamo immaginare in modo semplificato che i computer della rete locale siano collegati tra loro direttamente, come se esistesse un collegamento tra ogni coppia di computer. (In realtà i dispositivi comunicano tramite vari dispositivi, ad esempio uno switch o un access point, ma l'effetto finale è che ogni  computer/dispositivo può raggiungere **direttamente** gli altri)
+Una rete locale (LAN – Local Area Network) è una rete di computer e dispositivi digitali collegati tra loro all'interno di un'area geografica limitata.  
+L'obiettivo è permettere ai dispositivi di comunicare tra loro, condividere risorse e utilizzare servizi comuni.  
+Possiamo immaginare in modo semplificato che i computer della rete locale siano collegati tra loro **direttamente**, come se esistesse un collegamento tra ogni coppia di computer. (In realtà i dispositivi comunicano tramite vari dispositivi, ad esempio uno switch o un access point, ma l'effetto finale è che ogni  computer/dispositivo può raggiungere **direttamente** gli altri)
 
 
 Esempi tipici sono un'abitazione, un laboratorio scolastico, un ufficio, un edificio aziendale o un campus universitario.

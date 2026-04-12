@@ -1,6 +1,70 @@
-## Certificato digitale – concetto generale
+## Firma digitale, richiamo
+
+Una **firma digitale** è un meccanismo crittografico che consente di:
+
+* verificare **l’identità del mittente** (autenticità)
+* garantire che il contenuto **non sia stato modificato** (integrità)
+* impedire al mittente di negare l’invio (**non ripudio**)
+
+### Come funziona (in sintesi)
+
+1. si calcola un **hash** del documento (impronta univoca)
+2. l’hash viene **cifrato con la chiave privata** del firmatario
+3. il destinatario:
+
+   * decifra con la **chiave pubblica**
+   * ricalcola l’hash del documento
+   * confronta i due valori → se coincidono, la firma è valida
 
 ---
+
+## Tipi più diffusi
+
+### 1) Firma digitale con certificato (PKI) - usata nei certificati X.509
+
+È il caso standard basato su infrastruttura a chiave pubblica.
+
+* usa un certificato rilasciato da una **Certification Authority** (es. AgID in Italia)
+* la chiave pubblica è associata in modo certo a una persona/ente
+* tipica di:
+
+  * documenti PDF firmati
+  * PEC
+  * pratiche amministrative
+
+È la forma **legalmente riconosciuta** più comune.
+
+---
+
+## Altri tipi **non** usati nei certificati digitali
+
+### Firma elettronica avanzata (FEA)
+
+Forma intermedia, meno rigida della firma digitale qualificata.
+
+* collega la firma al firmatario in modo univoco
+* consente identificazione e controllo del processo
+* non richiede necessariamente una CA qualificata
+
+Esempio: firma grafometrica su tablet.
+
+
+### Firma elettronica semplice
+
+Forma più debole.
+
+* nessuna garanzia crittografica forte
+* facile da usare ma poco sicura
+
+Esempi:
+
+* nome digitato in una email
+* spunta “accetto i termini”
+
+---
+
+## Certificato digitale – concetto generale
+
 
 ## 1. Definizione
 
@@ -24,15 +88,15 @@ Un singolo certificato contiene:
 * Version
 * Serial Number
 * Signature Algorithm
-* Issuer (chi lo ha firmato)
+* Issuer (chi lo ha firmato, una Intermediate CA, cioè CA non root)
 * Validity (Not Before / Not After)
 * Subject (identità)
 * Subject Alternative Name (SAN)
 * Subject Public Key
 * Extensions (Key Usage, Extended Key Usage, ecc.)
-* Digital Signature della CA
+* Digital Signature della CA (applicata su tutto il contenuto del certificato)
 
-### Diagramma logico semplificato
+### Diagramma logico semplificato  
 
 ```
 +--------------------------------------------------+
@@ -58,7 +122,7 @@ Un singolo certificato contiene:
 
 NB:
 la **catena di fiducia non è contenuta dentro questo certificato**.  
-Il certificato contiene solo l’identità dell’Issuer e la sua firma.
+Il certificato contiene solo l’identità dell’Issuer, solitamente una intermediate CA, e la sua firma.
 
 ---
 
@@ -76,17 +140,26 @@ Intermediate CA
 Server Certificate
 ```
 
+*NB il certificato della Root CA è già installato e considerato fidato nel sistema operativo o nel browser, prima ancora di qualsiasi connessione*  
+
 Il certificato del server:
 
-* è firmato da una CA intermedia
+* è firmato da una CA **intermedia**
 * non contiene l’intera catena
 * contiene solo il riferimento all’Issuer
 
+
+
 Il browser ricostruisce la catena:
 
-1. Verifica che il certificato del server sia firmato dall’intermedia.
-2. Verifica che l’intermedia sia firmata dalla Root.
-3. Controlla che la Root sia nel trust store locale.
+1. Verifica che il certificato del server sia firmato dall’intermedia
+   * usa la **chiave pubblica della Intermediate CA**
+2. Verifica che l’intermedia sia firmata dalla Root. Il browser, oltre a verificare altre cose
+   (validità temporale, corrispondenza dominio, revoca…), avendo il certificato della Intermediate CA e il certificato della Root CA (già nel sistema):
+   * calcola l’hash del **contenuto (TBS, To Be Signed)** del certificato della Intermediate
+   * prende la **firma presente nel certificato intermedio**
+   * verifica la firma usando la **chiave pubblica della Root CA**
+3. Controlla che la Root sia nel trust store locale
 
 Se la catena è valida → certificato accettato.
 
@@ -157,7 +230,7 @@ Scambio chiavi (client ↔ server)
 Comunicazione cifrata (client ↔ server)
 ```
 
-Il certificato contiene **solo la chiave pubblica** del soggetto del certificato cioè di www.banca.it.
+Il certificato contiene **solo la chiave pubblica** del soggetto del certificato cioè di www.banca.it.  
 La chiave privata rimane segreta nel server.
 
 
@@ -172,9 +245,9 @@ Requisito: OpenSSL installato.
 
 ### OpenSSL
 
-E' un software open source che permette di generare certificati, gestire chiavi e stabilire connessioni cifrate.
-Per alcuni è diventato sinonimo dei protocolli che implementa ma **non è un protocollo** è una **libreria software e un insieme di strumenti a riga di comando** per usare crittografia e protocolli sicuri come TLS.
-Viene usato sia dagli sviluppatori (nelle applicazioni) sia dagli amministratori di sistema per operazioni pratiche di sicurezza.
+E' un **software** open source che permette di generare certificati, gestire chiavi e stabilire connessioni cifrate.  
+Per alcuni è diventato sinonimo dei protocolli che implementa ma **non è un protocollo** è una **libreria software e un insieme di strumenti a riga di comando** per usare crittografia e protocolli sicuri come TLS.  
+Viene usato sia dagli sviluppatori (nelle applicazioni) sia dagli amministratori di sistema per operazioni pratiche di sicurezza.  
 
 Download ufficiale
 [https://www.openssl.org/source/](https://www.openssl.org/source/)
@@ -351,6 +424,8 @@ D:\delete_contents\key>
 
 ### File coinvolti
 
+*server key: chiave **privata** del server*
+
 Self-signed:
 
 * server.key
@@ -444,7 +519,7 @@ Si ottiene il certificato del server oppure l’intera catena (server + intermed
 
 ---
 
-#### Metodo 2 – OpenSSL (più didattico)
+#### Metodo 2 – OpenSSL
 
 Da terminale:
 
@@ -476,7 +551,7 @@ Questo è il metodo migliore a fini didattici perché permette di:
 
 ---
 
-#### Metodo 3 – Siti di analisi TLS (molto utili didatticamente)
+#### Metodo 3 – Siti di analisi TLS
 
 SSL Labs – SSL Server Test
 [https://www.ssllabs.com/ssltest/](https://www.ssllabs.com/ssltest/)

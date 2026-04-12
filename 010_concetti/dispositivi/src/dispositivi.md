@@ -490,7 +490,12 @@ Un **SFP (Small Form-factor Pluggable)** è:
 
 ## Video Intros  
 
+
+ok, Technology moments https://www.youtube.com/watch?v=Uk-j0PCESdo
+
 ok, slow: https://www.youtube.com/watch?v=C45eew0CpHs
+
+ottimo (focalizzato su fibra) https://www.youtube.com/watch?v=H78FXBLwh0A
 
 short basic: https://www.youtube.com/watch?v=6m1xrTe22NY  
 short basic: https://www.youtube.com/watch?v=kIoR8DGr1AU 

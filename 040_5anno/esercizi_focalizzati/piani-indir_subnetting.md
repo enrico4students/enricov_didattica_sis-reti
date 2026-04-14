@@ -1,1001 +1,658 @@
+---
 
-Lezione "scolastica" preceduta da importanti chiarificazioni relative al mondo reale  
-
-# Sottoreti, precisazione
-
-**Si parla di sottoreti anche con CIDR**, ma il significato del termine  leggermente rispetto al modello classful.
-
-Bisogna distinguere tre concetti **storici** diversi:
-
-1. indirizzamento **classful**  
-2. **subnetting** delle reti classful  
-3. **CIDR e indirizzamento classless**   
+# Subnetting IPv4 e piani di indirizzamento
 
 ---
 
-### 1. Nel modello classful il concetto di sottorete è fondamentale
+## 1. Contesto operativo
 
-Nel modello IPv4 originale le reti erano divise in classi:
+Nel lavoro con gli indirizzi IPv4 si presentano due contesti distinti, che richiedono approcci diversi.
 
-| Classe | Prefisso | Esempio     |
-| ------ | -------- | ----------- |
-| A      | /8       | 10.0.0.0    |
-| B      | /16      | 172.16.0.0  |
-| C      | /24      | 192.168.1.0 |
+Nel contesto degli esercizi, viene fornito un indirizzo di rete iniziale e si richiede di applicare tecniche di subnetting per suddividerlo in sottoreti. L’obiettivo è verificare la correttezza dei calcoli e la capacità di applicare regole formali.
 
-Qui esisteva una **rete “naturale”** definita dalla classe.
+Nel contesto professionale, invece, spesso non esiste una rete assegnata. È necessario scegliere un blocco di indirizzi privati e progettare l’intera struttura della rete. In questo caso l’obiettivo non è solo la correttezza, ma anche:
 
-Esempio, rete classe C: 192.168.1.0 /24
-
-Se si voleva dividere questa rete si **prendevano bit dalla parte host** per creare subnet.
-
-Esempio: 192.168.1.0 /26 ottenendo ad esempio le sottoreti:  
-192.168.1.0  
-192.168.1.64  
-192.168.1.128  
-192.168.1.192  
-
-Qui il termine **subnet** è letterale:
-
-una **sottorete di una rete classe C**.
-
----
-
-### 2. Con CIDR le classi non esistono più
-
-Con l'introduzione di **Classless Inter-Domain Routing (CIDR)** RFC 4632 le classi A, B e C **non hanno più alcun significato operativo**. Gli indirizzi sono semplicemente:
-rete + prefisso
-
-esempio:  
-10.10.20.0 /24  
-172.16.8.0 /21  
-192.168.100.0 /26  
-
-Non esiste più una "rete madre" naturale.
-
----
-
-### 3. Con CIDR la parola sottorete è ancora usata (ma in modo concettuale)
-
-Nel linguaggio pratico degli amministratori di rete la parola **sottorete continua ad essere usata**, ma con un significato diverso. Ora significa semplicemente:
-
-> una rete ottenuta dividendo un blocco di indirizzi più grande.
-
-Esempio, si ha un blocco assegnato 10.0.0.0 /16, si fa la divisione interna:  
-10.0.10.0 /24  
-10.0.20.0 /24  
-10.0.30.0 /24  
-
-Queste vengono normalmente chiamate **sottoreti**, anche se tecnicamente sono solo **prefissi più specifici**.
-
----
-
-### 4. Esempio reale
-
-Supponiamo che un'azienda possieda: 10.0.0.0 /16  All'interno si definiscono reti per VLAN: 
-VLAN 10 → 10.0.10.0 /24  
-VLAN 20 → 10.0.20.0 /24  
-VLAN 30 → 10.0.30.0 /24  
-
-Formalmente:
-
-* sono prefissi CIDR
-* sono anche **sottoreti del blocco 10.0.0.0/16**
-
-Entrambe le affermazioni sono corrette.
-
----
-
-### 5. Differenza concettuale importante
-
-Nel modello classful:
-
-rete principale → definita dalla classe.
-
-Nel modello CIDR:
-
-rete principale → definita **solo dal prefisso scelto**.
-
-Esempio:
-
-10.0.0.0 /8
-10.0.0.0 /16
-10.0.0.0 /20
-
-sono **tutte reti valide**.
-
-Non esiste più una gerarchia imposta dal protocollo.
-
----
-
-### 6. Linguaggio professionale
-
-Nel lavoro quotidiano si usano ancora termini come: subnet, subnetting, subnet mask anche se dal punto di vista teorico CIDR li rende in parte ridondanti. Questo succede per **ragioni storiche e di chiarezza operativa**.
-Un amministratore dirà normalmente: 
-"questa VLAN usa la subnet 10.10.20.0/24"  
-anche se tecnicamente sarebbe più preciso dire:  
-"questa rete ha prefisso /24".  
-
----
-
-### 7. Sintesi
-
-Una formulazione chiara e moderna può essere:
-
-Nel modello IPv4 attuale (CIDR) una rete è definita da un **prefisso**.
-Quando si divide un blocco di indirizzi più grande in reti più piccole si parla ancora comunemente di **sottoreti**, anche se non esiste più una rete “di classe” da cui derivano.
-
----
-
-### 8. Conclusione
-
-Non è corretto dire che il concetto di sottorete esiste solo nel classful addressing.  
-È corretto dire che:
-* nel modello classful le subnet derivano dalle classi
-* nel modello CIDR le subnet sono semplicemente **prefissi più specifici all'interno di un blocco di indirizzi**
-
----
-
-### Alcuni riferimenti
-
-RFC 4632 – Classless Inter-Domain Routing (CIDR)
-[https://datatracker.ietf.org/doc/html/rfc4632](https://datatracker.ietf.org/doc/html/rfc4632)
-
-Cisco – Introduction to CIDR
-[https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html](https://www.cisco.com/c/en/us/support/docs/ip/routing-information-protocol-rip/13788-3.html)
-
-Cloudflare – What is CIDR
-[https://www.cloudflare.com/learning/network-layer/what-is-cidr/](https://www.cloudflare.com/learning/network-layer/what-is-cidr/)
-
-
----
-
-# Come si lavora realmente con i piani di indirizzamento nelle reti professionali
-
-Nei libri di testo il subnetting viene spesso insegnato come esercizio matematico: si parte da una rete assegnata, si calcolano i bit di subnet e si ottengono sottoreti consecutive (ad esempio .0, .32, .64, .96 ecc.).
-
-Questo approccio è utile per comprendere il funzionamento tecnico del protocollo IPv4, ma **non riflette completamente il modo in cui si progettano le reti nel mondo professionale**.
-
-Nelle infrastrutture reali la progettazione degli indirizzi IP è guidata principalmente da criteri di **leggibilità, organizzazione e crescita futura**, più che dal puro calcolo sui bit.
-
----
-
-### Obiettivi di un piano di indirizzamento professionale
-
-Quando si progetta una rete aziendale si cercano soprattutto questi risultati:
-
-* facilità di comprensione della rete
-* facilità di troubleshooting
-* possibilità di espansione futura
-* coerenza con la struttura organizzativa
-* possibilità di automatizzare configurazioni
-
-Per questo motivo il piano di indirizzamento viene progettato **prima della configurazione dei dispositivi**, spesso insieme alla progettazione delle VLAN e della topologia di rete.
-
----
-
-### Uso di indirizzi privati nelle reti interne
-
-Nelle reti aziendali quasi sempre si utilizzano **indirizzi IPv4 privati**, definiti dallo standard:
-
-RFC 1918
-
-Questi indirizzi non sono instradabili su Internet e sono pensati proprio per reti interne.
-
-Gli intervalli sono tre:
-
-| Intervallo                    | Dimensione   |
-| ----------------------------- | ------------ |
-| 10.0.0.0 – 10.255.255.255     | molto grande |
-| 172.16.0.0 – 172.31.255.255   | medio        |
-| 192.168.0.0 – 192.168.255.255 | piccolo      |
-
-Nella maggior parte delle aziende l’accesso a Internet avviene tramite **NAT sul firewall o sul router**, che traduce gli indirizzi privati in indirizzi pubblici.
-
----
-
-### Quali indirizzi vengono scelti più spesso
-
-Nel mondo professionale esistono alcune scelte molto comuni.
-
-#### Piccole reti (casa, piccoli uffici)
-
-Molto diffuso:
-
-192.168.1.0/24
-
-oppure
-
-192.168.0.0/24
-
-Motivo:
-molti router domestici sono già configurati così.
-
-Controindicazione:
-può creare problemi con VPN o reti interconnesse perché è **troppo comune**.
-
----
-
-#### Aziende medie
-
-Molto frequente utilizzare blocchi della rete:
-
-10.0.0.0/8
-
-oppure una porzione come:
-
-10.10.0.0/16
-10.20.0.0/16
-
-Motivo:
-
-* spazio enorme
-* facile da suddividere
-* possibilità di creare molte sottoreti.
-
----
-
-#### Grandi organizzazioni
-
-Spesso viene assegnato un **intero schema gerarchico**, ad esempio:
-
-10.0.0.0/8
-
-poi suddiviso in modo strutturato:
-
-10.sede.rete.host
-
-Esempio:
-
-10.1.10.0/24 → sede Milano VLAN uffici
-10.1.20.0/24 → sede Milano VLAN server
-10.2.10.0/24 → sede Roma VLAN uffici
-
-Questo permette di **capire immediatamente la funzione della rete guardando l'indirizzo IP**.
-
----
-
-### Come vengono scelti gli indirizzi delle sottoreti
-
-Nei libri di testo spesso si vede questo schema:
-
-rete iniziale:
-192.168.1.0 /24
-
-sottoreti:
-
-192.168.1.0
-192.168.1.32
-192.168.1.64
-192.168.1.96
-
-Questo è corretto dal punto di vista matematico, ma nella pratica **raramente si lavora così**.
-
-Nel mondo reale si preferiscono schemi **più leggibili e regolari**.
-
----
-
-### Numerazione leggibile delle reti
-
-Molti amministratori di rete scelgono di far corrispondere il numero della rete al numero della VLAN o al reparto.
-
-Esempio:
-
-VLAN 10 → 10.10.10.0/24
-VLAN 20 → 10.10.20.0/24
-VLAN 30 → 10.10.30.0/24
-
-Oppure:
-
-VLAN 10 → 192.168.10.0/24
-VLAN 20 → 192.168.20.0/24
-VLAN 30 → 192.168.30.0/24
-
-Questo consente di:
-
-* riconoscere immediatamente la rete
-* evitare confusione
-* ridurre gli errori di configurazione.
-
-In altre parole **si preferiscono incrementi di 10, 20, 30 ecc.** invece che incrementi matematici derivati dai bit.
-
----
-
-### Un esempio realistico
-
-Una piccola azienda con tre VLAN potrebbe usare:
-
-VLAN 10 uffici
-192.168.10.0/24
-
-VLAN 20 server
-192.168.20.0/24
-
-VLAN 30 wifi ospiti
-192.168.30.0/24
-
-Gateway tipico:
-
-192.168.10.1
-192.168.20.1
-192.168.30.1
-
-Questo schema è estremamente leggibile.
-
----
-
-### Lasciare spazio per la crescita
-
-Un altro principio molto importante nella progettazione reale è **lasciare spazio per reti future**.
-
-Esempio.
-
-Invece di usare:
-
-192.168.1.0
-192.168.1.32
-192.168.1.64
-
-si preferisce:
-
-192.168.10.0
-192.168.20.0
-192.168.30.0
-
-così restano disponibili:
-
-192.168.40.0
-192.168.50.0
-192.168.60.0
-
-per future espansioni.
-
----
-
-### Caveats professionali
-
-Alcune scelte comuni dei professionisti.
-
-Evitare reti troppo comuni come:
-
-192.168.0.0/24
-192.168.1.0/24
-
-perché spesso causano problemi con VPN.
-
-Separare sempre reti diverse tramite VLAN:
-
-uffici
-server
-wifi ospiti
-management
-dispositivi IoT.
-
-Usare sempre una struttura coerente nel tempo: cambiare schema di indirizzamento durante la crescita della rete può diventare molto costoso.
-
-Documentare sempre il piano di indirizzamento in un documento di rete.
-
----
-
-### Riassunto
-
-L'approccio scolastico al subnetting serve per capire il funzionamento dei bit e delle maschere.
-
-Nel lavoro reale invece si progettano i piani di indirizzamento privilegiando:
-
+* coerenza
 * leggibilità
-* organizzazione
-* espandibilità
-* coerenza con VLAN e topologia
+* scalabilità
+* manutenibilità
 
-Per questo motivo nelle reti professionali è molto comune vedere schemi come:
-
-192.168.10.0
-192.168.20.0
-192.168.30.0
-
-oppure
-
-10.10.10.0
-10.10.20.0
-10.10.30.0
-
-anche se dal punto di vista matematico non sono la suddivisione "più compatta".
+Questa distinzione è fondamentale: una soluzione corretta dal punto di vista matematico può essere inefficiente o problematica dal punto di vista operativo.
 
 ---
 
-### Alcuni riferimenti
+## 2. Struttura degli indirizzi IPv4
 
-RFC 1918 – Address Allocation for Private Internets
-[https://datatracker.ietf.org/doc/html/rfc1918](https://datatracker.ietf.org/doc/html/rfc1918)
-
-Cisco – Private IP Addressing
-[https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/13772-12.html](https://www.cisco.com/c/en/us/support/docs/ip/network-address-translation-nat/13772-12.html)
-
-Cloudflare – Private IP Addresses Explained
-[https://www.cloudflare.com/learning/network-layer/what-is-a-private-ip-address/](https://www.cloudflare.com/learning/network-layer/what-is-a-private-ip-address/)
-
-
-
-# Subnetting IPv4 e piani di indirizzamento (Scolastico)
-(Istituto Tecnico Informatico – Sistemi e Reti)
-
-
----
-
-## 1. Richiami teorici essenziali
-
-### 1.1 Struttura di un indirizzo IPv4
 Un indirizzo IPv4 è composto da:
-- 32 bit
-- suddivisi in 4 ottetti (8 bit ciascuno)
-- rappresentati in notazione decimale puntata
+
+* 32 bit
+* suddivisi in 4 ottetti da 8 bit
+* rappresentati in notazione decimale puntata
 
 Esempio:
+
+```
 192.168.10.25
+```
 
 Ogni indirizzo è suddiviso logicamente in:
-- parte di rete
-- parte di host
 
-La suddivisione è determinata dalla subnet mask o dal prefisso CIDR.
+* parte di rete
+* parte di host
 
----
-
-### 1.2 Indirizzamento classful
-Storicamente le reti erano divise in classi.
-
-Classe A
-- Primo bit **0**
-- Range: 0.0.0.0 – 127.255.255.255
-- Default mask: 255.0.0.0 (/8)
-
-Classe B
-- Primi bit **10**
-- Range: 128.0.0.0 – 191.255.255.255
-- Default mask: 255.255.0.0 (/16)
-
-Classe C
-- Primi bit **110**
-- Range: 192.0.0.0 – 223.255.255.255
-- Default mask: 255.255.255.0 (/24)
-
-Limite principale: spreco di indirizzi, 
-a causa del fatto che i bits che identificano la classe sono "bloccati"
+La separazione è determinata dalla subnet mask o dal prefisso CIDR.
 
 ---
 
-### 1.3 CIDR (Classless Inter-Domain Routing)
+## 3. Indirizzamento classful (richiamo)
+
+Storicamente le reti erano suddivise in classi.
+
+Classe A:
+
+* primo bit 0
+* intervallo: 0.0.0.0 – 127.255.255.255
+* mask: /8
+
+Classe B:
+
+* primi bit 10
+* intervallo: 128.0.0.0 – 191.255.255.255
+* mask: /16
+
+Classe C:
+
+* primi bit 110
+* intervallo: 192.0.0.0 – 223.255.255.255
+* mask: /24
+
+Limite principale:
+
+* rigidità
+* spreco di indirizzi
+
+Questo modello non è più utilizzato nella progettazione moderna, ma è utile per comprendere i fondamenti.
+
+---
+
+## 4. CIDR (Classless Inter-Domain Routing)
+
 CIDR introduce la notazione:
 
-Indirizzo/prefisso
+```
+indirizzo/prefisso
+```
 
 Esempio:
-192.168.10.0/27
 
-Significa che i primi 27 bit identificano la rete in questo esempio.
+```
+192.168.10.0/27
+```
+
+Significa che:
+
+* i primi 27 bit identificano la rete
+* i restanti bit identificano gli host
 
 Vantaggi:
-- flessibilità
-- aggregazione di rotte
-- riduzione sprechi
+
+* maggiore flessibilità
+* riduzione dello spreco
+* possibilità di aggregazione delle rotte
 
 ---
 
-### 1.4 VLSM (Variable Length Subnet Mask)
-VLSM permette di:
-- suddividere una rete in sottoreti di dimensioni diverse
-- assegnare a ciascuna sottorete solo gli indirizzi necessari
+## 5. VLSM (Variable Length Subnet Mask)
 
-È fondamentale nella progettazione di un piano di indirizzamento aziendale.
+VLSM consente di:
 
----
+* creare sottoreti di dimensioni diverse
+* adattare ogni rete al numero reale di dispositivi
 
-## 2. Obiettivo e formato standard delle soluzioni
-
-### 2.1 Obiettivo operativo
-Definire, per ogni rete o sottorete, tutti i parametri necessari all’assegnazione coerente degli indirizzi:
-- Rete (Network ID)
-- Subnet mask (o prefisso)
-- Gateway/Router (indirizzo del router nella sottorete)
-- Eventuali server o servizi con IP statico (DNS, DHCP, file server, ecc.)
-- Intervallo host assegnabile ai client
-- Broadcast
-
-Nota terminologica (per coerenza con la tabella):
-- La colonna “Server” può indicare uno o più indirizzi riservati a servizi statici (non necessariamente un solo server).
+È la tecnica utilizzata nella progettazione reale delle reti.
 
 ---
 
-### 2.2 Tabella standard
-Nei piani di indirizzamneto è consigliabile una struttura tabellare e, per uniformità, usare sempre lo stesso formato:
+## 6. Obiettivo di un piano di indirizzamento
+
+Per ogni rete o sottorete devono essere definiti:
+
+* Network ID
+* Subnet mask (o prefisso)
+* Gateway
+* indirizzi statici (server, servizi)
+* intervallo host assegnabile
+* Broadcast
+
+È utile utilizzare una struttura tabellare standard.
+
+Formato tipico:
 
 | Rete | Subnet mask | Router | Server | Host | Broadcast |
 
-In presenza di link punto-punto (/30):
-- “Server” può essere indicato come N/D
-- “Host” coincide con i due indirizzi utilizzabili (oppure indicare direttamente i due endpoint)
-
----
-
-## 3. Regole generali (metodo deterministico e ripetibile)
-
-### 3.1 Scelta di criteri fissi
-Lavorare sempre con regole ripetibili:
-- scegliere un criterio fisso per il gateway (spesso ultimo host utilizzabile oppure primo host utilizzabile)
-- scegliere un criterio fisso per i server/servizi statici (spesso primo host utilizzabile, o un blocco iniziale dedicato)
-- definire chiaramente quali indirizzi si riservano (router, server, stampanti, AP, switch management, ecc.)
-
----
-
-### 3.2 Stimare correttamente gli host richiesti
-Nel dimensionare una sottorete:
-- contare i dispositivi reali che richiedono IP nella sottorete (PC, server, stampanti, AP, gestione switch, ecc.)
-- aggiungere riserve coerenti (crescita utenti, nuovi dispositivi, margine tecnico)
-
-Poi scegliere una subnet tale che:
-- host_utilizzabili **>**= host_richiesti
-
 Nota:
-- Network ID e broadcast esistono sempre nella sottorete, ma non corrispondono a dispositivi “assegnabili”.
+
+* la colonna “Server” rappresenta indirizzi riservati a servizi statici
+* nei link punto-punto può essere non applicabile
 
 ---
 
-# PARTE 1 – PROCEDURE OPERATIVE
+## 7. Regole operative generali
 
-## 4. Piano di indirizzamento classful
-Si usa quando si considera la rete secondo la maschera “di default” della classe (A=/8, B=/16, C=/24), senza subnetting aggiuntivo.
+Per ottenere risultati coerenti è necessario adottare criteri fissi.
 
-Procedura:
-1. Determinare la classe dall’ottetto iniziale (A, B, C).
-2. Associare la subnet mask di default della classe.
-3. Determinare:
-   - Network ID (di fatto “già dato” dalla classe)
-   - Broadcast (tutti i bit host a 1)
-   - Primo host (network + 1)
-   - Ultimo host (broadcast - 1)
-4. Definire le assegnazioni usando le regole generali (gateway, server, riserve), mantenendo criteri fissi e dichiarati.
+### 7.1 Assegnazione degli indirizzi
 
-Risultato atteso:
-- una singola riga (o poche righe) di tabella per ogni rete classful.
+* gateway: primo o ultimo host (scelta coerente)
+* server: blocco iniziale della rete
+* host: intervallo restante
 
 ---
 
-## 5. Piano di indirizzamento CIDR (subnetting “a taglia unica”)
-Si usa quando si sceglie un prefisso /n e lo si applica in modo uniforme (tutte le sottoreti hanno la stessa dimensione). È tipico quando si divide una rete in N sottoreti uguali.
+### 7.2 Dimensionamento
 
-Procedura:
-1. Identificare l’indirizzo di partenza e il prefisso /n.
+* stimare il numero reale di dispositivi
+* aggiungere margine di crescita
+* scegliere subnet con:
+
+  host_utilizzabili >= host_richiesti
+
+---
+
+### 7.3 Verifiche
+
+* nessuna sovrapposizione tra subnet
+* corretto allineamento
+* uso corretto di network e broadcast
+
+---
+
+## 8. Differenza operativa fondamentale
+
+Negli esercizi:
+
+* la rete è assegnata
+
+Nel mondo reale:
+
+* la rete viene scelta
+
+Questa è la differenza più importante nella pratica professionale.
+
+
+Nel mondo reale non si ragiona più in termini di “classi” (A, B, C) ma di **blocchi CIDR**, tuttavia gli intervalli privati storici restano un riferimento pratico:
+
+* **10.0.0.0/8** → reti grandi e strutturate
+* **172.16.0.0/12** → reti medio-grandi
+* **192.168.0.0/16** → reti piccole o segmenti locali
+
+La scelta dipende principalmente da **dimensione, crescita prevista e organizzazione logica**.
+
+
+---
+
+## 9. Indirizzi privati e progettazione reale
+
+Questa sezione è centrale per comprendere come si opera fuori dal contesto scolastico.
+
+---
+
+### 9.1 Blocchi disponibili
+
+Gli indirizzi privati sono:
+
+* 10.0.0.0/8
+* 172.16.0.0/12
+* 192.168.0.0/16
+
+---
+
+### 9.2 Scelta nel mondo professionale
+
+#### Uso di 10.0.0.0/8
+
+È il blocco più usato nelle reti aziendali strutturate.
+
+Motivi:
+
+* spazio enorme
+* organizzazione gerarchica semplice
+* facile espansione
+
+Esempio:
+
+```
+10.10.10.0/24 → uffici amministrativi
+10.10.20.0/24 → server interni
+10.10.30.0/24 → rete ospiti
+10.10.40.0/24 → WiFi aziendale
+10.20.10.0/24 → sede secondaria (altra città)
+10.30.0.0/16 → data center
+```
+
+Caratteristica chiave:
+
+* organizzazione gerarchica (es. terzo ottetto = VLAN o sede)
+* facile espansione senza ristrutturare la rete
+
+
+---
+
+#### Uso di 172.16.0.0/12
+
+Offre un buon compromesso tra dimensione e semplicità. È molto usato quando il blocco 10 è già occupato o quando si vuole separare ambienti.
+
+Uso reale:
+
+* aziende con più sedi ma non enormi
+* reti corporate suddivise per regioni o business unit
+* ambienti separati (produzione, test, laboratorio)
+
+Esempio realistico:
+
+```
+172.16.10.0/24 → sede Milano (uffici)
+172.16.20.0/24 → sede Roma (uffici)
+172.16.30.0/24 → laboratorio/test
+172.16.100.0/24 → DMZ (web server, reverse proxy)
+172.17.0.0/16 → infrastruttura server centralizzata
+```
+
+Caratteristica chiave:
+
+* separazione logica per sedi o ambienti
+* meno “ingombrante” del 10/8 ma comunque molto scalabile
+
+
+---
+
+#### Uso di 192.168.0.0/16
+
+È il più diffuso in assoluto, ma principalmente per reti di dimensioni ridotte.
+
+Uso reale:
+
+* piccoli uffici
+* filiali singole
+* reti domestiche o SOHO
+* segmenti isolati dentro reti più grandi
+
+Esempio realistico:
+
+```
+192.168.1.0/24 → rete ufficio
+192.168.2.0/24 → rete WiFi ospiti
+192.168.10.0/24 → rete dispositivi (stampanti, IoT)
+192.168.100.0/24 → piccola DMZ locale
+```
+
+Caratteristica chiave:
+
+* semplicità
+* facile configurazione
+* poco adatto a grandi espansioni
+
+---
+
+### 9.3 Criteri progettuali reali
+
+Nella progettazione reale si applicano criteri che non emergono negli esercizi.
+
+* organizzazione gerarchica degli indirizzi
+* separazione per funzione (VLAN)
+* previsione di crescita
+* coerenza nella numerazione
+
+---
+
+### 9.4 Errori tipici
+
+* uso casuale degli indirizzi
+* riutilizzo della stessa rete in più contesti
+* assenza di struttura
+* mancata previsione di espansione
+
+---
+
+### 9.5 Buone pratiche
+
+* mantenere ordine logico negli indirizzi
+* evitare sovrapposizioni
+* progettare pensando al futuro
+* documentare il piano
+
+---
+
+## 10. Struttura del piano di indirizzamento
+
+È utile distinguere due livelli.
+
+### 10.1 Livello di calcolo
+
+| Network | Subnet mask | Primo host | Ultimo host | Broadcast |
+
+---
+
+### 10.2 Livello operativo
+
+| Nome rete | Network | Prefisso | Gateway | Statici | Host |
+
+---
+
+## 11. Introduzione alle procedure operative
+
+Le procedure operative si distinguono in:
+
+* classful (approccio base)
+* CIDR (subnetting uniforme)
+* VLSM (subnetting reale)
+
+Le procedure dettagliate sono sviluppate nella parte successiva.
+
+---
+
+## 12. Piano di indirizzamento classful
+
+Questo approccio considera la rete utilizzando la **subnet mask di default della classe**, senza ulteriori suddivisioni.
+
+È utile come base concettuale e come esercizio introduttivo.
+
+---
+
+### 12.1 Procedura operativa
+
+1. Determinare la classe dell’indirizzo osservando il primo ottetto.
+2. Associare la subnet mask di default:
+
+   * Classe A → /8
+   * Classe B → /16
+   * Classe C → /24
+3. Determinare i parametri principali:
+
+   * Network ID
+   * Broadcast
+   * Primo host
+   * Ultimo host
+4. Applicare criteri di assegnazione (gateway, eventuali server).
+
+---
+
+### 12.2 Osservazioni operative
+
+* Il Network ID è determinato automaticamente dalla classe.
+* Il broadcast si ottiene ponendo a 1 tutti i bit della parte host.
+* Il numero di host disponibili è:
+
+  2^(bit_host) − 2
+
+---
+
+### 12.3 Limiti dell’approccio classful
+
+* spreco di indirizzi
+* rigidità
+* non adatto a reti moderne
+
+Per questo motivo viene utilizzato solo a scopo didattico.
+
+---
+
+## 13. Piano di indirizzamento CIDR (subnetting uniforme)
+
+In questo approccio si utilizza un prefisso fisso per tutte le sottoreti.
+
+È tipico degli esercizi in cui si richiede di suddividere una rete in parti uguali.
+
+---
+
+### 13.1 Procedura operativa
+
+1. Identificare l’indirizzo di partenza e il prefisso.
+
 2. Calcolare:
-   - subnet mask corrispondente a /n
-   - numero di indirizzi per sottorete: 2^(32-n)
-   - host utilizzabili: 2^(32-n) - 2 (eccetto casi speciali come /31 in scenari particolari)
-3. Calcolare l’incremento (block size) nell’ottetto interessato:
-   - esempio /26: blocchi da 64 nell’ultimo ottetto
-   - esempio /20: blocchi da 16 nel terzo ottetto
-4. Elencare le sottoreti (se richiesto) aggiungendo l’incremento:
-   - ogni sottorete ha un Network ID “allineato” al block size
-5. Per ogni sottorete determinare i campi della tabella standard (Network ID, host, broadcast) e poi applicare le regole generali di assegnazione.
 
-Risultato atteso:
-- una tabella con una riga per ogni sottorete richiesta.
+   * subnet mask
 
----
+   * numero totale di indirizzi:
 
-## 6. Piano di indirizzamento VLSM (subnetting “a taglia variabile”)
-Si usa quando le sottoreti devono avere dimensioni diverse (reale progettazione: reparti, VLAN diverse, link punto-punto, DMZ, Wi-Fi guest, ecc.).
+     2^(32 − n)
 
-Procedura:
-1. Elencare i fabbisogni reali:
-   - per ogni sottorete: numero di host richiesti
-   - includere riserve coerenti (router, server, dispositivi di rete, crescita)
-2. Ordinare i fabbisogni in ordine decrescente (sempre).
-3. Per ogni fabbisogno scegliere la sottorete minima sufficiente:
-   - trovare il più piccolo blocco 2^k tale che (2^k - 2) >= host_richiesti
-   - prefisso = 32 - k
-   - esempio: 60 host -> serve blocco 64 -> /26
-4. Allocare le sottoreti in sequenza, partendo dall’inizio della rete di partenza:
-   - la prima sottorete usa il primo blocco disponibile
-   - la seconda parte dal primo indirizzo libero dopo il broadcast della prima
-   - ogni Network ID deve essere “allineato” alla dimensione del blocco
-5. Per ogni sottorete calcolare i campi della tabella standard:
-   - Network ID
-   - Broadcast (ultimo indirizzo del blocco)
-   - Primo host = network + 1
-   - Ultimo host = broadcast - 1
-6. Assegnare gli indirizzi interni con le regole generali (gateway, server, riserve), mantenendo criteri fissi e dichiarati.
-7. Verifica finale obbligatoria:
-   - nessuna sovrapposizione tra sottoreti
-   - tutte le richieste soddisfatte
-   - tutte le sottoreti rientrano nella rete di partenza
-   - nessun buco “strano” dovuto a mancato allineamento
+   * numero di host utilizzabili:
 
-Risultato atteso:
-- una tabella con una riga per ogni sottorete (LAN, DMZ, Wi-Fi, p2p), con parametri completi.
+     2^(32 − n) − 2
 
+3. Determinare il **block size** (incremento):
 
-## 7. Valutazione  
-Per valutare in modo completo lo svolgimento di un **esercizio di subnetting e piano di indirizzamento**, conviene separare i criteri di valutazione in alcune aree logiche.
-Questo consente anche di attribuire facilmente punteggi parziali.
+   * /26 → blocchi da 64
+   * /27 → blocchi da 32
+   * /28 → blocchi da 16
 
-Di seguito una possibile **struttura completa e didatticamente coerente**.
+4. Individuare le sottoreti:
+
+   * partendo dal Network ID iniziale
+   * aggiungendo il block size
+
+5. Per ogni sottorete determinare:
+
+   * Network ID
+   * Primo host
+   * Ultimo host
+   * Broadcast
+
+6. Applicare criteri di assegnazione.
 
 ---
 
-# 1. Analisi dei requisiti del problema
+### 13.2 Concetto di allineamento
 
-Verificare se è stata compresa correttamente la traccia.
+Ogni sottorete deve iniziare su un indirizzo multiplo del block size.
 
-Sottopunti possibili:
+Esempio:
 
-* identificazione corretta delle **reti necessarie**
-* identificazione del **numero di host richiesti per ogni rete**
-* eventuale identificazione di **reti speciali** (DMZ, link punto-punto, rete management, ecc.)
-* riconoscimento dei **vincoli** indicati nella traccia (indirizzo di partenza, uso di VLSM, rete classful, ecc.)
+Con /26 (blocchi da 64):
 
-Questo punto valuta la **comprensione del problema**, non ancora il calcolo.
+```
+192.168.1.0
+192.168.1.64
+192.168.1.128
+192.168.1.192
+```
 
----
-
-# 2. Identificazione delle sottoreti
-
-Valutare se lo studente ha determinato correttamente le sottoreti logiche.
-
-Sottopunti:
-
-* numero corretto di sottoreti
-* identificazione delle funzioni delle reti (LAN utenti, server, link router-router, ecc.)
-* eventuale distinzione tra **reti LAN e reti di collegamento**
-
-In molti esercizi questo punto precede il subnetting vero e proprio.
+Un indirizzo come 192.168.1.20 non può essere Network ID.
 
 ---
 
-# 3. Scelta dell’architettura di rete
+### 13.3 Errori tipici
 
-Valutare la correttezza della progettazione logica.
-
-Sottopunti:
-
-* separazione delle reti tramite **router**
-* eventuale utilizzo di **VLAN**
-* coerenza tra architettura scelta e requisiti
-* presenza di eventuali **reti di interconnessione tra router**
-
-Questo punto è importante negli esercizi di **progettazione di rete**, non solo di subnetting.
+* mancato allineamento
+* calcolo errato del block size
+* errore nel broadcast
+* sovrapposizione tra subnet
 
 ---
 
-# 4. Calcolo delle dimensioni delle sottoreti
+## 14. Piano di indirizzamento VLSM (subnetting variabile)
 
-Valutare se sono state determinate correttamente le dimensioni delle subnet.
+È il metodo utilizzato nella progettazione reale.
 
-Sottopunti:
-
-* numero minimo di **bit host necessari**
-* dimensione della sottorete scelta
-* eventuale uso corretto del **VLSM**
-* verifica che il numero di host disponibili sia sufficiente
-
-Errori frequenti:
-
-* sottoreti troppo piccole
-* sottoreti eccessivamente grandi senza motivo
+Permette di assegnare a ogni rete una dimensione adeguata.
 
 ---
 
-# 5. Calcolo della subnet mask / prefisso
+### 14.1 Procedura operativa
 
-Valutare la correttezza del subnetting.
+1. Elencare le reti richieste con numero di host.
 
-Sottopunti:
+2. Ordinare le reti in ordine decrescente.
 
-* subnet mask corretta
-* prefisso CIDR corretto
-* relazione corretta tra **bit di rete e bit host**
-* coerenza con il numero di host richiesto
+3. Per ogni rete:
 
----
+   * determinare la dimensione minima:
 
-# 6. Determinazione degli indirizzi delle subnet
+     trovare 2^k tale che (2^k − 2) ≥ host richiesti
 
-Valutare il calcolo degli indirizzi di rete.
+   * calcolare il prefisso:
 
-Sottopunti:
+     prefisso = 32 − k
 
-* indirizzo di rete corretto
-* indirizzo broadcast corretto
-* primo indirizzo utilizzabile
-* ultimo indirizzo utilizzabile
+4. Allocare le sottoreti:
 
-Questo è uno dei punti più importanti negli esercizi.
+   * partire dall’inizio della rete disponibile
+   * assegnare il primo blocco
+   * proseguire dal primo indirizzo libero successivo
 
----
+5. Per ogni sottorete calcolare:
 
-# 7. Costruzione del piano di indirizzamento
+   * Network ID
+   * Broadcast
+   * intervallo host
 
-Valutare la completezza della tabella finale.
+6. Applicare le regole operative:
 
-Sottopunti:
-
-* assegnazione delle subnet alle diverse reti
-* indirizzi assegnati ai router
-* indirizzi assegnati ai server
-* indirizzi assegnati agli host
-* eventuale indirizzo gateway corretto
+   * gateway
+   * indirizzi statici
 
 ---
 
-# 8. Coerenza globale del piano
+### 14.2 Verifica finale
 
-Controllare che il piano di indirizzamento sia internamente consistente.
-
-Sottopunti:
-
-* assenza di **sovrapposizioni tra subnet**
-* tutte le subnet appartengono alla rete di partenza
-* nessun uso di indirizzi riservati (network o broadcast)
-* corretta sequenza degli indirizzi
+* nessuna sovrapposizione
+* corretto allineamento
+* tutte le reti contenute nel blocco iniziale
+* numero host sufficiente
 
 ---
 
-# 9. Rappresentazione e chiarezza
+### 14.3 Osservazioni operative
 
-Valutare la qualità della presentazione.
-
-Sottopunti:
-
-* presenza di **tabella delle subnet**
-* eventuale schema di rete
-* chiarezza dei calcoli
-* uso corretto della notazione CIDR
-
-Questo punto è utile nelle verifiche scolastiche.
+* la prima rete assegnata è la più grande
+* l’ordine è fondamentale
+* errori iniziali compromettono tutto il piano
 
 ---
 
-# 10. Verifica finale
+## 15. Gestione dei casi particolari
 
-Valutare se lo studente ha controllato il risultato.
+### 15.1 Link punto-punto
 
-Sottopunti:
+Tipicamente si utilizzano subnet /30:
 
-* verifica del numero di host disponibili
-* verifica della correttezza delle subnet
-* verifica dell'assenza di conflitti
+* 4 indirizzi totali
+* 2 utilizzabili
 
----
+Struttura:
 
-# Esempio sintetico di griglia di valutazione
-
-Una versione molto compatta potrebbe essere:
-
-1. Analisi della traccia
-2. Identificazione delle reti logiche
-3. Scelta dell'architettura (router / VLAN)
-4. Calcolo dimensione subnet
-5. Calcolo subnet mask / prefisso
-6. Determinazione indirizzi di rete e broadcast
-7. Piano di indirizzamento degli host
-8. Coerenza complessiva
-9. Chiarezza e rappresentazione
+* network
+* host 1
+* host 2
+* broadcast
 
 ---
 
-Di seguito una **griglia di valutazione più robusta**, organizzata esplicitamente secondo le quattro fasi cognitive tipiche della risoluzione di un esercizio di subnetting e piano di indirizzamento:
+### 15.2 Subnet troppo piccole
 
-1. analisi del problema
-2. progettazione della rete
-3. calcolo del subnetting
-4. costruzione del piano di indirizzamento
+Errore tipico:
 
-Questo schema è utile perché permette di **attribuire punteggi parziali anche quando un errore iniziale influenza i passaggi successivi**, evitando di penalizzare eccessivamente lo studente.
+* scegliere una subnet con host insufficienti
 
----
+È necessario verificare sempre:
 
-## Griglia di valutazione DETTAGLIATA – Subnetting e piano di indirizzamento IPv4 (20 punti)
-
-| Criterio                                  | Punti max | Criteri di assegnazione                                                                                                                                                                                              |
-| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Analisi della traccia                     | 2         | 2 punti: requisiti completamente identificati (numero di reti, numero host per rete, eventuali reti speciali). 1 punto: piccolo errore nella lettura dei requisiti. 0 punti: interpretazione errata della traccia.   |
-| Identificazione delle reti logiche        | 3         | 3 punti: tutte le reti individuate correttamente (LAN, server, link router, ecc.). 2 punti: errore minore nel numero o nel ruolo di una rete. 1 punto: progettazione parziale. 0 punti: struttura delle reti errata. |
-| Scelta dell’architettura di rete          | 2         | 2 punti: separazione corretta delle reti (router o VLAN) coerente con la traccia. 1 punto: architettura parzialmente corretta. 0 punti: architettura incoerente o assente.                                           |
-| Ordinamento delle subnet (VLSM)           | 2         | 2 punti: subnet ordinate correttamente per dimensione (host maggiori → minori). 1 punto: ordinamento parzialmente corretto. 0 punti: nessun criterio di ordinamento.                                                 |
-| Dimensionamento delle subnet              | 3         | 3 punti: numero di host e dimensione delle subnet corretti. 2 punti: un errore isolato. 1 punto: più errori ma metodo corretto. 0 punti: dimensionamento errato.                                                     |
-| Determinazione dei prefissi / subnet mask | 3         | 3 punti: prefissi CIDR o subnet mask corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo riconoscibile. 0 punti: prefissi errati.                                                                  |
-| Calcolo degli indirizzi delle subnet      | 3         | 3 punti: indirizzi di rete e broadcast corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo corretto. 0 punti: indirizzi errati.                                                                    |
-| Costruzione del piano di indirizzamento   | 1         | 1 punto: assegnazione coerente di indirizzi a router, server e host. 0 punti: piano incoerente.                                                                                                                      |
-| Verifica della coerenza del piano         | 1         | 1 punto: nessuna sovrapposizione tra subnet e rispetto della rete iniziale. 0 punti: sovrapposizioni o errori logici.                                                                                                |
-| Totale                                    | 20        |                                                                                                                                                                                                                      |
+```
+host_utilizzabili ≥ host richiesti
+```
 
 ---
 
-Struttura logica della valutazione
+### 15.3 Subnet troppo grandi
 
-Analisi del problema
+* non è un errore tecnico
+* ma è un errore progettuale
 
-* comprensione della traccia
-* identificazione delle reti
-
-Progettazione della rete
-
-* architettura (router/VLAN)
-* ordinamento subnet (VLSM)
-
-Calcolo matematico
-
-* dimensionamento subnet
-* prefissi CIDR
-* indirizzi network/broadcast
-
-Applicazione operativa
-
-* piano di indirizzamento
-* verifica di coerenza
+Spreca indirizzi e riduce l’ordine del piano.
 
 ---
 
-Vantaggi di questa griglia
+### 15.4 Reti non allineate
 
-Permette di valutare separatamente:
+Esempio:
 
-* comprensione del problema
-* progettazione della rete
-* capacità di calcolo
-* correttezza operativa finale
+```
+192.168.1.20/26
+```
 
-Utile negli esercizi di **Sistemi e Reti**, dove spesso uno studente:
+Non è un Network ID valido.
 
-* comprende bene la rete ma sbaglia un calcolo
-* oppure sa fare i calcoli ma non progetta correttamente le reti.
+La rete corretta è:
 
----  
-
-Di seguito una **versione semplificata e molto robusta (6 criteri)** pensata per verifiche di **Sistemi e Reti per studenti 16-19 anni**.
-
-Gli obiettivi sono:
-
-* rendere la **correzione molto rapida**
-* mantenere **equità nella valutazione**
-* separare chiaramente **progettazione, calcolo e risultato**
-
-Il totale rimane **20 punti**.
+```
+192.168.1.0/26
+```
 
 ---
 
-## Griglia di valutazione semplificata – Subnetting e piano di indirizzamento (20 punti)
+## 16. Costruzione della tabella finale
 
-| Criterio                                        | Punti max | Criteri di assegnazione                                                                                                                                                                                                             |
-| ----------------------------------------------- | --------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Comprensione della traccia                      | 3         | 3 punti: numero di reti e host richiesti corretti. 2 punti: errore minore nella comprensione. 1 punto: comprensione parziale. 0 punti: interpretazione errata della traccia.                                                        |
-| Identificazione delle sottoreti                 | 3         | 3 punti: tutte le reti individuate correttamente. 2 punti: errore minore. 1 punto: struttura parziale. 0 punti: reti non identificate.                                                                                              |
-| Dimensionamento delle subnet                    | 4         | 4 punti: dimensioni delle subnet corrette per tutte le reti. 3 punti: un errore isolato. 2 punti: più errori ma metodo corretto. 1 punto: metodo parzialmente corretto. 0 punti: dimensionamento errato.                            |
-| Calcolo delle subnet (CIDR, network, broadcast) | 5         | 5 punti: prefissi, network e broadcast corretti. 4 punti: errore isolato. 3 punti: alcuni errori ma metodo corretto. 2 punti: errori multipli ma procedura comprensibile. 1 punto: tentativo incompleto. 0 punti: risultato errato. |
-| Piano di indirizzamento                         | 3         | 3 punti: assegnazione coerente di indirizzi a router e host. 2 punti: errori minori. 1 punto: piano parziale. 0 punti: piano incoerente.                                                                                            |
-| Coerenza e chiarezza della soluzione            | 2         | 2 punti: tabella chiara e nessuna sovrapposizione tra subnet. 1 punto: soluzione comprensibile ma con imperfezioni. 0 punti: soluzione confusa o incoerente.                                                                        |
-| Totale                                          | 20        |                                                                                                                                                                                                                                     |
+La soluzione deve essere presentata in modo strutturato.
 
----
+Formato tipico:
 
-Caratteristiche
+| Rete | Prefisso | Subnet mask | Network | Primo host | Ultimo host | Broadcast |
 
-* **6 criteri sono facili da ricordare**
-* si corregge **in meno di un minuto per compito**
-* gli studenti capiscono facilmente **dove hanno perso punti**
+Oppure, in forma operativa:
 
-La struttura implicita è:
-
-1. comprensione del problema
-2. progettazione delle reti
-3. calcolo del subnetting
-4. piano di indirizzamento
-5. verifica finale
-
-
----  
-
-
-## Griglia di correzione rapida – Subnetting e piano di indirizzamento IPv4
-
-| Criterio                                      | 0 punti                | livello intermedio    | livello buono  | livello pieno               | punti assegnati |
-| --------------------------------------------- | ---------------------- | --------------------- | -------------- | --------------------------- | --------------- |
-| Comprensione della traccia (3)                | interpretazione errata | comprensione parziale | piccolo errore | requisiti corretti          |                 |
-| Identificazione sottoreti (3)                 | sottoreti errate       | struttura incompleta  | piccolo errore | tutte corrette              |                 |
-| Dimensionamento subnet (4)                    | dimensionamento errato | metodo parziale       | un errore      | tutte corrette              |                 |
-| Calcolo subnet (CIDR, network, broadcast) (5) | calcoli errati         | molti errori          | errore isolato | tutti corretti              |                 |
-| Piano di indirizzamento (3)                   | piano incoerente       | piano incompleto      | errori minori  | assegnazione corretta       |                 |
-| Coerenza e chiarezza (2)                      | soluzione confusa      | leggibilità parziale  | —              | soluzione chiara e coerente |                 |
-| Totale                                        |                        |                       |                |                             | 20              |
+| Nome rete | Network | Prefisso | Gateway | Statici | Host |
 
 ---
 
-Esempio di compilazione durante la correzione
+## 17. Coerenza del piano di indirizzamento
 
-| Criterio                  | livello scelto | punti |
-| ------------------------- | -------------- | ----- |
-| Comprensione traccia      | piccolo errore | 2     |
-| Identificazione sottoreti | tutte corrette | 3     |
-| Dimensionamento subnet    | un errore      | 3     |
-| Calcolo subnet            | errore isolato | 4     |
-| Piano indirizzamento      | corretto       | 3     |
-| Chiarezza                 | buona          | 2     |
-| Totale                    |                | 17    |
+Un piano corretto deve rispettare:
+
+* assenza di sovrapposizioni
+* corretto utilizzo degli indirizzi
+* coerenza nella numerazione
+* completezza delle informazioni
 
 ---
 
-Vantaggi di questa griglia
+## 18. Collegamento con la progettazione reale
 
-* consente una **correzione molto veloce**
-* riduce la soggettività della valutazione
-* rende **trasparente il motivo della perdita di punti**
-* è facile da **stampare e compilare a mano**
+Le procedure viste permettono di risolvere esercizi.
 
+Nella realtà si aggiunge un ulteriore livello:
 
----  
+* scelta del blocco iniziale
+* organizzazione logica della rete
+* separazione per VLAN o funzioni
+* previsione di crescita
 
-## **griglia di correzione basata sulle penalità**  
+Esempio reale:
 
-Utile quando si correggono molti compiti perché permette di:
+```
+10.10.10.0/24 → uffici
+10.10.20.0/24 → server
+10.10.30.0/24 → WiFi
+10.10.40.0/24 → guest
+```
 
-* partire dal **punteggio massimo**
-* sottrarre rapidamente punti per **errori tipici**
-* evitare lunghe valutazioni qualitative
+Questo tipo di struttura:
 
-Punteggio iniziale: **20 punti**
-
----
-
-Griglia di correzione – metodo delle penalità
-
-| Errore                                                    | Penalità |
-| --------------------------------------------------------- | -------- |
-| Interpretazione errata della traccia (numero reti o host) | −3       |
-| Una sottorete mancante o non identificata                 | −2       |
-| Errore nell’ordinamento delle subnet (VLSM)               | −1       |
-| Dimensionamento errato di una subnet                      | −2       |
-| Subnet mask o prefisso CIDR errato                        | −1       |
-| Errore nel calcolo dell’indirizzo di rete                 | −2       |
-| Errore nel calcolo dell’indirizzo broadcast               | −2       |
-| Errore nel calcolo dell’intervallo host                   | −1       |
-| Sovrapposizione tra subnet                                | −3       |
-| Assegnazione errata di indirizzi a router o host          | −1       |
-| Uso di indirizzo network o broadcast come host            | −2       |
-| Piano di indirizzamento incompleto                        | −1       |
-| Soluzione poco chiara o senza tabella                     | −1       |
+* non deriva da un esercizio
+* ma da una scelta progettuale
 
 ---
 
-Vantaggi 
+# 19. Esercizi
 
-* estremamente **veloce**
-* molto **oggettivo**
-* facile da usare quando si correggono **20–30 compiti**
+Le seguenti sezioni sono organizzate per livello:
 
-
-Limitazioni
-
-Questo metodo funziona meglio quando:
-
-* gli esercizi sono **molto standardizzati**
-* la soluzione è **abbastanza strutturata**
-
+* A → Richiami e basi (classful)
+* B → Subnetting CIDR
+* C → Progettazione con VLSM
 
 ---
 
-# Struttura consigliata della risposta dello studente
-
-Per facilitare la correzione è utile richiedere sempre una tabella finale come questa.
-
-| Rete        | Prefisso | Subnet mask     | Network | Primo host | Ultimo host | Broadcast |
-| ----------- | -------- | --------------- | ------- | ---------- | ----------- | --------- |
-| LAN1        | /26      | 255.255.255.192 | …       | …          | …           | …         |
-| LAN2        | /27      | 255.255.255.224 | …       | …          | …           | …         |
-| Link router | /30      | 255.255.255.252 | …       | …          | …           | …         |
-
-
----
-
-# A. 20 esercizi – Indirizzi Classful
+## 19.1 Esercizi – Indirizzi Classful
 
 1. Data la rete 10.0.0.0, determinare classe, mask di default, numero host disponibili.
 2. La rete 172.16.0.0 appartiene a quale classe? Quanti host totali consente?
@@ -1020,7 +677,7 @@ Per facilitare la correzione è utile richiedere sempre una tabella finale come 
 
 ---
 
-# B. 20 esercizi – CIDR
+## 19.2 Esercizi – CIDR
 
 1. Data 192.168.10.0/26 determinare host utilizzabili.
 2. Data 192.168.10.0/27 determinare broadcast.
@@ -1045,7 +702,7 @@ Per facilitare la correzione è utile richiedere sempre una tabella finale come 
 
 ---
 
-# C. 20 esercizi – VLSM (piani di indirizzamento)
+## 19.3 Esercizi – VLSM (Piani di indirizzamento)
 
 1. Progettare piano per rete 192.168.10.0/24 con: 60 host, 30 host, 10 host.
 2. Progettare piano per 10.0.0.0/24 con: 100 host, 50 host, 20 host.
@@ -1070,7 +727,30 @@ Per facilitare la correzione è utile richiedere sempre una tabella finale come 
 
 ---
 
-## A. SOLUZIONI – INDIRIZZI CLASSFUL
+## 19.4 Osservazioni sugli esercizi
+
+Gli esercizi sono organizzati con difficoltà crescente:
+
+* Classful → comprensione base
+* CIDR → capacità di calcolo
+* VLSM → progettazione
+
+Le ultime tracce introducono problemi realistici:
+
+* subnet insufficienti
+* necessità di cambiare rete di partenza
+* presenza di link punto-punto
+
+---
+
+
+# 20. Soluzioni
+
+---
+
+## 20.1 Soluzioni – Indirizzi Classful
+
+---
 
 A1) Data la rete 10.0.0.0, determinare classe, mask di default, numero host disponibili.
 
@@ -1192,9 +872,12 @@ A20) Data la rete 12.0.0.0, determinare classe, mask di default, numero host dis
 | -------- | ----------- | ------ | ------ | -------------------------------------------------------------------- | -------------- |
 | 12.0.0.0 | 255.0.0.0   | N/D    | N/D    | da 12.0.0.1 a 12.255.255.254 ; Classe=A ; host_utilizzabili=16777214 | 12.255.255.255 |
 
+
 ---
 
-## B. SOLUZIONI – CIDR
+## 20.2 Soluzioni – CIDR
+
+---
 
 B1) Data 192.168.10.0/26 determinare host utilizzabili.
 
@@ -1316,9 +999,12 @@ B20) Data 192.168.0.0/19 determinare host totali.
 | ----------- | ------------- | ------ | ------ | -------------------------------------------------------- | -------------- |
 | 192.168.0.0 | 255.255.224.0 | N/D    | N/D    | da 192.168.0.1 a 192.168.31.254 ; host_utilizzabili=8190 | 192.168.31.255 |
 
+
 ---
 
-## C. SOLUZIONI – VLSM (piani di indirizzamento)
+## 20.3 Soluzioni – VLSM
+
+---
 
 C1) Progettare piano per rete 192.168.10.0/24 con: 60 host, 30 host, 10 host.
 
@@ -1498,4 +1184,160 @@ C20) Rete 172.16.100.0/24 con: 100 host, 30 host, 10 host, 2 link p2p.
 
 
 
+
+---
+
+# 21. Appendice – Valutazione
+
+---
+
+## 21.1 Struttura della valutazione
+
+La valutazione di un esercizio di subnetting e piano di indirizzamento può essere suddivisa in quattro fasi logiche:
+
+1. analisi del problema
+2. progettazione della rete
+3. calcolo del subnetting
+4. costruzione del piano di indirizzamento
+
+Questa suddivisione consente di valutare separatamente:
+
+* comprensione
+* progettazione
+* capacità di calcolo
+* correttezza operativa
+
+---
+
+## 21.2 Griglia sintetica (20 punti)
+
+| Criterio                        | Punti max | Descrizione                             |
+| ------------------------------- | --------- | --------------------------------------- |
+| Comprensione della traccia      | 3         | corretta identificazione di reti e host |
+| Identificazione delle sottoreti | 3         | numero e ruolo delle reti               |
+| Dimensionamento delle subnet    | 4         | scelta corretta delle dimensioni        |
+| Calcolo delle subnet            | 5         | prefissi, network, broadcast            |
+| Piano di indirizzamento         | 3         | assegnazione di gateway e host          |
+| Coerenza complessiva            | 2         | assenza di errori logici                |
+
+Totale: 20 punti
+
+---
+
+## 21.3 Criteri di assegnazione
+
+Per ciascun criterio:
+
+* punteggio massimo → corretto
+* punteggio intermedio → piccoli errori
+* punteggio minimo → errori gravi o incompleto
+
+Questo consente una valutazione proporzionata anche in presenza di errori parziali.
+
+---
+
+## 21.4 Metodo a penalità
+
+Alternativa più rapida:
+
+* si parte da 20 punti
+* si sottraggono punti per errori
+
+---
+
+### Errori tipici
+
+| Errore                                    | Penalità |
+| ----------------------------------------- | -------- |
+| Interpretazione errata della traccia      | −3       |
+| Sottorete mancante                        | −2       |
+| Dimensionamento errato                    | −2       |
+| Subnet mask errata                        | −1       |
+| Errore network ID                         | −2       |
+| Errore broadcast                          | −2       |
+| Intervallo host errato                    | −1       |
+| Sovrapposizione subnet                    | −3       |
+| Uso errato di network/broadcast come host | −2       |
+| Piano incompleto                          | −1       |
+| Soluzione poco chiara                     | −1       |
+
+---
+
+## 21.5 Uso pratico
+
+Il metodo a penalità è utile quando:
+
+* si correggono molti compiti
+* gli esercizi sono standardizzati
+* serve rapidità
+
+La griglia a criteri è più adatta quando:
+
+* si vuole una valutazione più analitica
+* si vogliono distinguere le diverse competenze
+
+---
+
+## 21.6 Struttura consigliata per le risposte
+
+Per facilitare la correzione, è utile richiedere sempre una tabella finale.
+
+Formato consigliato:
+
+| Rete | Prefisso | Subnet mask | Network | Primo host | Ultimo host | Broadcast |
+
+Oppure:
+
+| Nome rete | Network | Prefisso | Gateway | Statici | Host |
+
+---
+
+## 21.7 Coerenza della valutazione
+
+Una valutazione efficace deve:
+
+* distinguere tra errore di metodo ed errore di calcolo
+* non penalizzare eccessivamente errori propagati
+* premiare la struttura corretta della soluzione
+
+---
+
+## 21.8 Sintesi
+
+Un esercizio completo richiede:
+
+* comprensione del problema
+* progettazione delle subnet
+* corretto calcolo
+* costruzione del piano finale
+
+---
+
+## 21.9 Osservazione finale
+
+Subnetting e piano di indirizzamento valutano competenze diverse:
+
+* subnetting → capacità tecnica
+* piano di indirizzamento → capacità progettuale
+
+Entrambe sono necessarie per operare in contesti reali.
+
+---
+
+---
+
+## Griglia di valutazione DETTAGLIATA – Subnetting e piano di indirizzamento IPv4 (20 punti)
+
+| Criterio                                  | Punti max | Criteri di assegnazione                                                                                                                                                                                              |
+| ----------------------------------------- | --------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Analisi della traccia                     | 2         | 2 punti: requisiti completamente identificati (numero di reti, numero host per rete, eventuali reti speciali). 1 punto: piccolo errore nella lettura dei requisiti. 0 punti: interpretazione errata della traccia.   |
+| Identificazione delle reti logiche        | 3         | 3 punti: tutte le reti individuate correttamente (LAN, server, link router, ecc.). 2 punti: errore minore nel numero o nel ruolo di una rete. 1 punto: progettazione parziale. 0 punti: struttura delle reti errata. |
+| Scelta dell’architettura di rete          | 2         | 2 punti: separazione corretta delle reti (router o VLAN) coerente con la traccia. 1 punto: architettura parzialmente corretta. 0 punti: architettura incoerente o assente.                                           |
+| Ordinamento delle subnet (VLSM)           | 2         | 2 punti: subnet ordinate correttamente per dimensione (host maggiori → minori). 1 punto: ordinamento parzialmente corretto. 0 punti: nessun criterio di ordinamento.                                                 |
+| Dimensionamento delle subnet              | 3         | 3 punti: numero di host e dimensione delle subnet corretti. 2 punti: un errore isolato. 1 punto: più errori ma metodo corretto. 0 punti: dimensionamento errato.                                                     |
+| Determinazione dei prefissi / subnet mask | 3         | 3 punti: prefissi CIDR o subnet mask corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo riconoscibile. 0 punti: prefissi errati.                                                                  |
+| Calcolo degli indirizzi delle subnet      | 3         | 3 punti: indirizzi di rete e broadcast corretti. 2 punti: errore isolato. 1 punto: errori multipli ma metodo corretto. 0 punti: indirizzi errati.                                                                    |
+| Costruzione del piano di indirizzamento   | 1         | 1 punto: assegnazione coerente di indirizzi a router, server e host. 0 punti: piano incoerente.                                                                                                                      |
+| Verifica della coerenza del piano         | 1         | 1 punto: nessuna sovrapposizione tra subnet e rispetto della rete iniziale. 0 punti: sovrapposizioni o errori logici.                                                                                                |
+| Totale                                    | 20        |                                                                                                                                                                                                                      |
 

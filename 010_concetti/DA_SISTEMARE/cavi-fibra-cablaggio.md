@@ -351,8 +351,6 @@ ISO/IEC 11801:
 
 ![Image](https://images.openai.com/static-rsc-4/xs70vXwyMn54D3mB7HFUoLBlcZbFEO5Rh1aj3MubS2yoM4QaKoiLKHhnGN3s3Co4uEkB-uPsfwWVb5REDUd-d-AyglWxH7CEEE_beDI6jQQudXqQCGA-BDHfF1_2BbEnkFdTHc1a8SBvBxMUXYtFdFPRbtyWk784lu60fZISu2IPvYjdv_MA22HzTg4M7w_i?purpose=fullsize)
 
-![Image](https://images.openai.com/static-rsc-4/-IP9dQvj4-zZnfh8Yi4tQV5lTWrnhdfW2PwYhM8cgWkMnsxrIqxVKiFawBGHdJLT5xmAfA971WuRpmpozq9WNg_eOXH1jCnDsuKAgHKiKD1j2b7TcinvD8v95mykOIlO70uUY3KZI3-hkd-9HmT9VtxgdoyDIizDYbjX9ZCi0UunhnYShiaNMcwrzPrSkR0M?purpose=fullsize)
-
 ![Image](https://images.openai.com/static-rsc-4/EzsNStErWk36SGikB_qkJH8dl7m2A4xR-ReaRAEjHgRa1PxcgFr7cXobPto61B_SOKl5FaCfvTFSEGv2a9EM0TqFj7zYKMfu6FagXiZ2h7kei-9cgGvJhTpf9IHJtZ5x7iqLwB9gY-cQF6XBzxzhbAnpSDXdGbhDkgm1J-OnFmlwLOSbGytxLdq1yeYE7snY?purpose=fullsize)
 
 ![Image](https://images.openai.com/static-rsc-4/HmfL-ALvD5Hqa51bmgjR6Jmby97fjmnfOXcCmA66uo5DgFSwA8uJ7d_52WyyyejLFhVexTYZ2EZFvaKpENBRyu3jjvrLlv_CMTN43Gch4wF4SvFGFnOucLKhQ-KsOlz5x8JI7DMD4mhL8eHD2kByC3ehYVtpDQ5bSN3xXVGZNp89OI1CZw2nv82OpR_4W8BL?purpose=fullsize)
@@ -407,7 +405,7 @@ Uso tipico:
 
 ---
 
-## Dispositivi necessari (fondamentale)
+## Dispositivi necessari
 
 ![Image](https://images.openai.com/static-rsc-4/V3eKXCzCh_oWsK6uNl0R7v6HUWWw1l-vULMZTSKyyvmNMQVNZsNCURXj9weMz6wHx0NFBsm-oEQ4HoqRmnpyksi7E5zNBlhv3j7m2Yvxmic2LtuA59dC4cG49UkhW6nStsniMcvQ_Fvi7TCIUzGegYsHjY1z5rGgmKgbLQc9s2RzlWkJ7mKrq3UjgePXUZQ5?purpose=fullsize)
 

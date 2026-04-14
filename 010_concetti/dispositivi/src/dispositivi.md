@@ -1,7 +1,7 @@
 
 # DISPOSITIVI DI RETE COMUNI IN UNA LAN AZIENDALE
 
-In una rete aziendale moderna esistono molti tipi di apparati di rete, ma tre categorie svolgono il ruolo più importante per quanto riguarda la funzionalità ed una quarta è utile a fini pratici:
+In una rete aziendale moderna esistono molti tipi di apparati di rete:
 
 * **Switch** → distribuzione del traffico all’interno della LAN
 * **Router / Edge Gateway** → collegamento tra la LAN e altre reti (Internet o WAN)
@@ -171,7 +171,7 @@ sono interfacce **logiche**, non sono porte fisiche, sono configurazioni softwar
 
 
 
-Esempio didattico di switch che fa routing fra 3 VLAN
+Esempio didattico di switch che fa routing fra VLAN
 
 
 Lo switch Layer 3 effettua quindi **routing tra subnet appartenenti a VLAN diverse**, inoltrando i pacchetti tra le SVI tramite la propria tabella di routing, spesso con forwarding hardware ad alte prestazioni.
@@ -247,8 +247,6 @@ _**SFP (Small Form-factor Pluggable)** è un modulo transceiver di rete **rimovi
 
 * **Gestione locale o cloud** 
   Lo switch può essere configurato tramite interfaccia web, CLI oppure tramite piattaforme di gestione centralizzata.
-
-Ecco la stessa sezione con **una breve frase esplicativa per ogni punto**, mantenendo la sintesi.
 
 ---
 
@@ -488,10 +486,10 @@ Un **SFP (Small Form-factor Pluggable)** è:
 
 > un piccolo modulo inseribile che permette allo switch di adattarsi a **diversi** tipi di collegamento fisico.
 
-## Video Intros  
+## Video tutorials (da ricontrollare)  
 
 
-ok, Technology moments https://www.youtube.com/watch?v=Uk-j0PCESdo
+ok, autore "Technology moments" https://www.youtube.com/watch?v=Uk-j0PCESdo
 
 ok, slow: https://www.youtube.com/watch?v=C45eew0CpHs
 
@@ -518,9 +516,9 @@ In altre parole:
 
 > il modulo SFP è un **convertitore intelligente + interfaccia fisica intercambiabile**
 
-![](../imgs/sfp-rj45.jpg)(width=70%)
+![](../imgs/sfp-rj45.jpg){width=70%}
 
-![](../imgs/sfp-ottico.jpg)(width=70%)
+![](../imgs/sfp-ottico.jpg){width=70%}
 
 
 ---
@@ -1101,23 +1099,6 @@ Structured Cabling Guide – RackSolutions
 [https://www.racksolutions.com/news/blog/patch-panel/](https://www.racksolutions.com/news/blog/patch-panel/)
 
 
----   
-
-### Patch Panel – SINTESI OPERATIVA
-
-Switch
-Distribuzione del traffico all’interno della LAN.
-Segmentazione della rete tramite VLAN.
-Supporto PoE per access point e telefoni IP.
-
-Router / Edge Gateway
-Collegamento tra LAN e Internet o WAN.
-Gestione NAT, routing e VPN.
-
-Firewall NGFW
-Protezione perimetrale della rete.
-Controllo delle applicazioni e prevenzione delle intrusioni.
-
 ---
 
 # Access Point
@@ -1182,7 +1163,7 @@ Funzioni:
 
 ---
 
-# ✔️ Come funzionano le VLAN sugli access point
+# Come funzionano le VLAN sugli access point
 
 L’access point **non rileva automaticamente le VLAN**.
 Le VLAN devono essere:
@@ -1205,7 +1186,7 @@ Le VLAN devono essere:
 
    * si configura manualmente un **VLAN ID**
 
-👉 Risultato:
+Risultato:
 
 * SSID → VLAN → rete IP
 
@@ -1245,7 +1226,7 @@ Il traffico:
 
 ---
 
-## ✔️ Sintesi tecnica corretta
+## Sintesi tecnica corretta
 
 * VLAN definite nell’infrastruttura
 * AP configura mapping SSID → VLAN
@@ -1254,7 +1235,7 @@ Il traffico:
 
 ---
 
-# ✔️ Esempio pratico reale (Ubiquiti UniFi)
+# Esempio pratico reale (Ubiquiti UniFi)
 
 ## Scenario
 
@@ -1264,7 +1245,7 @@ Il traffico:
 
 ---
 
-## ✔️ Obiettivo
+## Obiettivo
 
 Creare 3 reti Wi-Fi separate:
 
@@ -1276,7 +1257,7 @@ Creare 3 reti Wi-Fi separate:
 
 ---
 
-## ✔️ Configurazione passo-passo
+## Configurazione passo-passo
 
 ### 1) Configurazione rete (firewall o L3)
 
@@ -1330,11 +1311,11 @@ Nel controller:
 
   * VLAN ID: 30
 
-👉 L’AP applica il tagging VLAN in base alla configurazione
+L’AP applica il tagging VLAN in base alla configurazione
 
 ---
 
-## ✔️ Cosa succede nella pratica
+## Cosa succede nella pratica
 
 1. dispositivo si connette a SSID "Ospiti"
 2. AP associa VLAN 20
@@ -1345,7 +1326,7 @@ Nel controller:
 
 ---
 
-# ✔️ Errori comuni (ambito professionale)
+# Errori comuni (ambito professionale)
 
 ❌ Porta AP configurata come access → VLAN multiple non funzionano
 ❌ VLAN non configurata sull’AP → traffico errato
@@ -1355,7 +1336,7 @@ Nel controller:
 
 ---
 
-# ✔️ Differenza chiave da ricordare
+# Differenza chiave da ricordare
 
 * VLAN → livello 2 (trasporto su switch)
 * IP → livello 3 (firewall o L3 switch)
@@ -1364,13 +1345,13 @@ Nel controller:
 
 ---
 
-# ✔️ Nota sulla classificazione della rete Wi-Fi
+# Nota sulla classificazione della rete Wi-Fi
 
 * SSID aziendale → rete interna (ma spesso segmentata e a fiducia limitata)
-* SSID ospiti → rete esterna / non trusted
+* SSID ospiti    → rete a fiducia bassa/non trusted ex. rete esterna
 
 ---
 
-# ✔️ Sintesi finale (rigorosa)
+# Sintesi  
 
 Un access point professionale opera nell’access layer e si collega a uno switch managed tramite una porta trunk 802.1Q quando sono presenti più SSID associati a VLAN diverse. Le VLAN non sono rilevate automaticamente ma devono essere configurate esplicitamente sia nell’infrastruttura di rete sia nell’access point. L’AP associa ogni SSID a una VLAN e inserisce il traffico nella VLAN corretta, mentre il trasporto avviene tramite lo switch e il routing IP è gestito dal firewall perimetrale o da uno switch Layer 3, a seconda dell’architettura adottata.

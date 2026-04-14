@@ -21,7 +21,7 @@ Caratteristiche **tipiche**:
 Esempi: Studente, Cliente, Prodotto, Camera, Corso
 
 ## Attributi
-Gli **attributi** sono proprietà che descrivono una entità.  
+Gli **attributi** sono proprietà che descrivono una entità (o una relazione).  
 non hanno identità autonoma.
 
 Esempio di entità: **Studente**, attributi:  
@@ -70,7 +70,7 @@ Molte volte un concetto può essere modellato in due modi diversi.
 
 Il criterio principale è questo:
 
-se il legame ha **informazioni proprie importanti**, diventa una **entità associativa**.
+se il legame ha **informazioni proprie importanti**, diventa una *entità* **associativa**.
 
 ---
 
@@ -80,31 +80,31 @@ Studente — segue — Corso
 
 Se non servono altri dati, la relazione è sufficiente.
 
-Ma spesso bisogna memorizzare:
+Ma spesso bisogna memorizzare data iscrizione, voto, stato Etc.
 
-* data iscrizione
-* voto
-* stato
-
-In questo caso si introduce una entità:
-
-Iscrizione
+In questo caso si introduce una entità: Iscrizione
 
 Schema:
 
-Studente
-Corso
-Iscrizione
+- Studente
+- Corso
+- Iscrizione
 
 Relazioni:
 
-Studente — effettua — Iscrizione
-Corso — riguarda — Iscrizione
+- Studente — effettua — Iscrizione
+- Corso — riguarda — Iscrizione
 
 ### Entità o Relazione - Approfondimento
 
 
-Nella modellazione dei database (in particolare nel modello ER), **la scelta tra entità e relazione può dipendere dal contesto, dal punto di vista e dal livello di dettaglio desiderato**. Non è una decisione arbitraria, ma esistono criteri abbastanza consolidati nella letteratura.
+Nella modellazione dei database (in particolare nel modello ER), **la scelta tra entità e relazione può dipendere**:   
+- dal contesto,  
+- dal punto di vista e 
+- dal livello di dettaglio desiderato**  
+  
+
+Non è una decisione arbitraria, ma esistono criteri abbastanza consolidati nella letteratura.
 
 ---
 
@@ -154,7 +154,7 @@ Nuovo modello:
 
 ---
 
-#### Criteri pratici (derivati dalla letteratura)
+#### Criteri pratici  
 
 ##### Presenza di **attributi propri**  
 
@@ -179,7 +179,7 @@ Se qualcosa:
 * può essere identificato indipendentemente
 * ha un proprio identificatore
 
-→ è tipicamente una **entità**
+è tipicamente una **entità**
 
 
 Quando non è chiaro come modellare un concetto si possono usare alcuni **test mentali**.
@@ -204,7 +204,7 @@ Se l’oggetto:
 * ha una propria esistenza nel tempo
 * può essere modificato indipendentemente
 
-→ entità
+entità
 
 ---
 
@@ -215,7 +215,7 @@ Se una relazione:
 * è molti-a-molti
 * e ha semantica ricca
 
-→ spesso diventa entità
+spesso diventa entità
 
 ---
 
@@ -305,7 +305,7 @@ Due modellazioni diverse possono essere entrambe corrette se:
 
 Questo è un punto fondamentale:
 
-→ la modellazione ER **non è unica**
+la modellazione ER **non è unica**
 
 ---
 
@@ -327,7 +327,7 @@ Versione reale:
   * skill
   * stato (confermato, lista attesa)
 
-→ diventa entità
+diventa entità
 
 ---
 
@@ -348,7 +348,7 @@ Ma non è arbitraria:
 
 # 5. Procedura in 7 passi per costruire un modello ER
 
-Durante gli esercizi è utile seguire un procedimento sistematico.
+Un processo potrebbe essere il seguente
 
 ## Passo 1 – leggere il dominio applicativo
 
@@ -382,7 +382,7 @@ Stabilire quante istanze di una entità possono essere collegate a un’altra.
 
 ## Passo 6 – gestire le relazioni molti-a-molti
 
-Le relazioni N:M spesso, non sempre, diventano entità associative.
+Le relazioni N:M a volte diventano entità associative.
 
 ---
 
@@ -539,9 +539,9 @@ Il voto appartiene all’esame o all’iscrizione.
 
 ---
 
-# 10. Metodo professionale di verifica
+# 10. Verifica
 
-## Test delle domande operative
+## Alcune domande di verifica
 
 Dopo aver costruito il modello si formulano domande realistiche che il sistema deve supportare.
 
@@ -601,16 +601,7 @@ Tipi diversi dello stesso oggetto → gerarchie
 
 ---
 
-# 12. Conclusione
-
-Il processo tipico è:
-
-analisi del dominio
-costruzione del modello ER
-verifica con domande operative
-raffinamento del modello
-
-La progettazione è quasi sempre **iterativa**: il modello viene migliorato progressivamente fino a rappresentare correttamente il sistema.
+# Cardinalità
 
 ---
 

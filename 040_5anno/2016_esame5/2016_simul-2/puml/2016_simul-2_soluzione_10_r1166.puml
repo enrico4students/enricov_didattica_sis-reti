@@ -1,0 +1,25 @@
+@startuml
+title On-premises vs Cloud
+
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+rectangle "Azienda" as AZ
+rectangle "Infrastruttura interna\nserver + storage + rete" as ONP
+cloud "Provider Cloud\nIaaS / PaaS / SaaS" as CL
+
+AZ --> ONP : gestione diretta
+AZ --> CL : utilizzo di servizi
+
+note bottom of ONP
+Più controllo
+Più costi e manutenzione
+end note
+
+note bottom of CL
+Più elasticità
+Dipendenza dal provider
+end note
+
+@enduml

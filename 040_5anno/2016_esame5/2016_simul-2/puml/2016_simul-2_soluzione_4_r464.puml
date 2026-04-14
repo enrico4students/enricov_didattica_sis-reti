@@ -1,0 +1,72 @@
+@startuml
+title Modello concettuale - autenticazioni, ruoli, riservatezza
+
+skinparam shadowing false
+skinparam linetype ortho
+
+entity Azienda {
+    * id_azienda
+    --
+    ragione_sociale
+    partita_iva
+    stato
+}
+
+entity Utente {
+    * id_utente
+    --
+    username
+    password_hash
+    nome
+    cognome
+    email
+    attivo
+}
+
+entity Ruolo {
+    * id_ruolo
+    --
+    nome_ruolo
+    descrizione
+}
+
+entity Permesso {
+    * id_permesso
+    --
+    codice_permesso
+    descrizione
+}
+
+entity Veicolo {
+    * id_veicolo
+    --
+    targa
+    modello
+    stato
+}
+
+entity Dispositivo {
+    * id_dispositivo
+    --
+    seriale
+    certificato
+    attivo
+}
+
+entity AuditAccesso {
+    * id_accesso
+    --
+    timestamp_login
+    ip_client
+    esito
+}
+
+Azienda ||--o{ Utente
+Azienda ||--o{ Veicolo
+Veicolo ||--|| Dispositivo
+Utente ||--o{ AuditAccesso
+
+Utente }o--o{ Ruolo : possiede
+Ruolo }o--o{ Permesso : abilita
+
+@enduml

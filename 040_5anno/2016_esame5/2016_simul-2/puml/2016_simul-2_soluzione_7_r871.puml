@@ -1,0 +1,20 @@
+@startuml
+title Connessione dispositivo-server
+
+start
+:Avvio dispositivo;
+:Leggere posizione e sensori;
+:Aprire connessione TLS verso broker;
+:Autenticare dispositivo;
+if (Connessione riuscita?) then (si)
+  :Pubblicare telemetria;
+  :Sottoscriversi topic comandi;
+  :Ricevere eventuali comandi;
+  :Ripetere ciclicamente;
+else (no)
+  :Salvare dati in buffer locale;
+  :Ritentare connessione;
+endif
+stop
+
+@enduml

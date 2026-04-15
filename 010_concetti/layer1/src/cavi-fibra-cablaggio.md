@@ -1,4 +1,3 @@
-
 ---
 
 marp: false
@@ -6,19 +5,6 @@ theme: portrait
 paginate: true
 
 --- 
-
-
-
-.page {
-    width: 210mm;
-    min-height: 297mm;
-    margin: auto;
-    padding: 2cm;
-    background-image: url("sfondo.png");
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: center;
-}
 
 # Cavi Ethernet in rame
 
@@ -35,7 +21,7 @@ Un cavo Ethernet in rame è composto da:
 * eventuale schermatura metallica
 * connettore RJ-45
 
-L’intreccio dei fili riduce le interferenze tra le coppie (diafonia).
+L’intreccio dei fili riduce le interferenze tra le coppie (**diafonia**).
 
 <!-- slideseparator -->
 
@@ -56,9 +42,9 @@ Esempio: Cat6 UTP, Cat6a S/FTP.
 
 ### Cat5e
 
-![Image](https://images.openai.com/static-rsc-3/DLLpUop897H55KzCWZ-5Un5khTcnGXhebFnoOH_KtZUgYVzuI38Rz3XDkL-WaWvbBH02hHNJuS1k7hwLjz_0d4dOkRBrglkaWcMKGmrzkq4?purpose=fullsize\&v=1)
+![Image](https://images.openai.com/static-rsc-3/DLLpUop897H55KzCWZ-5Un5khTcnGXhebFnoOH_KtZUgYVzuI38Rz3XDkL-WaWvbBH02hHNJuS1k7hwLjz_0d4dOkRBrglkaWcMKGmrzkq4?purpose=fullsize\&v=1){width=50%}
 
-![Image](https://assets.belden.com/m/6872136b20bc04e1/original/10GXW12-JACKET-Blog-Image.jpg)
+![Image](https://assets.belden.com/m/6872136b20bc04e1/original/10GXW12-JACKET-Blog-Image.jpg){width=50%}
 
 * Frequenza: 100 MHz
 * Velocità: fino a 1 Gbit/s
@@ -93,7 +79,6 @@ Uso tipico:
 
 ![Image](https://images.openai.com/static-rsc-3/8KDzCPXjmNX_A2hu5_sOrMoiTJ3MjHi6A_Io--8JITgEBQVZsiaXjDWTGi-pmUsJk4NNeCybRxIYlFdG0cFeCxnXbjYwbFKtyvB7hDDjN7g?purpose=fullsize\&v=1)
 
-![Image](https://www.truecable.com/cdn/shop/files/6ASCMRBLU_WireCloseup.png)
 
 * Frequenza: 500 MHz
 * 10 Gbit/s fino a 100 m
@@ -175,15 +160,19 @@ Per la maggior parte delle installazioni moderne, **Cat6 UTP rappresenta un buon
 
 # ISO/IEC 11801 – Cablaggio strutturato per edifici e campus
 
-![Image](https://9233480.fs1.hubspotusercontent-na1.net/hubfs/9233480/tailwind-feat-whatisapatchpanel.jpg)
+![Image](https://9233480.fs1.hubspotusercontent-na1.net/hubfs/9233480/tailwind-feat-whatisapatchpanel.jpg){width=70%}
 
-![Image](https://www.techservicetoday.com/hubfs/Cat6%20Wiring%20Diagram.jpg)
+![Image](https://www.techservicetoday.com/hubfs/Cat6%20Wiring%20Diagram.jpg){width=70%}{width=70%}
 
-![Image](https://www.unitekfiber.com/uploads/image/20230815/10/fiber-optic-patch-panel-rack-mount.webp)
+![Image](https://www.unitekfiber.com/uploads/image/20230815/10/fiber-optic-patch-panel-rack-mount.webp){width=70%}
+
+
 
 ![Image](https://www.fibertekfibershop.com/cdn/shop/products/rack-mount-sliding-fiber-optic-patch-panel-with-lc-duplex-adapters-1u-height-fpp124-series-27972665_700x700.jpg)
+{width=70%}
 
 ### 1. Che cos’è ISO/IEC 11801
+
 
 **ISO/IEC 11801** è uno standard internazionale che definisce i requisiti per il **cablaggio strutturato generico** negli edifici (uffici, scuole, industrie, data center) e nei campus.
 
@@ -215,7 +204,7 @@ l’infrastruttura fisica deve essere stabile nel tempo, mentre gli apparati att
 
 ISO/IEC 11801 definisce una struttura a livelli:
 
-1. **Campus backbone**
+1. **Campus (complesso/comprensorio)backbone**
 2. **Building backbone**
 3. **Horizontal cabling**
 4. **Work area**
@@ -318,15 +307,15 @@ Vantaggi concreti:
 
 Un impianto non conforme può generare:
 
-❌ problemi di performance
-❌ difficoltà di certificazione
-❌ incompatibilità future
+* problemi di performance
+* difficoltà di certificazione
+* incompatibilità future
 
 Un impianto conforme garantisce:
 
-✅ prestazioni prevedibili
-✅ documentazione tecnica standardizzata
-✅ longevità dell’infrastruttura
+* prestazioni prevedibili
+* documentazione tecnica standardizzata
+* longevità dell’infrastruttura
 
 <!-- slideseparator -->
 
@@ -347,27 +336,25 @@ ISO/IEC 11801:
 
 ## Fibra ottica per la progettazione di rete (approccio pratico)
 
-![Image](https://images.openai.com/static-rsc-4/vKa6XIzH-sWIMw8WWSINiJADS8gSby-7D6IPmOg55d1FzBXpwId5pnR1Wk-__N0fLNb3o_ZRaRJZDrz61BfYdNsvyD_9hZxw5mnPl12l9wkL43ppcxJmnsXm0_dgl279-3ihS_n1UfZ4FHm8Qf-4SNgeAA_3tS_v1z7OcWOeQS5yExjXjSaeLAvjrDAbgHu1?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/vKa6XIzH-sWIMw8WWSINiJADS8gSby-7D6IPmOg55d1FzBXpwId5pnR1Wk-__N0fLNb3o_ZRaRJZDrz61BfYdNsvyD_9hZxw5mnPl12l9wkL43ppcxJmnsXm0_dgl279-3ihS_n1UfZ4FHm8Qf-4SNgeAA_3tS_v1z7OcWOeQS5yExjXjSaeLAvjrDAbgHu1?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/xs70vXwyMn54D3mB7HFUoLBlcZbFEO5Rh1aj3MubS2yoM4QaKoiLKHhnGN3s3Co4uEkB-uPsfwWVb5REDUd-d-AyglWxH7CEEE_beDI6jQQudXqQCGA-BDHfF1_2BbEnkFdTHc1a8SBvBxMUXYtFdFPRbtyWk784lu60fZISu2IPvYjdv_MA22HzTg4M7w_i?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/xs70vXwyMn54D3mB7HFUoLBlcZbFEO5Rh1aj3MubS2yoM4QaKoiLKHhnGN3s3Co4uEkB-uPsfwWVb5REDUd-d-AyglWxH7CEEE_beDI6jQQudXqQCGA-BDHfF1_2BbEnkFdTHc1a8SBvBxMUXYtFdFPRbtyWk784lu60fZISu2IPvYjdv_MA22HzTg4M7w_i?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/EzsNStErWk36SGikB_qkJH8dl7m2A4xR-ReaRAEjHgRa1PxcgFr7cXobPto61B_SOKl5FaCfvTFSEGv2a9EM0TqFj7zYKMfu6FagXiZ2h7kei-9cgGvJhTpf9IHJtZ5x7iqLwB9gY-cQF6XBzxzhbAnpSDXdGbhDkgm1J-OnFmlwLOSbGytxLdq1yeYE7snY?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/EzsNStErWk36SGikB_qkJH8dl7m2A4xR-ReaRAEjHgRa1PxcgFr7cXobPto61B_SOKl5FaCfvTFSEGv2a9EM0TqFj7zYKMfu6FagXiZ2h7kei-9cgGvJhTpf9IHJtZ5x7iqLwB9gY-cQF6XBzxzhbAnpSDXdGbhDkgm1J-OnFmlwLOSbGytxLdq1yeYE7snY?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/HmfL-ALvD5Hqa51bmgjR6Jmby97fjmnfOXcCmA66uo5DgFSwA8uJ7d_52WyyyejLFhVexTYZ2EZFvaKpENBRyu3jjvrLlv_CMTN43Gch4wF4SvFGFnOucLKhQ-KsOlz5x8JI7DMD4mhL8eHD2kByC3ehYVtpDQ5bSN3xXVGZNp89OI1CZw2nv82OpR_4W8BL?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/HmfL-ALvD5Hqa51bmgjR6Jmby97fjmnfOXcCmA66uo5DgFSwA8uJ7d_52WyyyejLFhVexTYZ2EZFvaKpENBRyu3jjvrLlv_CMTN43Gch4wF4SvFGFnOucLKhQ-KsOlz5x8JI7DMD4mhL8eHD2kByC3ehYVtpDQ5bSN3xXVGZNp89OI1CZw2nv82OpR_4W8BL?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/joKsPiImAiG6XtWTDeiyZAEIscTnQPQ74HVNWzeS4-r8IUNiCUXyZzDP37duBkI9P0sVdqsZiScKyZoJ4rAlhuEdlOBUKeVaI5-clMLLxj1jObRWS4mslw4rn23AcY95AJ2ce20Oo99lzbE5kiMefeHmYCN5TrgzjMysWgyK6lDfSYy7vpT_CZWOXKZy7NIW?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/joKsPiImAiG6XtWTDeiyZAEIscTnQPQ74HVNWzeS4-r8IUNiCUXyZzDP37duBkI9P0sVdqsZiScKyZoJ4rAlhuEdlOBUKeVaI5-clMLLxj1jObRWS4mslw4rn23AcY95AJ2ce20Oo99lzbE5kiMefeHmYCN5TrgzjMysWgyK6lDfSYy7vpT_CZWOXKZy7NIW?purpose=fullsize){width=70%}
 
-In ambito professionale, la fibra ottica non si studia dal punto di vista fisico, ma come **strumento progettuale**.
+la fibra ottica serve per:
 
-Serve per:
-
-* collegare switch tra loro
+* collegare switch tra loro (al momento poco usata in access layer)
 * realizzare uplink ad alta velocità
 * coprire distanze dove il rame non è sufficiente
 
 ---
 
-## Tipologie realmente usate (quelle che servono in progettazione)
+## Tipologie realmente usate  
 
 ### Multimodale (MM)
 
@@ -377,8 +364,8 @@ Serve per:
 
 Distanze tipiche:
 
-* 1 Gbps → fino a ~550 m
-* 10 Gbps → 300–400 m (OM3/OM4)
+* 1 Gbps → fino a **~550** m
+* 10 Gbps → **300–400** m (OM3/OM4)
 
 Uso tipico:
 
@@ -394,7 +381,7 @@ Uso tipico:
 
 Distanze tipiche:
 
-* 1 Gbps / 10 Gbps → da km fino a decine di km
+* 1 Gbps / 10 Gbps → da km fino a **decine di km**
   (dipende dal modulo SFP)
 
 Uso tipico:
@@ -460,7 +447,7 @@ Per usare la fibra con uno switch servono sempre:
 
 ---
 
-## Come scegliere (criteri reali)
+## Monomode vs Multimode, scelta, criteri pratici
 
 ### 1. Distanza
 
@@ -515,16 +502,18 @@ Soluzione pratica:
 ### 2. Compatibilità fibra ↔ modulo
 
 * multimode ↔ SFP multimode
-* monomode ↔ SFP monomode
+* monomode  ↔ SFP monomode
 
-❌ non sono intercambiabili
+* **non** sono intercambiabili
 
 ---
 
 ### 3. Compatibilità connettori
 
 * standard più comune: **LC**
-* verificare sempre il tipo prima dell’acquisto
+* verificare sempre il tipo nell'uso reale
+
+![](../imgs/fibra_connettore_LC_00.png)
 
 ---
 
@@ -537,8 +526,8 @@ Soluzione pratica:
 
 ## Errori tipici (da evitare)
 
-* usare multimode per distanze troppo lunghe
-* scegliere moduli non compatibili con lo switch
+* usare multimode per distanze troppo lunghe (monomode è la scelta giusta)
+* scegliere moduli non compatibili con lo switch (incompatibilità artificiose)
 * non verificare TX/RX (fibra invertita)
 * mescolare standard diversi (1G vs 10G)
 * sottodimensionare gli uplink

@@ -1,21 +1,4 @@
-Di seguito viene fornita **una lezione completa e strutturata in Markdown plain-text**.
-Il testo può essere copiato direttamente in un file `arduino_corso_completo.md`.
 
-La lezione è progettata pensando a:
-
-* studenti **17 anni**
-* conoscenza **C/C++**
-* **zero elettronica**
-* obiettivo **livello medio Arduino**
-* forte integrazione **teoria + pratica**
-* **diagrammi e immagini**
-* **laboratori progressivi**
-
-Le immagini usano URL pubblici stabili.
-
----
-
-```markdown
 # Arduino – Corso completo dalle basi al livello intermedio
 
 Materiale didattico per studenti di informatica (17 anni)
@@ -702,14 +685,3 @@ https://docs.arduino.cc
 Arduino tutorial  
 https://www.arduino.cc/en/Tutorial/HomePage
 
-```
-
----
-
-Se si desidera fare un confronto davvero serio tra AI, nel prossimo passo posso anche generare:
-
-1. **una versione ancora più didattica (40-50 pagine equivalenti)**
-2. **diagrammi elettronici professionali stile manuale universitario**
-3. **10 laboratori progressivi per un corso di 20 ore**
-4. **un diagramma completo dell’architettura interna ATmega328**
-5. **una simulazione Arduino con Wokwi per gli studenti**.

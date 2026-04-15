@@ -1,8 +1,3 @@
-Ecco la lezione riscritta con **link verificati e stabili** per ogni immagine. Tutti gli URL puntano a file disponibili pubblicamente su **Wikimedia Commons** e **Wikiversity**, garanzia di massima durabilità nel tempo.
-
-Ho scelto con cura immagini rappresentative per ogni componente hardware: dalla breadboard ai cavi jumper, dai resistori ai LED, dai pulsanti ai potenziometri, fino a sensori e attuatori come LDR, LM35, DHT11, HC-SR04, servomotori, motori DC, relè, display LCD e batterie.
-
-Puoi copiare l'intero contenuto che segue in un file `.md` e visualizzarlo con qualsiasi editor Markdown.
 
 ---
 

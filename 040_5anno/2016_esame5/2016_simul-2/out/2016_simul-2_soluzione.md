@@ -85,8 +85,9 @@ Diagramma testuale:
 [Operatori aziendali via browser]                     [Sensori / CAN bus / GPS]
               |                                                  |
               | HTTPS                                            |
-              v                                                  v
-         [Internet]                                   [Dispositivo di bordo]
+              |                                                  v
+              |                                 (CPU embedded + modem + memoria)
+              |                                     [Dispositivo di bordo]
               |                                 (CPU embedded + modem + memoria)
               |                                                  |
               |                                                  | MQTT over TLS
@@ -98,11 +99,15 @@ Diagramma testuale:
               |                                                  |
               +----------------------------+----------------------+
                                            |
+                                       [Internet]
+                                           | 
                                            v
-                              [Router di frontiera ACME]
+                              [Connettività WAN e      ]
+                                           ?
+                              ["Edge" Router (di frontiera/esterno-interno)]
                                            |
-                                           v
-                             [Firewall / NGFW perimetrale]
+                                           ?
+                                 [(Edge) Firewall NGFW]
                                            |
                                            v
                                           [DMZ]
@@ -114,7 +119,7 @@ Diagramma testuale:
                          +------------------+------------------+
                                             |
                                             v
-                           [Firewall interno / filtro tra zone]
+                           [Firewall (interno / filtro tra zone)]
                                             |
                                             v
                                  [Rete server interna ACME]

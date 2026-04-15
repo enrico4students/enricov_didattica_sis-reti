@@ -1,31 +1,61 @@
 @startuml
-title DMZ con doppio firewall (dual firewall)
+title Fleet Management SaaS - Architettura di rete completa
 
 left to right direction
 skinparam shadowing false
 skinparam linetype ortho
+skinparam packageStyle rectangle
+skinparam defaultTextAlignment center
 
-cloud "Internet" as NET
-rectangle "Router" as RTR
-rectangle "Firewall esterno FW1" as FW1
+actor "Operatore aziendale" as OP
+
+cloud "Internet" as INTERNET
+cloud "Rete mobile 4G/5G" as MOBILE
+cloud "Core network\noperatore mobile" as TELCO
+
+node "Veicolo" as CAR {
+    rectangle "Sensori / CAN bus / GPS" as SENSORI
+    rectangle "Dispositivo di bordo\nCPU embedded + modem + memoria" as OBU
+}
+
+node "Perimetro ACME" as EDGE {
+    rectangle "Router di frontiera" as RTR
+    rectangle "Firewall / NGFW perimetrale" as FW1
+}
 
 frame "DMZ" as DMZ {
-    rectangle "Reverse Proxy / WAF" as RP
-    rectangle "Broker MQTT" as MQTT
+    rectangle "Reverse Proxy / WAF /\nLoad Balancer Web" as RP
+    rectangle "Broker MQTT esposto\nin modo controllato" as MQTT
 }
 
-rectangle "Firewall interno FW2" as FW2
+rectangle "Firewall interno /\nfiltro tra zone" as FW2
 
-frame "LAN interna" as LAN {
-    rectangle "Application Server" as APP
+frame "Rete server interna ACME" as LAN {
+    rectangle "Application Server /\nAPI REST / servizi applicativi" as APP
     database "DB relazionale" as DB
-    database "TSDB" as TSDB
+    database "Archivio telemetria /\nTSDB" as TSDB
+    rectangle "Servizi IAM / audit /\ngestione ruoli e comandi" as IAM
 }
 
-NET --> RTR
+OP --> INTERNET
+INTERNET --> RTR : HTTPS
 RTR --> FW1
-FW1 --> DMZ
-DMZ --> FW2
-FW2 --> LAN
+FW1 --> RP : 443/TCP
+RP --> FW2
+FW2 --> APP : HTTPS / API
+APP --> DB
+APP --> TSDB
+APP --> IAM
+
+SENSORI --> OBU
+OBU --> MOBILE : MQTT/TLS oppure HTTPS/TLS
+MOBILE --> TELCO
+TELCO --> INTERNET
+INTERNET --> RTR
+FW1 --> MQTT : MQTT over TLS
+MQTT --> FW2
+FW2 --> APP : ingestione dati / comandi
+APP --> DB
+APP --> TSDB
 
 @enduml

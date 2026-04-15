@@ -1,0 +1,27 @@
+@startuml
+title Dispositivo di bordo - Componenti funzionali
+
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+rectangle "GPS / GNSS" as GPS
+rectangle "Sensori / CAN bus" as CAN
+rectangle "Modulo acquisizione dati" as ACQ
+rectangle "Logica embedded" as EMB
+rectangle "Memoria locale / buffer" as BUF
+rectangle "Modulo sicurezza / credenziali" as SEC
+rectangle "Modem 4G/5G" as MODEM
+rectangle "Rete mobile" as NET
+rectangle "Server ACME" as SRV
+
+GPS --> ACQ
+CAN --> ACQ
+ACQ --> EMB
+EMB --> BUF
+EMB --> SEC
+EMB --> MODEM
+MODEM --> NET
+NET --> SRV
+
+@enduml

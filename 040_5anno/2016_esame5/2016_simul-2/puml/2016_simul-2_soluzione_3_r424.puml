@@ -1,0 +1,28 @@
+@startuml
+title Protocolli di comunicazione sicuri
+
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+actor "Operatore" as OP
+rectangle "Portale Web ACME" as WEB
+rectangle "API / servizi ACME" as API
+rectangle "Broker MQTT ACME" as MQ
+rectangle "Dispositivo veicolo" as DEV
+
+OP --> WEB : HTTPS / TLS
+WEB --> API : HTTPS / TLS
+DEV --> MQ : MQTT / TLS
+
+note right of WEB
+Certificato server
+Sessione protetta
+end note
+
+note right of MQ
+TLS + credenziali
+o certificato client
+end note
+
+@enduml

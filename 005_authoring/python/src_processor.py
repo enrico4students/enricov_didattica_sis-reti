@@ -1156,7 +1156,7 @@ def main() -> int:
     root = Path(args.root).expanduser().resolve()
     custom_root = False
     if root == Path("./").resolve():
-        root = Path("C:\\00_data\\08_dev\\08_dev-didattica\\enricov_didattica_sis-reti\\5anno\\concetti\\dispositivi").resolve()
+        root = Path(input("inserire radice root: ").strip()).expanduser().resolve()
         custom_root = True
 
     plantuml_jar = resolve_plantuml_jar(args.plantuml_jar)

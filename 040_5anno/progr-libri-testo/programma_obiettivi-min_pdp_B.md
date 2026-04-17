@@ -2,7 +2,7 @@
 
 **Disciplina:** Sistemi e Reti
 **Classe:** Quinta
-**Testo:** INTERNETWORKING – Sistemi e Reti, Vol. 3
+**Testo:** INTERNETWORKING – Sistemi e Reti, Vol. 3, 3a ed., E. Baldino, R. Rondano, A. Spano, C. Iacobelli
 **Studente con PDP (tipologia B)**
 
 ---

@@ -19,23 +19,26 @@ RADIUS (protocollo): Remote Authentication Dial-In User Service
 
 Un **server RADIUS** è un server che implementa il protocollo **RADIUS (Remote Authentication Dial-In User Service)** e che ha il compito di fornire servizi di **AAA**, cioè:
 
-Authentication
-Authorization
-Accounting
+- Authentication
+- Authorization
+- Accounting
 
-Per comprendere il ruolo di RADIUS è utile pensare a un problema molto concreto che si presenta in qualsiasi rete di una certa dimensione: **come controllare chi può accedere alla rete e cosa può fare una volta entrato**.
+Radius si occupa della funzionalità necessaria in qualsiasi rete di una certa dimensione:  
+**come controllare chi può accedere alla rete e cosa può fare una volta entrato**.
 
 In una rete molto piccola questo controllo può essere fatto direttamente nei dispositivi di rete. Ad esempio un router domestico può avere una lista di utenti locali oppure una password Wi-Fi condivisa da tutti. Tuttavia questo approccio diventa rapidamente ingestibile quando il numero di utenti cresce.
 
 In una rete aziendale o universitaria possono esserci:
 
-centinaia o migliaia di utenti
-decine o centinaia di access point
-switch distribuiti su molti edifici
+- centinaia o migliaia di utenti
+- decine o centinaia di access point
+- switch distribuiti su molti edifici
 
 Gestire le credenziali direttamente su ogni dispositivo diventerebbe impossibile.
 
-Il ruolo di RADIUS è proprio quello di **centralizzare il controllo degli accessi alla rete**. I dispositivi di rete non devono più sapere chi sono gli utenti autorizzati. Devono semplicemente chiedere al server RADIUS se una determinata connessione è autorizzata oppure no.
+Il ruolo di RADIUS è proprio quello di **centralizzare il controllo degli accessi alla rete**.  
+I dispositivi di rete non devono più sapere chi sono gli utenti autorizzati.  
+Devono semplicemente chiedere al server RADIUS se una determinata connessione è autorizzata oppure no.
 
 In questo senso RADIUS rappresenta un **punto centrale di decisione per l’accesso alla rete**.
 

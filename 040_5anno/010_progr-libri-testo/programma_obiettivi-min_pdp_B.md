@@ -1,15 +1,35 @@
+
+
+
 ## PROGRAMMA SVOLTO (OBIETTIVI MINIMI)
 
-**Disciplina:** Sistemi e Reti
+**Disciplina:** Sistemi e Reti  
 **Classe:** Quinta
-**Testo:** INTERNETWORKING – Sistemi e Reti, Vol. 3, 3a ed., E. Baldino, R. Rondano, A. Spano, C. Iacobelli
-**Studente con PDP (tipologia B)**
-
+**Testo:** 
+- INTERNETWORKING – Sistemi e Reti, Vol. 3, 3a ed. 
+- E. Baldino, R. Rondano, A. Spano, C. Iacobelli
+- ISBN 8874857489
+  
 ---
 
 ## OBIETTIVI GENERALI
 
-Comprendere i concetti fondamentali relativi alla sicurezza delle reti, alle principali tecnologie di comunicazione e ai servizi di rete, utilizzando un linguaggio tecnico essenziale e operando in contesti guidati.
+
+### Variante 1
+Comprendere i concetti fondamentali relativi ai sistemi informatici,   
+alle principali tecnologie di comunicazione e ai servizi di rete, 
+focalizzandosi sugli aspetti concettuali e funzionali.
+
+### Variante 2
+Comprendere i concetti fondamentali relativi a sistemi informaticid   
+alle principali tecnologie di comunicazione e ai servizi di rete. 
+
+Grazie alla disponibilità e impegno dello studente gli obiettivi sono 
+stati perseguiti relativamente a tutti gli aspetti. 
+
+Nelle fasi di verifica e interrogazioni la focalizzazione, come 
+prescritto dal piano educativo, la focalizione è stata sugli aspetti 
+concettuali e funzionali e non su dettagli tecnici.
 
 ---
 
@@ -17,7 +37,7 @@ Comprendere i concetti fondamentali relativi alla sicurezza delle reti, alle pri
 
 ### Unità 1 – Tecniche di crittografia per l’Internet Security
 
-* Concetto di sicurezza informatica
+* Concett di sicurezza informatica
 * Crittografia simmetrica e asimmetrica
 * Concetto di chiave crittografica
 * Firma digitale (principio generale)

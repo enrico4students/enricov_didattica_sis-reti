@@ -7,4 +7,4 @@ Le architetture servono come reminder a studenti ma devono avere un approccio pr
 - un'altra sede principale in un'altro continente, questa sede deve connettersi in VPN site-to-site
 - tutti e soli i dipendenti di livello manageriale devono avere accesso per lavorare remotamente
 - deve essere prevista una rete di gestione della rete
-- la ditta espone servizi WEB EST su amazon web services, questi servizi per la loro funzionalità invocano servizi implementati in FASTPAI in un server  interno
+- la ditta espone servizi WEB REST su amazon web services, questi servizi per la loro funzionalità invocano servizi implementati in un server interno

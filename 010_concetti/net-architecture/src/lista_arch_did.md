@@ -36,7 +36,7 @@ Deve essere mostrata e spiegata la gestione della VPN site-to-site (server dedic
 
 Si vogliono almeno tre zone logiche distinte: Internet, DMZ, rete interna.
 
-Deve necessariamente essere usato un reverse proxy; la sua posizione deve essere mostrata chiaramente nell'architettura.
+Deve necessariamente essere usato un reverse proxy; la sua posizione deve essere mostrata chiaramente nell'architettura. Deve essere spiegata la connessione dal reverse proxy al server effettivo.
 
 DHCP, DNS e NTP devono essere modellati.
 

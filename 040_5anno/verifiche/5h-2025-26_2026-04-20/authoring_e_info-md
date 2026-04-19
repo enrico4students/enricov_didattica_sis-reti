@@ -1,0 +1,101 @@
+# Prompt
+
+devo creare una verifica di sistemi e reti, i ragazzi riescono a copiare quindi servono: 
+- verifica per ragazzi senza certificazioni PDP o PEI, 4 versioni con domande simili ma non identiche
+- verifica per ragazzi con PDP
+- verifica per ragazzi con PEI
+
+Tutte le versioni dovranno contenere domande con questo criterio:
+- 8 di difficoltà medio bassa
+- 8 di difficoltà media
+- 8 di complessità alta o di dettaglio tecnico
+
+L'ambito della verifica dovrà essere
+- 50% sugli argomenti che capitano più spesso all'esame di stato
+- 50%  sugli argomenti elencati in coda
+
+Tutte le tipologie e varianti devono includere:
+- creazione di un piano di indirizzamento VLSM partendo da un indirizzo dato (nel caso di PDP e PEI domande chiuse su questo tema)
+- almeno una domanda su tematiche di architettura di rete
+
+
+
+
+
+
+
+Ambito: parte di indice di libro riportata qui
+
+## Unità 4 – Le reti wireless — pg:118
+
+### 1. Scenari di reti senza fili — pg:120
+
+### 2. La sicurezza nelle reti wireless — pg:128
+
+---
+
+## Unità 5 – Reti IP e reti cellulari per utenti mobili — pg:148
+
+### 1. Gestire la mobilità in una rete IP — pg:150
+
+### 2. Il protocollo Mobile IP — pg:154
+
+### 3. Le reti cellulari e l’accesso a Internet — pg:156
+
+### 4. La mobilità nelle reti 4G LTE — pg:161
+
+### 5. La rete 5G — pg:166
+
+---
+
+## Unità 6 – Progettare strutture di rete: dal cablaggio al cloud — pg:186
+
+### 1. Progettare la struttura fisica di una rete aziendale — pg:188
+
+### 2. Progettare la collocazione di server — pg:191
+
+### 3. La virtualizzazione dei server — pg:198
+
+### 4. La virtualizzazione dei software — pg:202
+
+### 5. Le soluzioni cloud — pg:207
+
+### 6. Le soluzioni ibride: Hybrid cloud — pg:212
+
+---
+
+## Unità 7 – Architetture web: servizi, applicazioni, amministrazione — pg:220
+
+### 1. Le architetture N-tier basate su Client-Server — pg:222
+
+### 2. Le soluzioni di Windows Server 2019 — pg:226
+
+---
+
+## Unità 8 – La gestione della rete e dei sistemi — pg:256
+
+### 1. La gestione delle reti — pg:258
+
+### 2. La gestione di reti TCP/IP — pg:263
+
+### 3. L’organizzazione dei dati da gestire — pg:266
+
+### 4. Il protocollo SNMP — pg:270
+
+---
+
+## 
+
+
+Intestazione
+
+### Verifica di Sistemi e Reti
+#### Classe: .......  Data .............
+#### Cognome e Nome .....................................
+
+### Scrivere iniziali su ogni  foglio  
+
+##### Evitare testo generico privo di risposte/informazioni concrete, 
+##### verrà valutato negativamente
+
+

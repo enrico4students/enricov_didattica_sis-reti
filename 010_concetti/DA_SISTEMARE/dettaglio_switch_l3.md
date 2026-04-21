@@ -8,15 +8,20 @@
 Uno switch L2:
 
 * inoltra frame in base agli indirizzi MAC
-* non conosce gli indirizzi IP
+* **non utilizza gli indirizzi IP per il forwarding** (usa i MAC), può comunque:
+
+  * avere un IP di management
+  * analizzare IP per funzionalità avanzate (ACL, QoS, DHCP snooping)
 * non fa routing
 * separa domini di broadcast tramite VLAN
+  * **senza VLAN → un solo dominio di broadcast**
+  * **con VLAN → uno per VLAN**
 
-In questo caso, per comunicare tra VLAN diverse serve un router esterno oppure un firewall.
+In questo caso, per comunicare tra VLAN diverse serve un router esterno oppure un firewall o uno switch L3.
 
 ---
 
-2. Switch Layer 3: cosa significa realmente
+1. Switch Layer 3: cosa significa realmente
 
 ---
 
@@ -32,11 +37,11 @@ Quindi può fare routing:
 
 * tra VLAN (inter-VLAN routing)
 * verso reti esterne (core, WAN, firewall)
-* tra subnet diverse anche senza VLAN (caso meno frequente ma possibile)
+* tra subnet diverse anche senza VLAN (caso meno frequente, tipicamente realizzato tramite interfacce fisiche separate o configurazioni specifiche)
 
 ---
 
-3. Perché si dice spesso “tra VLAN”?
+1. Perché si dice spesso “tra VLAN”?
 
 ---
 
@@ -58,7 +63,7 @@ ip address 192.168.20.1/24
 
 A questo punto lo switch può instradare il traffico tra le due subnet.
 
-Questa è la funzione più comune e didatticamente rilevante, per questo si parla spesso di routing “tra VLAN”.
+Questa è la funzione più comune, per questo si parla spesso di routing “tra VLAN”.
 
 ---
 
@@ -75,7 +80,7 @@ Switch L3 “lite” (SMB):
 * routing statico
 * inter-VLAN
 * niente routing WAN avanzato
-* niente NAT
+* normalmente non implementa NAT (alcuni modelli si) o non viene usato per questo
 
 Switch L3 enterprise:
 
@@ -102,7 +107,7 @@ Perché normalmente:
 * non fa NAT (funzione tipica del router/firewall)
 * non è pensato per routing WAN
 * non integra funzioni di sicurezza perimetrale avanzata
-* non gestisce PPPoE / linee ISP
+* non gestisce PPPoE / linee ISP (queste sono funzionalità tipiche del **router di frontiera**)
 
 Quindi:
 
@@ -111,7 +116,7 @@ Router / Firewall → routing verso Internet o WAN
 
 ---
 
-## Conclusione precisa
+## Sintesi  
 
 Dire che uno switch Layer 3 “gestisce routing IP tra VLAN” è corretto ma riduttivo.
 

@@ -21,19 +21,19 @@ alle principali tecnologie di comunicazione e ai servizi di rete,
 focalizzandosi sugli aspetti concettuali e funzionali.
 
 ### Variante 2
-Comprendere i concetti fondamentali relativi a sistemi informaticid   
+Comprendere i concetti fondamentali relativi a sistemi informatici,   
 alle principali tecnologie di comunicazione e ai servizi di rete. 
 
 Grazie alla disponibilità e impegno dello studente gli obiettivi sono 
 stati perseguiti relativamente a tutti gli aspetti. 
 
 Nelle fasi di verifica e interrogazioni la focalizzazione, come 
-prescritto dal piano educativo, la focalizione è stata sugli aspetti 
+prescritto dal piano educativo, la focalizzaione è stata sugli aspetti 
 concettuali e funzionali e non su dettagli tecnici.
 
 ---
 
-## CONTENUTI SVOLTI (IN FORMA ESSENZIALE)
+## CONTENUTI SVOLTI (Livello concettuale, senza dettagli di calcolo)
 
 ### Unità 1 – Tecniche di crittografia per l’Internet Security
 

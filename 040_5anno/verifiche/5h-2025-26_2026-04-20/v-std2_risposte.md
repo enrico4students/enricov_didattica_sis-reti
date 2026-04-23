@@ -108,7 +108,7 @@ Gestione:
 
 Una SNMP trap è un messaggio inviato automaticamente da un agente SNMP al manager.
 
-È asincrona (non richiesta) e serve per notificare eventi, ad esempio:
+È **asincrona** (non richiesta) e serve per notificare eventi, ad esempio:
 
 * dispositivo down
 * soglia superata
@@ -133,6 +133,8 @@ Esempio:
 * database MySQL (data)
 
 Consente separazione dei ruoli, scalabilità e sicurezza.
+
+Esempio di piattaforma a supporto: JEE (Java Enterprise Edition)
 
 ---
 

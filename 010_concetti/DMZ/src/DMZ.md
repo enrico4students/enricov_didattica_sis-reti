@@ -22,6 +22,8 @@ Le implementazioni realmente diffuse sono tre:
 2. DMZ con doppio firewall (dual firewall)
 3. “DMZ” domestica (funzione semplificata nei router SOHO)
 
+E' possibile anche un'implementazione tramite VLAN
+
 ---
 
 # 1) DMZ a 3 interfacce (architettura più comune in ambito aziendale)
@@ -399,6 +401,113 @@ Impostazione “DMZ”:
 
 Non esiste subnet separata.
 Il PC è direttamente esposto a Internet tramite NAT completo.
+
+---  
+
+## Implementazione DMZ su VLAN
+
+### Premessa  
+La formulazione “DMZ su VLAN” non è una categoria formale standardizzata nei manuali (come “3-legged firewall” o “dual firewall DMZ”), quindi il dubbio è corretto.
+
+Tuttavia non è affatto un’invenzione: è una pratica reale, solida e diffusissima.
+Semplicemente viene descritta nei documenti ufficiali con termini diversi, ad esempio:
+
+- “DMZ su interfacce logiche”  
+- “DMZ su subinterface”  
+- “segmentazione tramite VLAN”  
+- “security zones su interfacce VLAN”  
+
+
+I vendor (es. Cisco Systems) descrivono:
+- interfacce VLAN sul firewall  
+- subinterface 802.1Q  
+- zone di sicurezza associate a interfacce  
+
+E poi mostrano che una di queste interfacce è la DMZ.
+Non scrivono “DMZ su VLAN” perché per loro è implicito.
+
+Una DMZ è una rete separata, e può essere:
+- fisica (porta dedicata)  
+- logica (VLAN)  
+
+In sintesi
+La DMZ può essere implementata sia tramite interfacce fisiche dedicate sia tramite interfacce logiche (VLAN o subinterface 802.1Q).
+Nel secondo caso si parla informalmente di “DMZ su VLAN”.
+
+È una soluzione:
+- corretta e comune se:  
+  - c’è un firewall che separa le zone
+  - le VLAN sono configurate correttamente
+  - il traffico passa sempre dal firewall  
+- rischiosa se:  
+  - si usa solo uno switch L3 senza firewall
+  - le VLAN non sono isolate correttamente
+  - ci sono errori nei trunk
+
+### Descrizione
+
+Una DMZ su VLAN è una zona demilitarizzata realizzata non con un’interfaccia fisica dedicata del firewall, ma come rete logica separata tramite VLAN.
+
+Funzionamento:
+
+Si definisce una VLAN dedicata alla DMZ (es. VLAN 70). Questa VLAN viene configurata sugli switch e trasportata tramite trunk (802.1Q) fino al dispositivo che effettua il routing e il filtraggio (tipicamente firewall o switch Layer 3).
+
+I server esposti verso Internet (es. server WEB, reverse proxy) vengono collegati a porte access configurate nella VLAN DMZ. Dal punto di vista logico, questi server si trovano in una rete separata dalla LAN interna.
+
+Il traffico segue questo schema:
+
+* Internet → firewall → VLAN DMZ (accesso ai servizi pubblici)
+* VLAN DMZ → LAN interna (solo traffico strettamente necessario, es. WEB → DB)
+* LAN interna → VLAN DMZ (accesso amministrativo controllato)
+
+Il firewall applica regole di filtraggio tra:
+
+* WAN e DMZ
+* DMZ e LAN
+* LAN e WAN
+
+Separazione logica:
+
+La separazione non avviene tramite interfacce fisiche distinte, ma tramite tag VLAN. Il traffico della DMZ è identificato da un VLAN ID e rimane isolato dagli altri domini di broadcast, ma condivide lo stesso switch fisico.
+
+Dispositivi necessari:
+
+Sono necessari:
+
+* switch gestiti (managed switch) che supportano VLAN e trunk 802.1Q
+* un dispositivo di livello 3 per il routing e il controllo del traffico, tipicamente:
+
+  * firewall (scelta più corretta e sicura)
+  * oppure switch Layer 3 (meno sicuro, usato in contesti semplici o didattici)
+
+Configurazione tipica:
+
+* porta switch verso server DMZ → access VLAN DMZ
+* collegamento switch–firewall → trunk con VLAN DMZ + altre VLAN
+* interfaccia logica sul firewall per la VLAN DMZ (subinterface o VLAN interface)
+* regole firewall che limitano il traffico tra le zone
+
+Vantaggi:
+
+* nessun hardware aggiuntivo (non serve una terza interfaccia fisica)
+* elevata flessibilità
+* facile integrazione in ambienti virtualizzati
+
+Svantaggi:
+
+* isolamento inferiore rispetto a una DMZ su interfaccia fisica dedicata
+* maggiore dipendenza dalla corretta configurazione VLAN (errori di trunk o tagging possono compromettere la separazione)
+* superficie di attacco potenzialmente più ampia (condivisione dello stesso switch)
+
+Casi d’uso:
+
+* piccole e medie reti
+* ambienti virtualizzati (es. hypervisor con vSwitch VLAN-aware)
+* scenari didattici o laboratori
+
+In ambienti enterprise critici si preferisce spesso una DMZ su interfaccia fisica dedicata o con doppio firewall per ottenere isolamento più forte.
+
+
 
 ---
 

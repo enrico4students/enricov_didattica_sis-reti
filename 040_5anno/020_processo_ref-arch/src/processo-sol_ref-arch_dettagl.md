@@ -2,15 +2,18 @@
 
 # Materiale per tracce di Sistemi e Reti
 
+## Versione più semplice  
+
 **NB questa è la versione dettagliata**    
 è più dettagliata e complessa di quanto serve in esame,
 ho prodotto una versione più semplice che dovrebbe essere ancora reperibile.
 
 *L'approccio consigliato è:*  
-- *in prima istanza, per identificare carenze e imparare qualche concetto addizionale esaminare questa versione dettagliata, tenendo presente che è **oltre il nostro livello di dettaglio e programma**.*
+- *in prima istanza, per identificare carenze e imparare qualche concetto addizionale esaminare questa versione dettagliata, tenendo presente che è **oltre il nostro livello di dettaglio e programma**.*  
 - *utilizzare poi la più semplice, richiedetela se non già condivisa*
 
-## 1. Idea di base
+
+## 0. Idea di base
 
 Nell’esame di Stato non conviene progettare ogni volta tutto da zero.
 
@@ -20,6 +23,31 @@ Conviene conoscere quasi a memoria:
 * una reference architecture a 2 livelli;
 * una reference architecture a 3 livelli;
 * gli elementi ricorrenti: VLAN, DMZ, firewall, Wi-Fi interno/guest, VPN, cloud, server interni, rete di management, monitoraggio, sicurezza, backup, accesso remoto.
+
+---  
+
+## 1. Contesto
+
+Le architetture per cui vengono forniti schemi di riferimento sono relative ai seguenti requisiti:
+
+reference architectures di sistemi e reti, cioè architetture realistiche che includano tutti gli elementi che ricorrono piu' spesso nelle reti di organizzazioni del mondo reale. Le reference architectures vanno definite ovviamente in ottica di traccia di esame di stato ma devono essere il piu' possibile realistiche e includere tutti gli elementi che ricorrono piu' spesso nelle reti di organizzazioni reali. 
+
+Va creata almeno una versione per il 2 layers e una per il 3 layers.
+
+Le organizzazioni per le quali si crea la rete devono avere tutti i ragionevolmente possibili casi di connettività e di sicurezza.
+
+Un esempio di elementi da includere:
+- connettività wifi di interni e ospiti  
+- server esterni: almeno un server WEB e un server che espone endpoints REST e SOAP on-site  
+- server interni: DBMS, sistema SAP, sistema di business custom, applicativo/server documentale dedicato a files con dati aziendali riservati accessibili solo al management, MongoDB per gestione documenti generale, relativa a documenti non altamente confidenziali accessibili a normali dipendenti secondo RBAC  
+- connettività da ufficio secondario ubicato in line-of-sight a 600 metri dalla sede considerata  
+- un'altra sede principale in un'altro continente, questa sede deve connettersi in VPN site-to-site  
+- tutti e soli i dipendenti di livello manageriale devono avere accesso per lavorare remotamente  
+- deve essere prevista e specificata una rete di gestione  
+- l'organizzazione' espone servizi pubblici oltre che on-site, su un fornitore cloud, usando  l'approccio serverless, alcuni di questi servizi per la loro implementazione invocano alcuni dei servizi implementati on-site citati in precedenza  
+- specificare come viene implementata la rete di management e perchè  
+- cercare di includere IDS/IPS integrati con NMS  
+- l'organizzazione fa anche, internamente, nella propria rete (anche se normalmente si tende a preferire il cloud per elasticità Etc.), delle elaborazioni big data utillizzando un sistema distribuito di circa 10 nodi, la rete deve supportare adeguatamente queste elaborazioni e i loro requisiti di trasmissione di grandi quantità di dati in tempi rapidi  
 
 ---
 
@@ -43,7 +71,18 @@ Leggere la traccia cercando subito:
 * dati riservati;
 * accesso remoto dei dipendenti.
 
-Obiettivo: distinguere ciò che è obbligatorio da ciò che è una scelta progettuale.
+
+Quanto segue funzionerebbe per l'autore di queste annotazioni se fosse uno studente, potrebbe non funzionare per voi, definite il vostro approccio, non andate a casaccio:   
+- La traccia va letta almeno tre volte, in totale leggerla 5 volte non è esagerato.  
+- Prendere decisioni (cioè fare scelte tecniche o addirittura calcoli) quando si ha una comprensione sufficente della traccia (letta e ragionata serenamente a sufficienza).  
+  - "He who walks in a hurry takes the wrong road" detto Inglese  
+  - "la gatta frettolosa fece i figli ciechi" (mia nonna :-)  
+  - Etc. 
+- Quanto sopra non implica attendere inutilmente: già dalla prima lettura si può cominciare ad annotare punti rilevanti o anche fissare dettagli tecnici, ad ogni lettura si alza il livello di comprensione e la possibilità di fare scelte non errate o basate su comprensione errata.
+
+Importante:  
+- distinguere ciò che è obbligatorio da ciò che è una scelta progettuale.  
+- a fronte di alternative più o meno equivalenti valutare complessità/vantaggi, sicurezza di svilupparla correttamente Etc.  
 
 ---
 
@@ -196,7 +235,8 @@ Questa architettura è adatta a una sede principale di dimensione media, con:
 In una rete a 2 layers si hanno:
 
 * Access layer: switches a cui si collegano utenti, AP, stampanti, telefoni, dispositivi;
-* Collapsed core/distribution: coppia di switch Layer 3 centrali che aggregano tutto.
+* Collapsed core/distribution: uno o più switches Layer 3 che svolgono sia il ruolo di core sia di distribution, aggregando tutto il traffico e gestendo il routing tra le VLAN (inter-VLAN routing).
+Nelle reti reali questi dispositivi sono normalmente presenti in coppia per garantire alta disponibilità, con configurazioni di ridondanza che possono essere attiva/passiva oppure attiva/attiva a seconda delle tecnologie utilizzate.  
 
 ---
 
@@ -1207,7 +1247,7 @@ Modello cloud in cui il codice viene eseguito su richiesta senza gestire diretta
 Benefici e limiti
 - Consente scalabilità automatica e pagamento a consumo, riducendo tempi e costi operativi, ma introduce limiti come cold start, vincoli di runtime e minore controllo sull’infrastruttura.
 
-Tutorial semplice
+Tutorial di base  
 [https://docs.aws.amazon.com/lambda/latest/dg/welcome.html](https://docs.aws.amazon.com/lambda/latest/dg/welcome.html)
 
 

@@ -8,23 +8,21 @@
 
 ## 1.1 Che cos’è Arduino  
 
-![Image](https://images.openai.com/static-rsc-4/Vz9aOSyg07-W442ezBVuiCqDdBriLz76GAhqYAJqooBfFS9fcUlkuBMQWy9fEyRUIC601f6KZIEYB1IeUZ1nLSkLmieiJnCT49-4rd_UC_Fgcnd2pO-IJ4rV22EI5GVabtxjwTMCOH2gnwaeBjbCG-1B_kN3zq1PEU04i6Ve7oFYZv2Dwpnvb2qJfI4CyyFz?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/Vz9aOSyg07-W442ezBVuiCqDdBriLz76GAhqYAJqooBfFS9fcUlkuBMQWy9fEyRUIC601f6KZIEYB1IeUZ1nLSkLmieiJnCT49-4rd_UC_Fgcnd2pO-IJ4rV22EI5GVabtxjwTMCOH2gnwaeBjbCG-1B_kN3zq1PEU04i6Ve7oFYZv2Dwpnvb2qJfI4CyyFz?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/7I_gOEb_usHdGKza9lVU1ZAmnLy7oMHtjVUn1jW5Xolqc8x7XG_IwuWcOVbriWgSyIYV98T37oVcODoDpdBqSskHOTFVWa525Trzs3i-U-KJ8qsFYl3NErzqlWGYqCHWy4sgAGZYYC_RbC7uQosDcQuVXLB-fu5OZydmarUhxSRtvWaKk4OzSxTGOkHlFWoI?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/7I_gOEb_usHdGKza9lVU1ZAmnLy7oMHtjVUn1jW5Xolqc8x7XG_IwuWcOVbriWgSyIYV98T37oVcODoDpdBqSskHOTFVWa525Trzs3i-U-KJ8qsFYl3NErzqlWGYqCHWy4sgAGZYYC_RbC7uQosDcQuVXLB-fu5OZydmarUhxSRtvWaKk4OzSxTGOkHlFWoI?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/VojsuUv2_N4QZ9Q67rvdlhbfphazXNfIhwWahGnH1I0N2giWs9O3F3rorOGQjBoZHyOOfjwzExsqQ8P9_FbueJ7MIYdmPONhjslUD0kr5l600y4ibSPZtlVf3V2I350Rm2r4HJol8JrlUMF05HJYrv2JRXqmafOHEZ2rbl1pQ672Stz2iN-OU8O7rCMsepy_?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/VojsuUv2_N4QZ9Q67rvdlhbfphazXNfIhwWahGnH1I0N2giWs9O3F3rorOGQjBoZHyOOfjwzExsqQ8P9_FbueJ7MIYdmPONhjslUD0kr5l600y4ibSPZtlVf3V2I350Rm2r4HJol8JrlUMF05HJYrv2JRXqmafOHEZ2rbl1pQ672Stz2iN-OU8O7rCMsepy_?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/_acg5B2Erfo0hLnlPRypxHN1ZCRsq2bUPLsV2cyxv6kKsBwhB3RoMllhEAgnACGgJf9FCZ8YU5vBg5qTx20jldkux2cfe9LfEm53gXPUAQkQDoQdWTvTq8ah6LmsSTMDKydPgcylQRU4ZqzVKjRN7L_8G_3IEYWEtg3wg-UqVqTSa8NOgZ9ACbOaMa1jjjOR?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/e0-9UlQX22q6tuOKcMpgj0OliggpeB1zgTO-PCkjBC7hjJt20J5ae2BZa15iWZ4Y7ItP2U0FR-ssTXeIMNkdGzrOoN-yu9ko7D-KS27Ng2_-H8EXl7NMrtY1LgBi4_6Mubn7S7ajWQPYY305ApunLIxQDUd0-6zTGnPP1SE3ph_I036A9_Cxf5RMd8q92w3k?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/e0-9UlQX22q6tuOKcMpgj0OliggpeB1zgTO-PCkjBC7hjJt20J5ae2BZa15iWZ4Y7ItP2U0FR-ssTXeIMNkdGzrOoN-yu9ko7D-KS27Ng2_-H8EXl7NMrtY1LgBi4_6Mubn7S7ajWQPYY305ApunLIxQDUd0-6zTGnPP1SE3ph_I036A9_Cxf5RMd8q92w3k?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/RH1ohQWk1r8V_VPiGwIutfweRo5YGzRuzvUYPDc3OZAwTIYzLrFcv8ppXeH4bWtbjxkyQ11MjHf_1cRkSfrUxaT-xyb9CPtjvb2St4ThnbCGLDSBioHI1USWNOo_dtgZxI7cKbeq-M9MsgJVB_t39MvfCoZG6zdDrwvWbmqOYapy-6e3oUEQ4tZBMAtoOvP4?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/RH1ohQWk1r8V_VPiGwIutfweRo5YGzRuzvUYPDc3OZAwTIYzLrFcv8ppXeH4bWtbjxkyQ11MjHf_1cRkSfrUxaT-xyb9CPtjvb2St4ThnbCGLDSBioHI1USWNOo_dtgZxI7cKbeq-M9MsgJVB_t39MvfCoZG6zdDrwvWbmqOYapy-6e3oUEQ4tZBMAtoOvP4?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/Rn4W82_gJ3jU2lSJWFMb1XLjf9QeCcXwISRXqHyXpjZnfRqftZYssRKOkCa-5ihuyYPP4Myv859keLMAdxDbkjqebPwOWDto91Pa9R-o9KJnq_1oZyo5_n5NYQENSgiiVLlDkWrS_Il4shXDBxhP3EjRLqT01cfyTMcX-3vW4o0oYH5zkXNlgl1PYakbsNfU?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/Rn4W82_gJ3jU2lSJWFMb1XLjf9QeCcXwISRXqHyXpjZnfRqftZYssRKOkCa-5ihuyYPP4Myv859keLMAdxDbkjqebPwOWDto91Pa9R-o9KJnq_1oZyo5_n5NYQENSgiiVLlDkWrS_Il4shXDBxhP3EjRLqT01cfyTMcX-3vW4o0oYH5zkXNlgl1PYakbsNfU?purpose=fullsize){width=70%}
 
 Arduino non è un “mini computer”, ma una **scheda elettronica programmabile basata su microcontrollore**.
 
-Un microcontrollore è un componente che integra:
+Un **microcontrollore** è un componente che integra:
 
 * CPU
 * memoria limitata
@@ -32,7 +30,10 @@ Un microcontrollore è un componente che integra:
 
 tutto nello stesso chip.
 
-Questo significa che Arduino è progettato per:
+![Image](https://images.openai.com/static-rsc-4/_acg5B2Erfo0hLnlPRypxHN1ZCRsq2bUPLsV2cyxv6kKsBwhB3RoMllhEAgnACGgJf9FCZ8YU5vBg5qTx20jldkux2cfe9LfEm53gXPUAQkQDoQdWTvTq8ah6LmsSTMDKydPgcylQRU4ZqzVKjRN7L_8G_3IEYWEtg3wg-UqVqTSa8NOgZ9ACbOaMa1jjjOR?purpose=fullsize){width=70%}
+
+
+Arduino è progettato per:
 
 * **controllare dispositivi fisici**
 * reagire a segnali elettrici
@@ -52,9 +53,9 @@ Un PC funziona così:
 
 Arduino funziona così:
 
-* NON ha sistema operativo
-* esegue un solo programma
-* il programma gira in un ciclo continuo
+* **NON** ha sistema operativo
+* esegue **un solo programma**
+* il programma gira in un **ciclo continuo**
 
 Struttura tipica:
 
@@ -76,7 +77,7 @@ Questo modello è radicalmente diverso dal PC:
 
 ---
 
-## 1.3 Perché Arduino esiste (unicità)
+## 1.3 Perché Arduino esiste  
 
 Arduino è stato progettato per un problema preciso:
 
@@ -124,9 +125,8 @@ Arduino è la scelta corretta quando:
 
 ## 2.1 Che cos’è Raspberry Pi
 
-![Image](https://images.openai.com/static-rsc-4/ToD3Q4dF3Qrpg5WCb9h8ugkmAoa-wSbqtGI3RRvk154_jPJKyZaA95hwGtqA06VuoHh7FtlETo9xPYKDVkBCcSL5g3kY9nJ4bj-7O6h44Eeqvjd9uLGfWDj0kS02y3-2cmtuTaCnoLYfzkH4FT3eT6u8aDIgu9N47rxsebY__tYzoKLsABCrvFw-L-rv5G5G?purpose=fullsize)
+![Image](https://images.openai.com/static-rsc-4/ToD3Q4dF3Qrpg5WCb9h8ugkmAoa-wSbqtGI3RRvk154_jPJKyZaA95hwGtqA06VuoHh7FtlETo9xPYKDVkBCcSL5g3kY9nJ4bj-7O6h44Eeqvjd9uLGfWDj0kS02y3-2cmtuTaCnoLYfzkH4FT3eT6u8aDIgu9N47rxsebY__tYzoKLsABCrvFw-L-rv5G5G?purpose=fullsize)  
 
-![Image](https://images.openai.com/static-rsc-4/3S1ABFBPCXVK480EU-zfv7Uh8y3Qhg4jNKMQD68wetTWKKE3ebodQcYBi6eOM6cmnyTKvR-RkwcZp8z3UEnWDBDmtdaEgbnUiaAOFj_ufL0K-br6tc6dI5bjb920rvQsgi3VAspeijYtXKkXW9K0ARO7kMFoppaKzspg-B7CauIX9fkawwWFZwrvOYm_F_R2?purpose=fullsize)
 
 ![Image](https://images.openai.com/static-rsc-4/mebY_J_g48FbzXMvGkJjLZYVMtspRZvrTIg8A76oh1nXrGQza8hMIHAXsl_FxtIzK0grHSYHF66WINfRWSfYP21gM1UV7RsAcfd0vfqO50O4U4C0d3cc-WWg4PhHysV4MXFnXYW8zhBZUdGT7oAbJc5OFXroyvJlsaAPNWnBT_9mllGMw-KmtOaIyp6013fv?purpose=fullsize)
 
@@ -139,6 +139,9 @@ Arduino è la scelta corretta quando:
 ![Image](https://images.openai.com/static-rsc-4/hZ-eOoG-SyazGd1O8yoBVvqxyxWO8KWvyrbzKuDOTH-v4uL7h_LaRDKn7Hwl1vwBwy4FnHWzBEPkLUGBj8wOwc61IBnQvSVaF2mETOgoV307GHMDxaV31XaoBmCOsMAFF_zFP12mgA5ABgy0DYf5SOexvU7DxaI0t9_PHEWdeXxz3B0KYbgNSlIRRFKHrpw-?purpose=fullsize)
 
 Raspberry Pi è un **single-board computer (SBC)**, cioè un computer completo su una singola scheda.
+
+![Image](https://images.openai.com/static-rsc-4/3S1ABFBPCXVK480EU-zfv7Uh8y3Qhg4jNKMQD68wetTWKKE3ebodQcYBi6eOM6cmnyTKvR-RkwcZp8z3UEnWDBDmtdaEgbnUiaAOFj_ufL0K-br6tc6dI5bjb920rvQsgi3VAspeijYtXKkXW9K0ARO7kMFoppaKzspg-B7CauIX9fkawwWFZwrvOYm_F_R2?purpose=fullsize){width=70%}
+
 
 Include:
 
@@ -168,7 +171,7 @@ Ma con differenze:
 
 ---
 
-## 2.3 Unicità di Raspberry Pi
+## 2.3 Caratteristiche distintive di Raspberry Pi
 
 Raspberry Pi è interessante perché unisce:
 
@@ -281,7 +284,7 @@ Raspberry Pi:
 
 ## 3.6 Sintesi operativa
 
-* Arduino → controllo fisico diretto
+* Arduino   → controllo fisico diretto
 * Raspberry → gestione logica e servizi
 
 ---
@@ -427,7 +430,7 @@ Soluzione corretta:
 
 ---
 
-# CONCLUSIONE DIDATTICA
+# CONCLUSIONE  
 
 Arduino e Raspberry Pi non sono alternative equivalenti.
 

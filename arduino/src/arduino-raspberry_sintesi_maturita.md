@@ -443,3 +443,392 @@ La competenza richiesta nella traccia generalmente non è “saperli usare”, m
 ✔ saper scegliere correttamente quale usare  
 ✔ saper giustificare la scelta  
 
+---
+
+# LEZIONE 6 – Connettività di rete: Arduino e Raspberry Pi
+
+## 6.1 Concetto generale
+
+Nei sistemi moderni (IoT, automazione, industria 4.0) la connettività di rete è fondamentale.
+
+Permette di:
+
+* trasmettere dati a server remoti
+* integrare dispositivi in sistemi distribuiti
+* gestire monitoraggio e controllo remoto
+
+Differenza chiave:
+
+* Arduino → **rete opzionale (moduli esterni)**
+* Raspberry Pi → **rete nativa (integrata)**
+
+---
+
+## 6.2 Connettività di rete di Arduino
+
+### Architettura
+
+Arduino non include quasi mai connettività di rete integrata (eccezioni moderne a parte).
+
+Serve quindi aggiungere moduli hardware.
+
+---
+
+### 6.2.1 Connessione Ethernet (rete cablata)
+
+![Image](https://images.openai.com/static-rsc-4/wu9Mav2sr15bAzzQTSosX_5MlLB0ZE6dRMT_zcELgmuWpibejTNkV5qBVrULD1keeMSJ-GsjTWIXIFWd79TfAz1GH8Z3uHix0e78_ir1k0lpY8f59EwxW1AD4qGafgMesONQ-PSg3BCTDdR_1oeX6nCsGbaSA0wh4Cxmwqz9CYv-H7Iyucy2GNlFhbbusKM-?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/aj7QVABNaboKeUN3VGQWDiIqBbLJjRYlm826ywEY1Ff_6nw0M1LV16ns9gl7ujFFLwfhuzKKMZDFIEV_BNWiID1y3BJybJ_-sPVYWLkJ8HJIhwZGuzMz1Qlf5yqKUTfz5pzkzyWe0Ex5deUmeNbV8soUI033bPZQOgxysxFYv0ItRQZI4nBhkjid06TleInO?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/Wb7eAYUkgGqznVqgbHv1rl2J4IxrOLxDilzzvu4Z3i2EHqkpmmVCk9iaSC1rnBIecGTsoe5SRtg0EYqQ9rn_owjmT8OSg-7qUP8weArq1hNeqTdX7XMUIHdWOK8TsUWeSvXd3wDT-Izq43ndBNWtE9dzy1p5bIOaasQnWfN2C6CCzNYzdFK4ISNwjbw2Dt9c?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/oB0QFcg8uFlpFUdO8G2cPk7JJ1vhvIbi4n34x252xz_X6x6s-zvU_mKeWwNddzd5Z3CXZ-93SDRdImEV_qagTuclKbnIMGJrnJlc_cppkdP1yWZZPm46ARStFYYEZd4ukzcq7ZrKsCf71gzrou6Iv6e2W8IB7u0eabosIEfZvqZiU0LB3o9QGbBAYl_Qoul2?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/coX4JNE7wqVm2FaIDxtDxCoscZ0yE4vBnYsFHRIMHdXBnGxnO0d2h9tCgxz-z3jMsjoRZ95Po1IKtkUVTUGTV1jy5kL6KVNUbXy2ohMEBoPr_Poym_05X0qR1BohtQ6LZqAN8yYjP-EdhfNNK8iryRGceK3gXxS75O0FKpfaidun5lf86OAXtZ-XOxvqoCQe?purpose=fullsize)
+
+Componenti utilizzati:
+
+* **Ethernet Shield (W5100 / W5500)** → soluzione più stabile e diffusa
+* moduli economici (ENC28J60) → meno performanti
+
+Caratteristiche:
+
+* connessione RJ45
+* uso di protocollo TCP/IP
+* librerie ufficiali Arduino (Ethernet.h)
+
+Uso tipico:
+
+* Arduino come **client HTTP**
+* Arduino come **server web minimale**
+
+Limiti:
+
+* memoria molto ridotta
+* gestione rete semplificata
+
+---
+
+### 6.2.2 Connessione Wi-Fi
+
+![Image](https://images.openai.com/static-rsc-4/4y6NSHbOhO0R_YXJPmvOJqB8Ljx6kE27GO5CSNKNqBxoiT8FlDeyPv9vLpka5dw0DBh6ZSp_iTsvV9p_PLD2XKRz0izDBrLLWrgYKvdCoDC2CkR10AJJHHUBHH_1A15H6cCasZU2bX4T1mDwYWdfQkIRPgtvC-6z9vM9SGRyeNNRvzLiDb-y8j3lVgIESrFa?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/iZE6HgRCyV6AhmovHCgi6fnG6lTUbibG2awgieoCyP5GQrXpAcgL7QjmE8uqEhDSkoBAntlzMpNWtQc2DzwtpUQLxUOW4vyYv5FXdwrTCZjdUnUwHlvfKZxYF571wwDdY7X_gc3_JP0AZkZJbLVNzc8EkJpxswY4Ce8mpsUEwedTecv4mSYTGkwUyGkWjPHk?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/GOScVRUq5Si2I-SoWjLyh_gAOAkukFoDopso6N6P6BW7em-5GmQWkRpikA2GpQUj8_qG0LcZmPJanmT545IgVd2uN3cAseWV7Z-nGh_LXxyyEXK2Qd05enS7IbHb06gQhtGItGiRvzynJyueLfw_zrJ6miN9du042pOaQuV_BV89DkmwVBtzdsYLfbpFpPin?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/_rDYTzdQiWYH6t76G72SXFDFr8jqUsl9qMlqCfLLRkWFN1CWDXwPKxUtSue4Ugq8MVk69Vu17JCU21SNqN1acui5VlBrMzTx2nXmRYzXoYdgKcRykpslH6aabmwMib57CB-JGM-wr_inJ8ERSFzyJpupfJzTyf-PiQf3L2wBeSEDxO9fZNRqHh65KQXdtIk9?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/XwbmhJglnnXe0SwOb1uK3fYXQh1b8bS0RHOIcuEP3SPopau3XK-joFNMvElkWkggJxiDzNz6ax9aHBpqOZ7IBW02Zb8wW4jHrKF9p-m1s1ME6ihtipGXFib7YTP30Hy0NVPNMZYgakpDigoHR8y4DSu75_Xm3pZpB_cICbR6pohla29QBAtJiPkadULLdNNE?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/2AMQ8zdsDkP_STFHshYqFS-s_dNBV2UuhDygGCsvXTdEM-uBNKXmuiBNNrjnEdD-f89y08yARWPXPqAM2tN4INESlrhQOJuTNx9ptFxJTs4CkBa2CjQLo4gblm2H0bEkOYhpNfAQkLtFc7L-TPJdgahLETG3jIF2cr2qGF6o0OneZI6B7atOi5IogFD6SwlM?purpose=fullsize)
+
+Soluzioni più diffuse oggi:
+
+* moduli **ESP8266**
+* moduli **ESP32** (molto più usati oggi)
+* vecchi WiFi Shield (meno diffusi)
+
+Osservazione importante:
+
+Oggi spesso si evita Arduino + WiFi shield e si usa direttamente:
+
+* ESP8266 o ESP32 → **microcontrollori con Wi-Fi integrato**
+
+Caratteristiche:
+
+* supporto TCP/IP completo
+* supporto HTTP, MQTT
+* basso costo
+
+---
+
+### 6.2.3 Altri protocolli di rete (IoT)
+
+Arduino può usare anche:
+
+* Bluetooth (HC-05, BLE)
+* ZigBee (XBee)
+* LoRa (reti a lungo raggio)
+
+Uso tipico:
+
+* sensori distribuiti
+* reti IoT a basso consumo
+
+---
+
+### 6.2.4 Limiti tecnici di Arduino in rete
+
+* RAM molto limitata (pochi KB)
+* gestione connessioni semplificata
+* difficoltà con protocolli complessi (HTTPS, TLS avanzato)
+
+Conclusione:
+
+Arduino è adatto a:
+
+✔ inviare dati semplici
+✔ ricevere comandi
+❌ non adatto a fare da server complesso
+
+---
+
+## 6.3 Connettività di rete di Raspberry Pi
+
+### Architettura
+
+Raspberry Pi integra già tutto:
+
+* porta Ethernet (nei modelli standard)
+* Wi-Fi integrato (modelli recenti)
+* Bluetooth
+
+---
+
+### 6.3.1 Connessione Ethernet
+
+![Image](https://images.openai.com/static-rsc-4/y6QDbuDuk_lZfYBQR_q3S0_pG7saDpkrz9F2J5NSYFCAP3b3ekVH2fgsHrAzhOIzctdZYDhmu3i7on6seNtx5H5eE9t9tsVU4PugTyv3OhyM2CoOPJswmSh-NQxGZDKtUz5_xwsNVIbXjN0eSm_kL4m_jZfrCUqcscnYH7lcfgJzPabY19Wk0A7URdkiDqef?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/BnyCDT9ZHraH6rV76p8cOjbuliXCedlnQDVeiY_KHe-Eq0ciBWl6gCBm3etR-uzNUZgMMUkAlSWJ4ek0If_u9ymSAftGz6uh4_DSBoYMptdF6Z030o4j6yU-wUOTEDUNTHqc0AOqRvnUu-6da3pIUeRPHaTq3staQAgUHvZoiGY8F2shNu9L5DoWHp3pPHlW?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/_fqHwErCFeYb6523eEXs7CI6vpnkquL8b4GP2ndO86mgizAPVEZiYdOkwW4mai4YGIVz8gpQuu-SY6AvSdYUJS3whgkxjFvVjmAmk_BKriIEs2mqZQQZVzRH8o87jv6gAO5e5oXkjry2Vq-gNmLAFZ6GfKARebWP9OwVvI800L7r1PoYS6eo-ZQWj9gWaHsD?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/kppFXthYAJXcTtpavBtEAD3P9iJr74PAogN0ejJNqguWvtLKczBri4LCkrVd5e5750FlZ6odOT3PdGeZpH2wCU_Xcan4MfsXAQhnYI-zN6OK2ZWYzY9rKqknlgveLSBVZkvkPd0QFP7oCgS-Jsr0ZXk8nAQgstuHSAR-HZbS-SeGRE0fVgBkepIJkR8_ZW3q?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/cdYNmwk0c-AlJt2fhHr7sT2Vkh8dsUUa3UTfWwxnS3Wch3EiUjE0fMdnVa_XT1TvahMIDAy5Tmlct9taRz4pRq1eRI0Pvc3DnMIyEX5-ZL2zeLa1OUcMkfWzgKhxcnN6EHNHIexC1Rest3dF4f8SwnaYNP0UoGojiz4HsvRLYxDWxbLpUM4jCNtgD8GIpZY1?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/3Wtp_7x8s-T8lIAMqMCjuqGSSN302JZyBPxx9DR4fBjpXFD1SKfmA36DKFg4ZHa3h_6QfA0pqzBBMsm3ZSU0VZ7hQbrB-A99J2PAraUu_oyUHEKeh0xcZZFKQ7APN0kqwGUhSX1PxIjhHv9D29piWeanx7Leh2KAv_FUnc-EloEYuujAS3rlZStz1x8NfqL-?purpose=fullsize)
+
+Caratteristiche:
+
+* interfaccia di rete completa
+* supporto nativo Linux
+* configurazione tramite:
+
+  ifconfig
+  ip addr
+  dhclient
+
+Uso:
+
+* server web (Apache, Nginx)
+* gateway di rete
+* nodo di rete stabile
+
+---
+
+### 6.3.2 Connessione Wi-Fi
+
+![Image](https://images.openai.com/static-rsc-4/tDmwzaINRNOa0s8SVCJiP0dYZJH-FCbyz1GcqCLXkmSvwx3dgRy7w-hXidhInHL48xJf1tTwHsM4jik3aTtWb2QkxkjwicLbOPUdnySijUXAo_PceqLy7uVnXl8qByQi5Z4VvshoTI9GhTpmqix3OA69YM_TZ4yMYpyW_0xwMf4T0JZ0iam0HgHAyxLRr16u?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/Lxm6qHFf6YCdj6wTnYO0sHG9DNp36tBOPhrZQuQ3OUQey2qPHC3xRko8Ps7cMB7Gz9r8HdomFYl-oX2uLNzwhs23ZnqA8r-EnUWN5E766t9opp2VITHgPdRDkwRNa2D5t9iYBkRyQ45GNtIWGqtxMU7pNqY_Nk2GpNeFB7sr7hdc50lnxN-UKO0k_TWBarMF?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/-Dpu4jbEQG8vnwRfrgpjdem0BySd5ZjnJML8rKgGxevnyL4n4x5ZNcvmWMO2UZTv-qvGYAHC8WGYqwLVDETuFQnwgskFHup5OgsljLtTfSSLU9w8D0pTmvBM3-U7A1_7Uuc1M_xl0ieELuPct1kObSnvanJSJXqDho4c97frdROMir8sJi-ppLODp21urkVv?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/O8zfoRdLoIr4Up9pXNwfRD_xWwAKJzOMDUMQtKzZhxoWtjsojJttTzMKVuJdMpLP7yvcpPHB-UXyo2dSEKo1nG2eWJq_f2hqshJuR6rfHuPABnJM9xqrfq7MOBbl7pAKo6agzrRIjkbCW7PNhL-DNLLsERuM4O0ZIL_q3mpznMQeJeyyyTcy9_9h1ki1_omP?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/xb24jHS2itNwKvYMF4bgqRcIyHMc_0C0RQcAPxRcnAh4MHMIclvt4WYrqVvnBGTdMma_4gtvnCq0P7r3nI27OV9WNEsVM_QI-PV88J7cm453WvizG-qSDY7Bc5QCtzoC3efY2FBYwM9D3qwBc-VQMqCwvEw8helIxrmXw79bQUhJ6maHEr4xKv83RHkcsk6f?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/d7t2cE5b5YYH69j8XwzAxL9PTN7964c2Xiv0MaPrFC5nQYz6Vi7dR6dJzSwA6tcDKhDROKVLIfqrsxTi9JZ8P8NZZj87HExttbyhzv5f1ykIF8NAXQVrSX4fxBmvbB004ZtzWJioyoLaCC4MZep2qYZiIbSSW3yHViAdSwa1F8ou7h7PEDfge8BmCfYCnqqW?purpose=fullsize)
+
+Caratteristiche:
+
+* Wi-Fi integrato (Raspberry Pi 3 e successivi)
+* configurazione tramite:
+
+  /etc/wpa_supplicant/wpa_supplicant.conf
+
+Supporto completo:
+
+* DHCP
+* DNS
+* routing
+* VPN
+
+---
+
+### 6.3.3 Capacità avanzate di rete
+
+Raspberry Pi può funzionare come:
+
+* server web completo
+* server database (MySQL, PostgreSQL)
+* reverse proxy
+* firewall (iptables, nftables)
+* gateway IoT
+* broker MQTT (Mosquitto)
+
+Questo è possibile perché:
+
+✔ esegue Linux
+✔ ha stack TCP/IP completo
+
+---
+
+## 6.4 Confronto rete Arduino vs Raspberry Pi
+
+| Caratteristica        | Arduino        | Raspberry Pi |
+| --------------------- | -------------- | ------------ |
+| Rete integrata        | No (di base)   | Sì           |
+| Complessità rete      | Bassa          | Alta         |
+| Protocollo supportati | Limitati       | Completi     |
+| Server web            | Molto semplice | Completo     |
+| Sicurezza (HTTPS)     | Limitata       | Completa     |
+
+Sintesi:
+
+* Arduino → nodo semplice di rete
+* Raspberry → nodo intelligente di rete
+
+---
+
+## 6.5 Architetture reali (fondamentale per esame)
+
+### 6.5.1 Architettura IoT classica
+
+```
+[Sensori] → Arduino → Raspberry Pi → Internet → Cloud
+```
+
+Ruoli:
+
+* Arduino:
+
+  * acquisizione dati
+  * invio via seriale / Wi-Fi
+
+* Raspberry:
+
+  * aggregazione dati
+  * invio al cloud
+
+---
+
+### 6.5.2 Raspberry come gateway IoT
+
+Funzioni:
+
+* raccoglie dati da più Arduino
+* normalizza i dati
+* li invia a server remoto
+
+Protocolli tipici:
+
+* MQTT
+* HTTP REST
+* WebSocket
+
+---
+
+### 6.5.3 Caso reale da traccia d’esame
+
+Scenario:
+
+Sistema di monitoraggio ambientale distribuito.
+
+Soluzione corretta:
+
+* nodi periferici:
+
+  * Arduino + sensori + Wi-Fi (ESP32)
+
+* nodo centrale:
+
+  * Raspberry Pi
+
+Funzioni Raspberry:
+
+* server MQTT
+* database locale
+* dashboard web
+
+Motivazione tecnica:
+
+✔ separazione livelli
+✔ scalabilità
+✔ affidabilità
+
+---
+
+## 6.6 Add-on più usati oggi (aggiornamento tecnologico)
+
+Situazione attuale (importante):
+
+NON è più comune usare:
+
+❌ Arduino + shield Wi-Fi costosi
+
+Si usa invece:
+
+✔ ESP32 → microcontrollore con Wi-Fi integrato
+✔ Raspberry Pi → nodo centrale
+
+Quindi:
+
+* ESP32 sta in parte sostituendo Arduino nei progetti di rete
+* Arduino “classico” resta utile per controllo puro
+
+---
+
+## 6.7 Errori tipici nelle tracce d’esame
+
+Errore 1:
+
+* usare Arduino come server web complesso
+  ❌ non ha risorse sufficienti
+
+Errore 2:
+
+* usare Raspberry per controllo real-time
+  ❌ non deterministico
+
+Errore 3:
+
+* non separare acquisizione e rete
+  ❌ architettura non scalabile
+
+Soluzione corretta:
+
+✔ Arduino/ESP → acquisizione
+✔ Raspberry → rete e servizi
+
+---
+
+## 6.8 Sintesi operativa finale
+
+Arduino:
+
+* nodo periferico
+* acquisizione dati
+* comunicazione semplice
+
+Raspberry Pi:
+
+* nodo centrale
+* gestione rete
+* servizi avanzati
+
+Sistema completo:
+
+✔ sensori → microcontrollori → gateway → cloud
+
+---
+
+# INTEGRAZIONE ALLA CONCLUSIONE
+
+La scelta tra Arduino e Raspberry Pi deve considerare anche la rete:
+
+* Arduino → rete limitata, uso periferico
+* Raspberry → rete completa, uso centrale
+
+Nei sistemi reali:
+
+✔ la rete è gestita dal Raspberry
+✔ i dati sono prodotti da Arduino/ESP
+
+La competenza richiesta all’esame è quindi:
+
+✔ progettare correttamente l’architettura di rete
+✔ scegliere il dispositivo in base al ruolo
+✔ motivare tecnicamente la scelta

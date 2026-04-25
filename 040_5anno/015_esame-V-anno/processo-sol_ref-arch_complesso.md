@@ -15,6 +15,14 @@ Conviene conoscere quasi a memoria:
 
 Durante la prova si lavora soprattutto sulle differenze richieste dalla traccia.
 
+NB questa è la versione dettagliata,  
+è più dettagliata e complessa di quanto serve in esame,
+ho prodotto una versione più semplice che dovrebbe essere ancora reperibile.
+
+L'approccio consigliato è:
+- per identificare carenze e imparare qualche concetto addizionale esaminare questa in prima istanza, senza scoraggiarsi , tenendo presente che è oltre il nostro livello di dettaglio e programma
+- utilizzare poi la più semplice, richiedetela se non già condivisa
+
 ---
 
 # 2. Processo di soluzione della traccia

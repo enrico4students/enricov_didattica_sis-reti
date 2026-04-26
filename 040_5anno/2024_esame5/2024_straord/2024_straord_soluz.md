@@ -1,0 +1,733 @@
+
+# Sistemi e Reti - Sessione straordinaria 2024 (Seconda prova scritta)
+
+Ministero dell’istruzione e del merito
+
+### A038 - ESAME DI STATO CONCLUSIVO DEL SECONDO CICLO DI ISTRUZIONE
+
+Indirizzo ITIA - INFORMATICA E TELECOMUNICAZIONI
+Articolazione "INFORMATICA"
+
+(Testo valevole anche per gli indirizzi quadriennali IT32)
+
+Disciplina: SISTEMI E RETI
+
+---
+
+Il candidato svolga la prima parte della prova e due tra i quesiti proposti nella seconda parte.
+
+---
+
+# PRIMA PARTE
+
+## Azienda Informatica con nuova sede staccata
+
+Un’azienda informatica in forte espansione ha acquisito un capannone per realizzare una nuova sede in una città diversa da quella in cui si trova la sede principale.
+
+Presso tale capannone l’azienda vuole realizzare tre distinti reparti di produzione software in cui lavoreranno gli sviluppatori:
+
+* Reparto A) Sviluppo applicazioni mobile
+* Reparto B) Sviluppo siti web
+* Reparto C) Sviluppo software di settore (es. gestione ospedaliera, gestione agenzie di trasporti, etc.)
+
+Sono inoltre previsti i seguenti ulteriori reparti:
+
+* Reparto D) Test di qualità
+* Reparto E) Project management
+* Reparto F) Amministrazione per la gestione della sede locale
+
+Ciascun addetto necessita di una propria postazione dotata di computer desktop aziendale; l’allocazione dei computer prevista per ciascun reparto è descritta dalla seguente tabella:
+
+| Reparto     | A  | B  | C   | D  | E  | F  |
+| ----------- | -- | -- | --- | -- | -- | -- |
+| N° computer | 50 | 30 | 100 | 20 | 10 | 20 |
+
+Ogni reparto prevede inoltre fino ad un 10% di computer di riserva per sopperire ad eventuali guasti.
+
+L’accesso a ciascun computer deve avvenire previa autenticazione dell’utente.
+
+Ogni sviluppatore dei reparti A, B, C deve potere accedere ad internet, ad una stampante di rete e ad un file server entrambi collocati nel proprio reparto, mentre non deve essergli consentito di accedere ai sistemi interni di altri reparti.
+
+Gli operatori del reparto D devono potere accedere ai file server locali dei reparti A, B, C per potere effettuare i test sui progetti e qualora un test risulti superato lasciare un report nella relativa cartella, rinominarla aggiungendo al nome della cartella un suffisso per marcare il progetto come terminato (es. “_Final_Version”) e renderla “read-only”.
+
+I Project manager del reparto E devono potere accedere a tutti i file server locali del capannone e devono inoltre, ogni qualvolta si ha una versione terminata di un determinato progetto, trasferirne i file su un sistema server remoto (project repository) dislocato presso la sede centrale, aggiungendo la documentazione ed i manuali.
+
+L’amministrazione del reparto F deve potere accedere ad internet ed al sistema gestionale remoto presso la sede centrale.
+
+---
+
+Il candidato analizzi la realtà di riferimento e, fatte le opportune ipotesi aggiuntive, sviluppi i seguenti punti:
+
+1. un progetto di massima dell’infrastruttura della rete della nuova sede, anche supportato da uno schema grafico, prevedendo struttura delle sottoreti, apparati, servizi implementati, tipologia delle connessioni interne e verso Internet ed un opportuno piano di indirizzamento dei sistemi;
+
+2. le misure ed i sistemi per la gestione della sicurezza interna ed esterna;
+
+3. modalità e protocolli di collegamento verso i sistemi remoti nella sede centrale;
+
+4. dettagli di configurazione di uno dei servizi.
+
+---
+
+# SECONDA PARTE
+
+## Quesito I
+
+In relazione al tema proposto nella prima parte, si ipotizzi che presso la sede centrale siano inoltre presenti, in aggiunta al server remoto (project repository) ed al sistema gestionale, una serie di server pubblici per offrire i seguenti servizi:
+
+* server web aziendale per la pubblicazione del sito di e-commerce dei propri prodotti
+* mail aziendale
+
+Descrivere tale parte dell’infrastruttura di rete dell’azienda.
+
+---
+
+## Quesito II
+
+In relazione al tema proposto nella prima parte, si immagini di voler virtualizzare i vari server locali su un unico server fisico.
+
+Il candidato illustri:
+
+* quali modifiche all’infrastruttura di rete e alla sua configurazione logica e fisica si renderebbero eventualmente necessarie
+* la differenza tra il software di virtualizzazione nativo (tipo 1) e quello ospitato in un sistema operativo (tipo 2)
+
+---
+
+## Quesito III
+
+Il candidato esponga le caratteristiche in termini di sicurezza dei protocolli disponibili per la protezione delle reti WiFi, quali ad esempio:
+
+WEP, WPA, WPA2 e WPA3 (questi ultimi sia personal che enterprise),
+
+e le principali differenze tra essi.
+
+---
+
+## Quesito IV
+
+Il candidato esponga le modalità di lavoro dei diversi tipi di firewall e degli application gateway (proxy), evidenziandone le peculiarità ed i diversi campi di applicazione.
+
+---
+
+## Note finali
+
+Durata massima della prova: 6 ore
+
+È consentito l’uso di manuali tecnici e di calcolatrici scientifiche o grafiche purché non siano dotate della capacità di elaborazione simbolica algebrica e non abbiano la disponibilità di connessione a Internet.
+
+È consentito l’uso del dizionario bilingue (italiano-lingua del paese di provenienza) per i candidati di madrelingua non italiana.
+
+Non è consentito lasciare l’Istituto prima che siano trascorse 3 ore dalla consegna della traccia.
+
+
+# PRIMA PARTE - Soluzione
+
+## 1. Ipotesi progettuali
+
+La nuova sede viene progettata come rete aziendale separata dalla sede centrale ma collegata tramite VPN site-to-site.
+
+Si adottano queste scelte:
+
+rete cablata Gigabit Ethernet per le postazioni, dorsali in fibra o rame 10 GbE tra armadio centrale e armadi di piano/reparto, VLAN separate per reparti e server, autenticazione centralizzata degli utenti, firewall perimetrale con VPN verso la sede centrale, ACL/firewall interni per impedire accessi non autorizzati tra reparti.
+
+La separazione tra reparti è necessaria perché la traccia richiede che gli sviluppatori dei reparti A, B e C non accedano ai sistemi interni degli altri reparti. I reparti D ed E hanno invece permessi trasversali, ma diversi: D deve accedere ai file server A/B/C per test e marcatura delle versioni finali; E deve accedere a tutti i file server e trasferire le versioni definitive al repository remoto.
+
+## 2. Dimensionamento delle postazioni
+
+La traccia prevede anche un 10% di computer di riserva.
+
+| Reparto |                     Funzione | PC previsti | Riserva 10% | Totale minimo |
+| ------- | ---------------------------: | ----------: | ----------: | ------------: |
+| A       |              sviluppo mobile |          50 |           5 |            55 |
+| B       |            sviluppo siti web |          30 |           3 |            33 |
+| C       | sviluppo software di settore |         100 |          10 |           110 |
+| D       |                 test qualità |          20 |           2 |            22 |
+| E       |           project management |          10 |           1 |            11 |
+| F       |  amministrazione sede locale |          20 |           2 |            22 |
+
+Si aggiunge margine per stampanti, server, apparati, crescita futura e gestione.
+
+## 3. Architettura generale della nuova sede
+
+Si propone una rete a due livelli, adatta a una sede di queste dimensioni:
+
+livello accesso: switch di reparto per PC, stampanti e server locali;
+
+livello core/distribution: coppia di switch centrali Layer 3 o switch centrale ridondato, collegato al firewall.
+
+Il routing tra VLAN viene concentrato sul core L3 oppure sul firewall. In questa soluzione si sceglie routing centralizzato su firewall/NGFW per le VLAN più sensibili, perché il controllo tra reparti è un requisito importante della traccia. Il core switch gestisce trunk, aggregazioni e connettività interna, mentre il firewall applica le policy principali tra VLAN.
+
+## 4. Diagramma testuale dell’infrastruttura
+
+```
+Internet
+  |
+Router ISP
+  |
+Firewall / NGFW nuova sede
+  |\
+  | \ VPN IPsec site-to-site
+  |  \
+  |   Sede centrale
+  |     |-- Project repository remoto
+  |     |-- Sistema gestionale remoto
+  |
+Core switch L3 / Distribution
+  |
+  |-- VLAN 10 - Reparto A utenti
+  |-- VLAN 11 - Server A
+  |-- VLAN 20 - Reparto B utenti
+  |-- VLAN 21 - Server B
+  |-- VLAN 30 - Reparto C utenti
+  |-- VLAN 31 - Server C
+  |-- VLAN 40 - Reparto D test qualità
+  |-- VLAN 50 - Reparto E project management
+  |-- VLAN 60 - Reparto F amministrazione
+  |-- VLAN 70 - Servizi infrastrutturali
+  |-- VLAN 80 - Management apparati
+  |-- VLAN 90 - WiFi ospiti, opzionale
+  |-- VLAN 99 - Backup
+```
+
+## 5. Diagramma PlantUML
+
+```
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+cloud "Internet" as INTERNET
+node "Router ISP" as ISP
+node "Firewall / NGFW\nNAT, VPN, policy inter-VLAN" as FW
+node "Core switch L3\ntrunk 802.1Q" as CORE
+
+rectangle "Nuova sede - capannone" {
+  rectangle "Reparto A\nSviluppo mobile" as A {
+    node "PC A" as PCA
+    node "Stampante A" as PRA
+    node "File Server A" as FSA
+  }
+
+  rectangle "Reparto B\nSviluppo web" as B {
+    node "PC B" as PCB
+    node "Stampante B" as PRB
+    node "File Server B" as FSB
+  }
+
+  rectangle "Reparto C\nSoftware di settore" as C {
+    node "PC C" as PCC
+    node "Stampante C" as PRC
+    node "File Server C" as FSC
+  }
+
+  rectangle "Reparto D\nTest qualità" as D {
+    node "PC Tester" as PCD
+  }
+
+  rectangle "Reparto E\nProject management" as E {
+    node "PC Project Manager" as PCE
+  }
+
+  rectangle "Reparto F\nAmministrazione" as F {
+    node "PC Amministrazione" as PCF
+  }
+
+  rectangle "Servizi locali" as SERV {
+    node "AD/LDAP\nDNS DHCP RADIUS" as AUTH
+    node "Backup locale" as BACKUP
+    node "Monitoraggio e log" as LOG
+  }
+
+  rectangle "Management" as MGMT {
+    node "Console admin" as ADMIN
+    node "Switch/AP/Firewall mgmt" as DEV
+  }
+}
+
+cloud "VPN IPsec site-to-site" as VPN
+rectangle "Sede centrale" as HQ {
+  node "Project repository remoto" as REPO
+  node "Sistema gestionale remoto" as ERP
+}
+
+INTERNET --> ISP
+ISP --> FW
+FW --> CORE
+
+CORE --> A
+CORE --> B
+CORE --> C
+CORE --> D
+CORE --> E
+CORE --> F
+CORE --> SERV
+CORE --> MGMT
+
+FW --> VPN
+VPN --> HQ
+
+PCD --> FSA : accesso controllato
+PCD --> FSB : accesso controllato
+PCD --> FSC : accesso controllato
+
+PCE --> FSA : accesso PM
+PCE --> FSB : accesso PM
+PCE --> FSC : accesso PM
+PCE --> REPO : trasferimento versioni finali
+
+PCF --> ERP : gestionale remoto
+@enduml
+```
+
+## 6. Piano VLAN e indirizzamento
+
+Si usa una rete privata unica per la nuova sede:
+
+10.24.0.0/16
+
+Le sottoreti sono scelte con VLSM, ma mantenendo blocchi leggibili. Il reparto C richiede almeno 110 host, quindi si usa /25. I reparti A, B, D, F richiedono meno host ma ricevono margine sufficiente. I server sono separati dagli utenti quando utile per applicare regole più precise.
+
+| VLAN | Nome rete        | Subnet        | Gateway    | Host utilizzabili         | Uso                        |
+| ---: | ---------------- | ------------- | ---------- | ------------------------- | -------------------------- |
+|   10 | Utenti reparto A | 10.24.10.0/26 | 10.24.10.1 | 10.24.10.1 - 10.24.10.62  | PC sviluppo mobile         |
+|   11 | Server reparto A | 10.24.11.0/28 | 10.24.11.1 | 10.24.11.1 - 10.24.11.14  | file server A, stampante A |
+|   20 | Utenti reparto B | 10.24.20.0/26 | 10.24.20.1 | 10.24.20.1 - 10.24.20.62  | PC sviluppo web            |
+|   21 | Server reparto B | 10.24.21.0/28 | 10.24.21.1 | 10.24.21.1 - 10.24.21.14  | file server B, stampante B |
+|   30 | Utenti reparto C | 10.24.30.0/25 | 10.24.30.1 | 10.24.30.1 - 10.24.30.126 | PC sviluppo settore        |
+|   31 | Server reparto C | 10.24.31.0/28 | 10.24.31.1 | 10.24.31.1 - 10.24.31.14  | file server C, stampante C |
+|   40 | Reparto D        | 10.24.40.0/27 | 10.24.40.1 | 10.24.40.1 - 10.24.40.30  | test qualità               |
+|   50 | Reparto E        | 10.24.50.0/28 | 10.24.50.1 | 10.24.50.1 - 10.24.50.14  | project manager            |
+|   60 | Reparto F        | 10.24.60.0/27 | 10.24.60.1 | 10.24.60.1 - 10.24.60.30  | amministrazione            |
+|   70 | Servizi locali   | 10.24.70.0/27 | 10.24.70.1 | 10.24.70.1 - 10.24.70.30  | AD/LDAP, DNS, DHCP, RADIUS |
+|   80 | Management       | 10.24.80.0/28 | 10.24.80.1 | 10.24.80.1 - 10.24.80.14  | apparati e console admin   |
+|   90 | WiFi ospiti      | 10.24.90.0/24 | 10.24.90.1 | 10.24.90.1 - 10.24.90.254 | ospiti, solo Internet      |
+|   99 | Backup           | 10.24.99.0/27 | 10.24.99.1 | 10.24.99.1 - 10.24.99.30  | backup e replica           |
+
+Nota: negli intervalli “host utilizzabili” è incluso anche il gateway; per assegnazioni ai client si riserva normalmente il gateway e si parte dal secondo indirizzo utile.
+
+## 7. Matrice dei principali sistemi
+
+| Sistema          |  VLAN | IP proposto     | Note                       |
+| ---------------- | ----: | --------------- | -------------------------- |
+| Gateway VLAN 10  |    10 | 10.24.10.1      | firewall o SVI controllata |
+| File server A    |    11 | 10.24.11.10     | accesso A, D, E            |
+| Stampante A      |    11 | 10.24.11.11     | accesso solo A             |
+| Gateway VLAN 20  |    20 | 10.24.20.1      | utenti reparto B           |
+| File server B    |    21 | 10.24.21.10     | accesso B, D, E            |
+| Stampante B      |    21 | 10.24.21.11     | accesso solo B             |
+| Gateway VLAN 30  |    30 | 10.24.30.1      | utenti reparto C           |
+| File server C    |    31 | 10.24.31.10     | accesso C, D, E            |
+| Stampante C      |    31 | 10.24.31.11     | accesso solo C             |
+| Server AD/LDAP   |    70 | 10.24.70.10     | autenticazione utenti      |
+| DNS interno      |    70 | 10.24.70.11     | risoluzione nomi           |
+| DHCP             |    70 | 10.24.70.12     | indirizzi dinamici         |
+| RADIUS           |    70 | 10.24.70.13     | 802.1X cablato/WiFi        |
+| Backup server    |    99 | 10.24.99.10     | backup file server         |
+| Console admin    |    80 | 10.24.80.10     | gestione apparati          |
+| Firewall interno | varie | .1 su ogni VLAN | gateway e policy           |
+
+## 8. Policy di comunicazione tra reparti
+
+La regola generale è deny by default: tutto il traffico tra VLAN è bloccato, salvo ciò che viene esplicitamente consentito.
+
+| Sorgente   | Destinazione                         | Servizi consentiti                | Motivo                        |
+| ---------- | ------------------------------------ | --------------------------------- | ----------------------------- |
+| Reparto A  | Internet                             | HTTP/HTTPS, DNS controllato       | navigazione sviluppatori      |
+| Reparto A  | File server A                        | SMB/NFS o HTTPS interno           | lavoro sui file del reparto   |
+| Reparto A  | Stampante A                          | IPP/LPD/RAW secondo modello       | stampa di reparto             |
+| Reparto A  | Server B/C                           | negato                            | isolamento tra reparti        |
+| Reparto B  | Internet, File server B, Stampante B | servizi analoghi ad A             | lavoro reparto B              |
+| Reparto B  | Server A/C                           | negato                            | isolamento                    |
+| Reparto C  | Internet, File server C, Stampante C | servizi analoghi ad A             | lavoro reparto C              |
+| Reparto C  | Server A/B                           | negato                            | isolamento                    |
+| Reparto D  | File server A/B/C                    | SMB/NFS con permessi specifici    | test qualità e report         |
+| Reparto D  | Internet                             | opzionale e filtrato              | documentazione/test           |
+| Reparto E  | File server A/B/C                    | accesso completo controllato      | project management            |
+| Reparto E  | Repository sede centrale             | HTTPS/SFTP/SSH/Git over HTTPS     | trasferimento versioni finali |
+| Reparto F  | Internet                             | HTTP/HTTPS, DNS                   | amministrazione               |
+| Reparto F  | Gestionale sede centrale             | HTTPS o client applicativo su VPN | gestione sede                 |
+| Management | Apparati e server                    | SSH, HTTPS admin, SNMPv3          | amministrazione tecnica       |
+| Ospiti     | Internet                             | solo HTTP/HTTPS/DNS               | nessun accesso interno        |
+
+## 9. Autenticazione degli utenti
+
+L’accesso ai computer deve avvenire previa autenticazione. Si propone un dominio aziendale locale o integrato con la sede centrale, basato su Active Directory oppure LDAP/Kerberos.
+
+Gli utenti accedono con credenziali personali. I gruppi principali sono:
+
+DEV_A, DEV_B, DEV_C, TEST_QA, PROJECT_MANAGER, ADMIN_SEDE, IT_ADMIN.
+
+I permessi sui file server vengono assegnati ai gruppi, non ai singoli utenti, perché la gestione è più ordinata e scalabile.
+
+Esempio sui file server:
+
+File server A: DEV_A lettura/scrittura sulle cartelle di lavoro, TEST_QA accesso alle aree da validare con possibilità di scrivere report e rinominare cartelle, PROJECT_MANAGER accesso completo operativo, altri reparti negati.
+
+## 10. Misure di sicurezza interna ed esterna
+
+Sicurezza interna:
+
+segmentazione VLAN, ACL/firewall tra VLAN, autenticazione centralizzata, autorizzazioni basate su gruppi, 802.1X sulle porte degli switch, porte inutilizzate disabilitate, DHCP snooping, Dynamic ARP Inspection, logging centralizzato, backup, antivirus/EDR sui client, aggiornamenti centralizzati.
+
+Sicurezza esterna:
+
+firewall/NGFW, NAT per l’uscita Internet, VPN IPsec site-to-site verso sede centrale, filtraggio DNS o proxy, IDS/IPS, blocco degli accessi amministrativi da Internet, monitoraggio dei log, MFA per accessi amministrativi e remoti.
+
+La scelta più importante è separare rete utenti, rete server, rete management e rete ospiti. In questo modo un problema su un reparto non consente automaticamente di raggiungere tutti gli altri sistemi.
+
+## 11. Collegamento verso la sede centrale
+
+Il collegamento tra nuova sede e sede centrale viene realizzato tramite VPN IPsec site-to-site tra i due firewall aziendali.
+
+Motivi:
+
+la sede è in città diversa, quindi il traffico passa su rete geografica o Internet;
+
+i dati trasferiti comprendono progetti software, documentazione, dati amministrativi;
+
+serve cifratura, autenticazione dei peer e controllo degli indirizzi raggiungibili.
+
+Traffico consentito sulla VPN:
+
+| Sorgente nuova sede | Destinazione sede centrale | Protocollo                                  | Uso                           |
+| ------------------- | -------------------------- | ------------------------------------------- | ----------------------------- |
+| Reparto E           | Project repository         | HTTPS 443, SSH 22, SFTP 22 o Git HTTPS      | trasferimento versioni finali |
+| Reparto F           | Gestionale remoto          | HTTPS 443 o porta applicativa specifica     | gestione amministrativa       |
+| Server locali       | Servizi directory centrali | LDAP/LDAPS, Kerberos, DNS, NTP se necessari | integrazione autenticazione   |
+| Management IT       | apparati autorizzati       | SSH/HTTPS/SNMPv3                            | amministrazione               |
+
+Il repository remoto non viene esposto direttamente a Internet: viene raggiunto attraverso VPN, oppure tramite HTTPS aziendale con autenticazione forte. In una soluzione d’esame è preferibile indicare VPN site-to-site, perché collega stabilmente le due sedi e consente policy chiare.
+
+## 12. Schema logico della VPN
+
+```
+Nuova sede
+10.24.0.0/16
+    |
+Firewall nuova sede
+    |
+Tunnel IPsec cifrato
+    |
+Firewall sede centrale
+    |
+Reti sede centrale
+10.10.0.0/16
+    |-- Project repository: 10.10.20.10
+    |-- Gestionale: 10.10.30.10
+```
+
+Regole principali:
+
+10.24.50.0/28 può raggiungere 10.10.20.10, 10.24.60.0/27 può raggiungere 10.10.30.10, le altre VLAN non accedono ai server centrali salvo necessità documentata.
+
+## 13. Configurazione di un servizio: file server dei reparti
+
+Si dettaglia il servizio file server, perché è centrale nella traccia.
+
+Ogni reparto A, B e C ha un file server dedicato o una VM dedicata. Il servizio può essere SMB/CIFS in ambiente Windows oppure Samba in ambiente Linux integrato con dominio.
+
+Esempio per File Server A:
+
+nome server: FS-A
+
+IP: 10.24.11.10
+
+share principale: \FS-A\progetti_A
+
+gruppi autorizzati:
+
+DEV_A: lettura/scrittura sui progetti in lavorazione;
+
+TEST_QA: lettura sui progetti e scrittura nella sottocartella report_test; possibilità controllata di rinominare cartelle finali;
+
+PROJECT_MANAGER: accesso completo alle versioni finali;
+
+IT_ADMIN: amministrazione tecnica.
+
+Struttura cartelle:
+
+```
+\\FS-A\progetti_A
+    \In_Lavorazione
+    \In_Test
+    \Finali
+    \Report_Test
+```
+
+Permessi consigliati:
+
+| Cartella       | DEV_A    | TEST_QA                                        | PROJECT_MANAGER   | IT_ADMIN           |
+| -------------- | -------- | ---------------------------------------------- | ----------------- | ------------------ |
+| In_Lavorazione | modifica | nessun accesso o lettura                       | lettura           | controllo completo |
+| In_Test        | modifica | lettura/scrittura report                       | lettura           | controllo completo |
+| Finali         | lettura  | scrittura controllata/rename tramite procedura | modifica          | controllo completo |
+| Report_Test    | lettura  | scrittura                                      | lettura/scrittura | controllo completo |
+
+Per la richiesta “rinominare la cartella aggiungendo _Final_Version e renderla read-only”, è preferibile non lasciare libertà completa ai tester su tutto il file server. La soluzione più ordinata è prevedere una procedura o script controllato, eseguito con permessi adeguati, che:
+
+verifica che il tester appartenga al gruppo TEST_QA, controlla che il progetto sia in stato “test superato”, scrive il report nella cartella, rinomina la cartella aggiungendo _Final_Version, modifica i permessi rendendo la cartella non più modificabile dagli sviluppatori.
+
+Esempio di logica operativa:
+
+```
+Progetto_X
+dopo test superato:
+Progetto_X_Final_Version
+```
+
+A quel punto:
+
+DEV_A: sola lettura o nessuna modifica;
+
+TEST_QA: sola lettura dopo chiusura;
+
+PROJECT_MANAGER: lettura e trasferimento al repository centrale;
+
+IT_ADMIN: controllo completo.
+
+## 14. Esempio di configurazione logica del trasferimento al repository
+
+Quando una versione è marcata come finale, i project manager trasferiscono il contenuto al repository centrale.
+
+Protocollo consigliato:
+
+Git over HTTPS se si tratta di codice sorgente versionato;
+
+SFTP/SSH se si tratta di pacchetti, documentazione, manuali o archivi;
+
+HTTPS verso piattaforma repository aziendale se il sistema remoto è GitLab, Gitea, Bitbucket Server o simile.
+
+Esempio:
+
+repository centrale: 10.10.20.10
+
+accessibile solo dalla VLAN 50 tramite VPN
+
+autenticazione: credenziali personali + MFA
+
+log: tutti i trasferimenti registrati
+
+backup: repository centrale sottoposto a backup periodico.
+
+## 15. Sintesi delle scelte adottate
+
+La soluzione usa VLAN separate perché i reparti hanno requisiti di accesso diversi. I file server sono separati per reparto perché la traccia richiede isolamento tra A, B e C. Il reparto D riceve accessi specifici per il test qualità, non accesso generale alla rete. Il reparto E ha accesso più ampio perché deve consolidare le versioni finali e inviarle al repository centrale. Il reparto F ha accesso al gestionale remoto e a Internet, ma non ai sistemi tecnici degli sviluppatori.
+
+La VPN site-to-site è la scelta più coerente per collegare sedi diverse in modo sicuro. Il firewall/NGFW è il punto principale di controllo, mentre la directory centralizzata garantisce autenticazione e autorizzazioni coerenti.
+
+
+# Seconda parte
+
+## SECONDA PARTE - Quesito I
+
+Presso la sede centrale si prevede una zona separata per i server pubblici, distinta dalla LAN interna e protetta da firewall. La scelta più corretta è realizzare una DMZ, cioè una rete intermedia nella quale collocare i servizi raggiungibili da Internet: server web e-commerce e server mail.
+
+Schema testuale:
+
+Internet
+|
+Router ISP
+|
+Firewall perimetrale / NGFW
+|
+|-- DMZ pubblica
+|     |-- Web server e-commerce
+|     |-- Mail server / mail gateway
+|
+|-- LAN sede centrale
+|-- Project repository
+|-- Sistema gestionale
+|-- Database interni
+|-- Postazioni utenti
+
+Il server web e-commerce non deve accedere liberamente alla LAN interna. Se deve consultare dati aziendali, ad esempio prodotti, ordini o disponibilità, è preferibile usare un application server o API server intermedio, con regole firewall molto restrittive. Il database gestionale non va esposto direttamente in DMZ.
+
+Il server mail può essere collocato in DMZ come mail gateway, mentre le caselle effettive possono stare su server interno o su servizio cloud. Il gateway riceve e invia posta tramite SMTP, applica antispam, antivirus e controlli sui messaggi, poi inoltra verso il sistema interno.
+
+Porte indicative da consentire:
+
+Servizio web: HTTP 80 e HTTPS 443 verso il web server, preferibilmente solo HTTPS per gli utenti finali.
+
+Servizio mail: SMTP 25 per ricezione tra server, submission 587 per invio autenticato, IMAPS 993 se gli utenti leggono la posta direttamente dal server aziendale.
+
+Accessi amministrativi: solo da rete management o tramite VPN, mai direttamente da Internet.
+
+PlantUML:
+
+```
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+cloud "Internet" as Internet
+node "Router ISP" as ISP
+node "Firewall perimetrale / NGFW" as FW
+
+rectangle "DMZ pubblica" as DMZ {
+  node "Web server e-commerce\nHTTPS 443" as WEB
+  node "Mail gateway\nSMTP / Antispam / Antivirus" as MAIL
+}
+
+rectangle "LAN sede centrale" as LAN {
+  node "Project repository" as REPO
+  node "Sistema gestionale" as ERP
+  database "Database interni" as DB
+  node "Rete utenti interni" as USERS
+}
+
+Internet --> ISP
+ISP --> FW
+FW --> DMZ
+FW --> LAN
+WEB --> DB : solo query/API autorizzate
+MAIL --> LAN : inoltro posta interna
+USERS --> ERP
+USERS --> REPO
+@enduml
+```
+
+Motivo della scelta: la DMZ limita i danni in caso di compromissione di un server pubblico. Un attaccante che compromettesse il web server non dovrebbe poter raggiungere direttamente file server, repository, gestionale o database interni.
+
+## SECONDA PARTE - Quesito II
+
+La virtualizzazione dei server locali su un unico server fisico modifica soprattutto la parte server della nuova sede. Invece di avere più server fisici separati, si installa un server fisico potente con hypervisor e più macchine virtuali.
+
+Server virtualizzabili: file server reparto A, file server reparto B, file server reparto C, eventuale server autenticazione locale, server backup locale, server monitoraggio.
+
+La rete logica deve rimanere separata. Anche se i server sono nello stesso host fisico, le VM devono continuare ad appartenere a VLAN diverse.
+
+Esempio:
+
+VM File Server A nella VLAN server A, VM File Server B nella VLAN server B, VM File Server C nella VLAN server C, VM dominio/autenticazione nella VLAN servizi, VM backup nella VLAN backup o management.
+
+Modifiche fisiche consigliate:
+
+server fisico con CPU multi-core, RAM abbondante, storage RAID o storage ridondato, doppio alimentatore, almeno due schede di rete, collegamento ridondato agli switch, backup esterno.
+
+Modifiche logiche consigliate:
+
+creazione di virtual switch sull’hypervisor, trunk 802.1Q tra switch fisico e server di virtualizzazione, assegnazione di una VLAN a ogni VM, regole firewall identiche a quelle previste per server fisici, snapshot solo per manutenzione temporanea, backup regolari delle VM.
+
+Schema testuale:
+
+Switch centrale
+|
+Trunk 802.1Q
+|
+Server fisico con hypervisor
+|
+|-- vSwitch VLAN A server
+|-- VM File Server A
+|
+|-- vSwitch VLAN B server
+|-- VM File Server B
+|
+|-- vSwitch VLAN C server
+|-- VM File Server C
+|
+|-- vSwitch VLAN servizi
+|-- VM autenticazione / DNS / DHCP
+
+PlantUML:
+
+```
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+node "Switch centrale\ntrunk 802.1Q" as SW
+
+node "Server fisico di virtualizzazione" as HOST {
+  node "Hypervisor tipo 1" as HYP
+
+  rectangle "vSwitch VLAN Server A" as VSA {
+    node "VM File Server A" as FSA
+  }
+
+  rectangle "vSwitch VLAN Server B" as VSB {
+    node "VM File Server B" as FSB
+  }
+
+  rectangle "vSwitch VLAN Server C" as VSC {
+    node "VM File Server C" as FSC
+  }
+
+  rectangle "vSwitch VLAN Servizi" as VSS {
+    node "VM AD/DNS/DHCP" as AD
+  }
+}
+
+SW --> HOST : trunk VLAN
+HYP --> VSA
+HYP --> VSB
+HYP --> VSC
+HYP --> VSS
+@enduml
+```
+
+Differenza tra hypervisor tipo 1 e tipo 2:
+
+Tipo 1: installato direttamente sull’hardware fisico, senza sistema operativo ospitante tradizionale. È più adatto ai server aziendali perché offre migliori prestazioni, maggiore isolamento e gestione più professionale.
+
+Tipo 2: installato sopra un sistema operativo già esistente, ad esempio Windows o Linux desktop. È più adatto a laboratori, test e uso didattico, ma meno indicato per server di produzione.
+
+Esempi: VMware ESXi, Microsoft Hyper-V Server e Proxmox VE sono esempi di approccio tipo 1; VirtualBox e VMware Workstation sono esempi di tipo 2.
+
+## SECONDA PARTE - Quesito III
+
+I protocolli di sicurezza WiFi si sono evoluti perché le prime soluzioni erano deboli e facilmente attaccabili.
+
+WEP è ormai insicuro. Usa meccanismi crittografici deboli e può essere violato con strumenti comuni. Non deve essere usato in una rete aziendale.
+
+WPA è nato come soluzione transitoria per superare WEP. Migliora la sicurezza, ma oggi è superato e non dovrebbe essere scelto per una nuova infrastruttura.
+
+WPA2 è stato per anni lo standard principale. Con WPA2-Personal si usa una password condivisa; è adatto a reti domestiche o piccole reti non critiche. Con WPA2-Enterprise si usa autenticazione individuale, normalmente tramite server RADIUS e credenziali personali. Per un’azienda, WPA2-Enterprise è molto più corretto di WPA2-Personal.
+
+WPA3 è l’evoluzione più recente. WPA3-Personal migliora la protezione rispetto alle password condivise tradizionali, grazie a un meccanismo più resistente agli attacchi offline. WPA3-Enterprise offre protezione più forte per ambienti aziendali e può usare configurazioni crittografiche più robuste.
+
+Scelta per questa prova: nella sede aziendale è opportuno usare WPA2-Enterprise o WPA3-Enterprise, con autenticazione personale degli utenti, integrazione con directory aziendale e separazione in VLAN.
+
+Esempio di reti WiFi:
+
+SSID aziendale dipendenti: WPA2/WPA3-Enterprise, autenticazione individuale, accesso alle VLAN autorizzate.
+
+SSID ospiti: rete separata, solo Internet, captive portal o password temporanea, nessun accesso ai sistemi interni.
+
+SSID tecnico/management: eventualmente presente, ma molto limitato e accessibile solo ad amministratori.
+
+La scelta Enterprise è coerente con il requisito di autenticazione degli utenti: ogni dipendente deve accedere con credenziali personali, non con una password WiFi condivisa.
+
+## SECONDA PARTE - Quesito IV
+
+Un firewall controlla il traffico tra reti diverse applicando regole di sicurezza. Nel caso della prova serve sia per proteggere la sede locale, sia per separare i reparti, sia per controllare il collegamento verso Internet e verso la sede centrale.
+
+Tipi principali di firewall:
+
+Packet filtering firewall: controlla pacchetti in base a indirizzi IP, porte e protocolli. È semplice e veloce, ma non comprende il contenuto applicativo.
+
+Stateful firewall: tiene conto dello stato delle connessioni. È più sicuro del semplice packet filtering perché distingue, ad esempio, una connessione legittima già aperta da un pacchetto isolato non atteso.
+
+Next Generation Firewall: integra funzioni più avanzate, come controllo applicativo, IPS, filtraggio URL, ispezione del traffico e integrazione con utenti o gruppi.
+
+Firewall interno o di segmentazione: separa reparti, server e reti amministrative. Nella prova è importante perché i reparti A, B e C non devono accedere tra loro, mentre D ed E devono avere permessi specifici sui file server.
+
+Application gateway / proxy:
+
+Un proxy lavora a livello applicativo. Non si limita a vedere indirizzo IP e porta, ma interpreta il protocollo applicativo, ad esempio HTTP o HTTPS. Può filtrare siti, registrare accessi, applicare policy aziendali, bloccare contenuti non ammessi e migliorare il controllo sulla navigazione.
+
+Differenza essenziale:
+
+il firewall decide se un traffico tra reti è consentito o bloccato, il proxy agisce come intermediario applicativo tra client e servizio richiesto.
+
+Applicazione alla prova:
+
+Firewall perimetrale: protegge l’accesso Internet e gestisce NAT, VPN, regole in ingresso e uscita.
+
+Firewall interno o regole ACL: impedisce il traffico non autorizzato tra reparti.
+
+Proxy web: controlla la navigazione Internet degli utenti aziendali.
+
+WAF: protegge il sito e-commerce della sede centrale da attacchi applicativi come SQL injection, XSS e richieste HTTP anomale.
+
+IDS/IPS: rileva o blocca traffico sospetto, utile sia sul perimetro sia tra zone interne importanti.
+
+Scelta progettuale: per questa azienda non basta un solo firewall “verso Internet”. È necessario anche controllare il traffico est-ovest, cioè tra reparti e server interni, perché la traccia richiede permessi diversi per sviluppatori, tester, project manager e amministrazione.

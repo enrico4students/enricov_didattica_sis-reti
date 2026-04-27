@@ -1,6 +1,6 @@
 {
     "markdown.marp.themes": [
-        "./authoring/themes/portrait_marp.css"
+        "./005_authoring/themes/portrait_marp.css"
 ],
 "markdown.styles": [
     "./005_authoring/themes/portrait.css"

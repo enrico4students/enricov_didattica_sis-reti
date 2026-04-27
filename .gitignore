@@ -6,6 +6,9 @@ delet*
 tex2*/**
 tex2pdf*
 
+temp*
+temp*/**
+
 *.log
 *.aux
 

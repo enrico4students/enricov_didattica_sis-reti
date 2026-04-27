@@ -8,17 +8,26 @@
 
 ## 1.1 Che cos’è Arduino  
 
+<!--
+
+
+![Image](https://images.openai.com/static-rsc-4/Rn4W82_gJ3jU2lSJWFMb1XLjf9QeCcXwISRXqHyXpjZnfRqftZYssRKOkCa-5ihuyYPP4Myv859keLMAdxDbkjqebPwOWDto91Pa9R-o9KJnq_1oZyo5_n5NYQENSgiiVLlDkWrS_Il4shXDBxhP3EjRLqT01cfyTMcX-3vW4o0oYH5zkXNlgl1PYakbsNfU?purpose=fullsize){width=70%}
+
+
 ![Image](https://images.openai.com/static-rsc-4/Vz9aOSyg07-W442ezBVuiCqDdBriLz76GAhqYAJqooBfFS9fcUlkuBMQWy9fEyRUIC601f6KZIEYB1IeUZ1nLSkLmieiJnCT49-4rd_UC_Fgcnd2pO-IJ4rV22EI5GVabtxjwTMCOH2gnwaeBjbCG-1B_kN3zq1PEU04i6Ve7oFYZv2Dwpnvb2qJfI4CyyFz?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/7I_gOEb_usHdGKza9lVU1ZAmnLy7oMHtjVUn1jW5Xolqc8x7XG_IwuWcOVbriWgSyIYV98T37oVcODoDpdBqSskHOTFVWa525Trzs3i-U-KJ8qsFYl3NErzqlWGYqCHWy4sgAGZYYC_RbC7uQosDcQuVXLB-fu5OZydmarUhxSRtvWaKk4OzSxTGOkHlFWoI?purpose=fullsize){width=70%}
 
 ![Image](https://images.openai.com/static-rsc-4/VojsuUv2_N4QZ9Q67rvdlhbfphazXNfIhwWahGnH1I0N2giWs9O3F3rorOGQjBoZHyOOfjwzExsqQ8P9_FbueJ7MIYdmPONhjslUD0kr5l600y4ibSPZtlVf3V2I350Rm2r4HJol8JrlUMF05HJYrv2JRXqmafOHEZ2rbl1pQ672Stz2iN-OU8O7rCMsepy_?purpose=fullsize){width=70%}
 
+
 ![Image](https://images.openai.com/static-rsc-4/e0-9UlQX22q6tuOKcMpgj0OliggpeB1zgTO-PCkjBC7hjJt20J5ae2BZa15iWZ4Y7ItP2U0FR-ssTXeIMNkdGzrOoN-yu9ko7D-KS27Ng2_-H8EXl7NMrtY1LgBi4_6Mubn7S7ajWQPYY305ApunLIxQDUd0-6zTGnPP1SE3ph_I036A9_Cxf5RMd8q92w3k?purpose=fullsize){width=70%}
+
+
 
 ![Image](https://images.openai.com/static-rsc-4/RH1ohQWk1r8V_VPiGwIutfweRo5YGzRuzvUYPDc3OZAwTIYzLrFcv8ppXeH4bWtbjxkyQ11MjHf_1cRkSfrUxaT-xyb9CPtjvb2St4ThnbCGLDSBioHI1USWNOo_dtgZxI7cKbeq-M9MsgJVB_t39MvfCoZG6zdDrwvWbmqOYapy-6e3oUEQ4tZBMAtoOvP4?purpose=fullsize){width=70%}
 
-![Image](https://images.openai.com/static-rsc-4/Rn4W82_gJ3jU2lSJWFMb1XLjf9QeCcXwISRXqHyXpjZnfRqftZYssRKOkCa-5ihuyYPP4Myv859keLMAdxDbkjqebPwOWDto91Pa9R-o9KJnq_1oZyo5_n5NYQENSgiiVLlDkWrS_Il4shXDBxhP3EjRLqT01cfyTMcX-3vW4o0oYH5zkXNlgl1PYakbsNfU?purpose=fullsize){width=70%}
+
+-->
 
 Arduino non è un “mini computer”, ma una **scheda elettronica programmabile basata su microcontrollore**.
 
@@ -87,7 +96,7 @@ Caratteristiche chiave:
 
 * accesso diretto ai pin (ingressi/uscite)
 * gestione precisa del tempo (millisecondi, microsecondi)
-* comportamento deterministico
+* comportamento deterministico (non totalmente preciso, vedi precisazione)
 
 Esempio:
 
@@ -97,6 +106,94 @@ Esempio:
 Un PC NON è adatto a questo:
 
 * il sistema operativo introduce ritardi imprevedibili
+
+
+---  
+
+#### Arduino: tempo di esecuzione e comportamento deterministico
+
+Arduino, ad esempio una scheda come Arduino Uno, è basato su un microcontrollore che esegue il programma in modo **sequenziale**, senza sistema operativo e senza meccanismi di multitasking.
+
+Quando si afferma che Arduino ha un **comportamento deterministico**, non si intende che il tempo di risposta sia sempre costante, ma che è **prevedibile**: a parità di codice e condizioni, il tempo di esecuzione sarà sempre lo stesso.
+
+Questo implica che il tempo di risposta dipende direttamente dal codice scritto. Se nel `loop()` si inseriscono cicli molto lunghi o nidificati che richiedono, ad esempio, 10 secondi per completarsi, il sistema impiegherà effettivamente quei 10 secondi prima di tornare a eseguire il resto del programma. Durante questo intervallo non verranno letti ingressi, aggiornate uscite o gestiti eventi: il sistema risulterà temporaneamente non reattivo.
+
+Il determinismo quindi non garantisce velocità o reattività, ma **coerenza nei tempi di esecuzione**. Ogni istruzione richiede un numero noto di cicli di clock, e il tempo totale può essere stimato con buona precisione.
+
+---
+
+#### Gestione del tempo con millis()
+
+La funzione `millis()` restituisce il numero di millisecondi trascorsi dall’avvio della scheda e permette di gestire il tempo **senza bloccare il programma**.
+
+Il principio è semplice: confrontare il tempo corrente con un istante salvato in precedenza.
+
+```
+se (tempo_attuale - tempo_iniziale >= intervallo)
+    eseguire operazione
+```
+
+In questo modo il programma continua a girare e può svolgere altre attività mentre “attende”.
+
+---
+
+#### Limite importante di millis()
+
+`millis()` evita il blocco durante l’attesa, ma **non rende non-bloccante il codice eseguito**.
+
+Se l’operazione eseguita è lunga:
+
+```
+if (millis() - last >= 1000) {
+    last = millis();
+
+    operazione_lunga();   // es. ciclo da 10 secondi
+}
+```
+
+il microcontrollore resterà occupato per tutta la durata dell’operazione, risultando comunque non reattivo.
+
+---
+
+#### Come mantenere la reattività
+
+Per ottenere un sistema realmente reattivo:
+
+* evitare `delay()` prolungati
+* evitare operazioni lunghe eseguite in un unico blocco
+* suddividere il lavoro in piccoli passi
+* eseguire un passo per volta ad ogni iterazione del `loop()`
+
+Esempio concettuale:
+
+```
+if (millis() - last >= 10) {
+    last = millis();
+    eseguire_un_piccolo_passo();
+}
+```
+
+In questo modo ogni ciclo dura poco e il sistema può continuare a gestire ingressi, uscite ed eventi.
+
+---
+
+#### Sintesi
+
+Arduino consente un controllo preciso e prevedibile del tempo, ma richiede attenzione nella progettazione del codice:
+
+* il tempo di esecuzione è deterministico, ma dipende dal codice
+* `millis()` evita blocchi durante l’attesa
+* operazioni lunghe restano bloccanti
+* la reattività si ottiene solo progettando codice non bloccante
+
+
+---  
+
+### Arduino e breadboard  
+
+
+![Image](https://images.openai.com/static-rsc-4/7I_gOEb_usHdGKza9lVU1ZAmnLy7oMHtjVUn1jW5Xolqc8x7XG_IwuWcOVbriWgSyIYV98T37oVcODoDpdBqSskHOTFVWa525Trzs3i-U-KJ8qsFYl3NErzqlWGYqCHWy4sgAGZYYC_RbC7uQosDcQuVXLB-fu5OZydmarUhxSRtvWaKk4OzSxTGOkHlFWoI?purpose=fullsize){width=70%}
+
 
 ---
 

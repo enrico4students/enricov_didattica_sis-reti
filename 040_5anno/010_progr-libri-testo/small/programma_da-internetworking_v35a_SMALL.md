@@ -1,3 +1,4 @@
+
 ---
 
 ## PROGRAMMA SVOLTO
@@ -77,3 +78,8 @@
 * Troubleshooting di base
 
 ---
+
+## Arduino e Raspberry Pi per Internet of Things (IoT)
+
+* Connettività
+* Positioning nell'IoT

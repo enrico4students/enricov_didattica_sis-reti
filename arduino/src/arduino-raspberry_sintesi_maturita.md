@@ -216,16 +216,16 @@ Dal punto di vista concettuale Raspberry Pi è un PC, un **single-board computer
 
 
 ma:  
-* è meno potente di un computer tradizionale
-* è molto più piccolo
-* consuma meno
-* può rimanere acceso a lungo
-* può interagire con hardware esterno tramite GPIO
+* è meno potente di un computer tradizionale  
+* è molto più piccolo  
+* consuma meno  
+* può rimanere acceso a lungo  
+* può interagire con hardware esterno tramite GPIO  
+  
+Raspberry Pi unisce due mondi:  
 
-Raspberry Pi unisce due mondi:
-
-* il mondo dei PC, perché può eseguire software complesso
-* il mondo embedded, perché può comunicare con sensori e dispositivi fisici
+* il mondo dei PC, perché può eseguire software complesso  
+* il mondo embedded, perché può comunicare con sensori e dispositivi fisici  
 
 ## 2.3 Cosa può fare Raspberry Pi
 
@@ -316,18 +316,18 @@ Raspberry Pi può interagire con l’hardware, ma l’accesso è mediato dal sis
 
 Arduino è più semplice:
 
-* codice lineare
-* meno configurazione
-* meno servizi da gestire
+* codice lineare  
+* meno configurazione  
+* meno servizi da gestire  
 
 Raspberry Pi è più complesso:
 
-* sistema operativo
-* configurazione di rete
-* servizi
-* sicurezza
-* aggiornamenti
-* gestione utenti e processi
+* sistema operativo  
+* configurazione di rete  
+* servizi  
+* sicurezza  
+* aggiornamenti  
+* gestione utenti e processi  
 
 ## 3.6 Tabella di confronto
 

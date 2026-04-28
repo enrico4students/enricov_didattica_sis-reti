@@ -1,15 +1,5 @@
-# UNITÀ DIDATTICA
-
-## Arduino e Raspberry Pi: sistemi embedded e sistemi general purpose
-
----
-
-# LEZIONE 1 – Arduino
-
-## 1.1 Che cos’è Arduino  
 
 <!--
-
 
 ![Image](https://images.openai.com/static-rsc-4/Rn4W82_gJ3jU2lSJWFMb1XLjf9QeCcXwISRXqHyXpjZnfRqftZYssRKOkCa-5ihuyYPP4Myv859keLMAdxDbkjqebPwOWDto91Pa9R-o9KJnq_1oZyo5_n5NYQENSgiiVLlDkWrS_Il4shXDBxhP3EjRLqT01cfyTMcX-3vW4o0oYH5zkXNlgl1PYakbsNfU?purpose=fullsize){width=70%}
 
@@ -29,192 +19,169 @@
 
 -->
 
-Arduino non è un “mini computer”, ma una **scheda elettronica programmabile basata su microcontrollore**.
 
-Un **microcontrollore** è un componente che integra:
+
+
+<!-- 
+# Raspberry
+
+![Image](https://images.openai.com/static-rsc-4/yV7w14_QPf_mFxgYPOVSxC106DgOb8L-gVB5S5ZW6meisMB7jqVYcpcJKe1IuoP_LLBivCJ80uOYjuhZzB7sWbWiBiHerOkljaLi2blRxwvRi2Yg7nUoZZky5VkjQinJ0y2G1BAeZop8C_0ry8kt0uoVv3kwWUTZIymcBwns9LmkrqfyMJoPbXGZ20THECVk?purpose=fullsize)
+
+![Image](https://images.openai.com/static-rsc-4/hZ-eOoG-SyazGd1O8yoBVvqxyxWO8KWvyrbzKuDOTH-v4uL7h_LaRDKn7Hwl1vwBwy4FnHWzBEPkLUGBj8wOwc61IBnQvSVaF2mETOgoV307GHMDxaV31XaoBmCOsMAFF_zFP12mgA5ABgy0DYf5SOexvU7DxaI0t9_PHEWdeXxz3B0KYbgNSlIRRFKHrpw-?purpose=fullsize)
+
+-->  
+
+# Drat, segnalare eventuali imperfezioni
+
+## Arduino e Raspberry Pi:  concetti base e positioning
+
+---
+
+# LEZIONE 1 – Arduino
+
+## 1.1 Che cos’è Arduino
+
+Arduino non è un “mini computer”, ma una scheda elettronica programmabile basata su microcontrollore.
+
+Un microcontrollore è un componente che integra nello stesso chip:
 
 * CPU
 * memoria limitata
 * periferiche di input/output
 
-tutto nello stesso chip.
+Arduino è progettato per controllare dispositivi fisici, reagire a segnali elettrici ed eseguire un comportamento specifico. Non è pensato per eseguire applicazioni generiche come un PC.
 
 ![Image](https://images.openai.com/static-rsc-4/_acg5B2Erfo0hLnlPRypxHN1ZCRsq2bUPLsV2cyxv6kKsBwhB3RoMllhEAgnACGgJf9FCZ8YU5vBg5qTx20jldkux2cfe9LfEm53gXPUAQkQDoQdWTvTq8ah6LmsSTMDKydPgcylQRU4ZqzVKjRN7L_8G_3IEYWEtg3wg-UqVqTSa8NOgZ9ACbOaMa1jjjOR?purpose=fullsize){width=70%}
 
 
-Arduino è progettato per:
+## 1.2 Differenza rispetto a un PC
 
-* **controllare dispositivi fisici**
-* reagire a segnali elettrici
-* eseguire un comportamento specifico
+Un PC usa un sistema operativo, come Windows o Linux, gestisce più programmi contemporaneamente e interagisce con l’utente tramite mouse, tastiera e interfaccia grafica.
 
-Non è progettato per eseguire applicazioni generiche come un PC.
+Arduino, invece:
 
----
-
-## 1.2 Differenza fondamentale rispetto a un PC
-
-Un PC funziona così:
-
-* sistema operativo (Windows, Linux)
-* gestione di più programmi contemporaneamente
-* interazione con utente (mouse, tastiera, GUI)
-
-Arduino funziona così:
-
-* **NON** ha sistema operativo
-* esegue **un solo programma**
-* il programma gira in un **ciclo continuo**
+* non ha un sistema operativo
+* esegue un solo programma
+* lavora in un ciclo continuo
 
 Struttura tipica:
 
-```
-void setup() {
-    // inizializzazione
-}
+    void setup() {
+        // inizializzazione
+    }
 
-void loop() {
-    // eseguito continuamente
-}
-```
+    void loop() {
+        // eseguito continuamente
+    }
 
-Questo modello è radicalmente diverso dal PC:
+Questo modello è diverso da quello di un PC: non ci sono finestre, non c’è multitasking reale e non c’è una gestione avanzata della memoria.
 
-* non esistono “finestre”
-* non esiste multitasking reale
-* non esiste gestione avanzata della memoria
+## 1.3 Perché Arduino esiste
 
----
+Arduino è stato progettato per controllare il mondo fisico in modo semplice e affidabile.
 
-## 1.3 Perché Arduino esiste  
+È utile quando servono:
 
-Arduino è stato progettato per un problema preciso:
+* accesso diretto ai pin di ingresso e uscita
+* gestione precisa del tempo
+* comportamento prevedibile
+* basso consumo
+* robustezza
+* semplicità costruttiva
 
-**controllare il mondo fisico in modo semplice e affidabile**
+Esempi:
 
-Caratteristiche chiave:
-
-* accesso diretto ai pin (ingressi/uscite)
-* gestione precisa del tempo (millisecondi, microsecondi)
-* comportamento deterministico (non totalmente preciso, vedi precisazione)
-
-Esempio:
-
-* accendere un LED dopo esattamente 100 ms
+* accendere un LED dopo 100 ms
 * leggere un sensore ogni 10 ms
+* controllare un motore
+* attivare un relè
+* gestire un piccolo automatismo
 
-Un PC NON è adatto a questo:
+Un PC non è ideale per questi compiti perché il sistema operativo può introdurre ritardi imprevedibili.
 
-* il sistema operativo introduce ritardi imprevedibili
+## 1.4 Tempo, determinismo e codice non bloccante
 
+Arduino, ad esempio Arduino Uno, esegue il programma in modo sequenziale, senza sistema operativo e senza multitasking.
 
----  
+Quando si dice che Arduino ha un comportamento deterministico non significa che sia sempre veloce, ma che il comportamento è prevedibile: a parità di codice e condizioni, il tempo di esecuzione sarà lo stesso.
 
-#### Arduino: tempo di esecuzione e comportamento deterministico
+Il tempo di risposta dipende quindi direttamente dal codice scritto. Se nel `loop()` viene inserita un’operazione lunga, ad esempio un ciclo che dura 10 secondi, Arduino resterà occupato per 10 secondi. Durante quel tempo non leggerà ingressi, non aggiornerà uscite e non gestirà altri eventi.
 
-Arduino, ad esempio una scheda come Arduino Uno, è basato su un microcontrollore che esegue il programma in modo **sequenziale**, senza sistema operativo e senza meccanismi di multitasking.
+Il determinismo garantisce coerenza nei tempi, non automaticamente reattività.
 
-Quando si afferma che Arduino ha un **comportamento deterministico**, non si intende che il tempo di risposta sia sempre costante, ma che è **prevedibile**: a parità di codice e condizioni, il tempo di esecuzione sarà sempre lo stesso.
+## 1.5 Gestione del tempo con millis()
 
-Questo implica che il tempo di risposta dipende direttamente dal codice scritto. Se nel `loop()` si inseriscono cicli molto lunghi o nidificati che richiedono, ad esempio, 10 secondi per completarsi, il sistema impiegherà effettivamente quei 10 secondi prima di tornare a eseguire il resto del programma. Durante questo intervallo non verranno letti ingressi, aggiornate uscite o gestiti eventi: il sistema risulterà temporaneamente non reattivo.
+La funzione `millis()` restituisce il numero di millisecondi trascorsi dall’avvio della scheda.
 
-Il determinismo quindi non garantisce velocità o reattività, ma **coerenza nei tempi di esecuzione**. Ogni istruzione richiede un numero noto di cicli di clock, e il tempo totale può essere stimato con buona precisione.
+Serve per gestire il tempo senza bloccare il programma.
 
----
+Schema concettuale:
 
-#### Gestione del tempo con millis()
-
-La funzione `millis()` restituisce il numero di millisecondi trascorsi dall’avvio della scheda e permette di gestire il tempo **senza bloccare il programma**.
-
-Il principio è semplice: confrontare il tempo corrente con un istante salvato in precedenza.
-
-```
-se (tempo_attuale - tempo_iniziale >= intervallo)
-    eseguire operazione
-```
+    se (tempo_attuale - tempo_iniziale >= intervallo)
+        eseguire operazione
 
 In questo modo il programma continua a girare e può svolgere altre attività mentre “attende”.
 
----
-
-#### Limite importante di millis()
-
-`millis()` evita il blocco durante l’attesa, ma **non rende non-bloccante il codice eseguito**.
-
-Se l’operazione eseguita è lunga:
-
-```
-if (millis() - last >= 1000) {
-    last = millis();
-
-    operazione_lunga();   // es. ciclo da 10 secondi
-}
-```
-
-il microcontrollore resterà occupato per tutta la durata dell’operazione, risultando comunque non reattivo.
-
----
-
-#### Come mantenere la reattività
-
-Per ottenere un sistema realmente reattivo:
-
-* evitare `delay()` prolungati
-* evitare operazioni lunghe eseguite in un unico blocco
-* suddividere il lavoro in piccoli passi
-* eseguire un passo per volta ad ogni iterazione del `loop()`
-
 Esempio concettuale:
 
-```
-if (millis() - last >= 10) {
-    last = millis();
-    eseguire_un_piccolo_passo();
-}
-```
+    if (millis() - last >= 10) {
+        last = millis();
+        eseguire_un_piccolo_passo();
+    }
 
-In questo modo ogni ciclo dura poco e il sistema può continuare a gestire ingressi, uscite ed eventi.
+## 1.6 Limite importante di millis()
 
----
+`millis()` evita il blocco durante l’attesa, ma non rende automaticamente non bloccante il codice eseguito.
 
-#### Sintesi
+Esempio:
 
-Arduino consente un controllo preciso e prevedibile del tempo, ma richiede attenzione nella progettazione del codice:
+    if (millis() - last >= 1000) {
+        last = millis();
 
-* il tempo di esecuzione è deterministico, ma dipende dal codice
-* `millis()` evita blocchi durante l’attesa
-* operazioni lunghe restano bloccanti
-* la reattività si ottiene solo progettando codice non bloccante
+        operazione_lunga();   // es. ciclo da 10 secondi
+    }
 
+In questo caso Arduino resta comunque occupato per tutta la durata dell’operazione lunga.
 
----  
+Per mantenere la reattività occorre:
 
-### Arduino e breadboard  
+* evitare `delay()` prolungati
+* evitare operazioni lunghe in un unico blocco
+* dividere il lavoro in piccoli passi
+* eseguire un piccolo passo a ogni iterazione del `loop()`
+
+## 1.7 Arduino e breadboard
+
+Arduino viene spesso usato insieme a una breadboard, cioè una basetta per prototipazione senza saldature.
+
 
 
 ![Image](https://images.openai.com/static-rsc-4/7I_gOEb_usHdGKza9lVU1ZAmnLy7oMHtjVUn1jW5Xolqc8x7XG_IwuWcOVbriWgSyIYV98T37oVcODoDpdBqSskHOTFVWa525Trzs3i-U-KJ8qsFYl3NErzqlWGYqCHWy4sgAGZYYC_RbC7uQosDcQuVXLB-fu5OZydmarUhxSRtvWaKk4OzSxTGOkHlFWoI?purpose=fullsize){width=70%}
 
 
----
+La breadboard permette di collegare temporaneamente:
 
-## 1.4 Ambiti in cui Arduino è preferibile
+* sensori
+* LED
+* pulsanti
+* resistenze
+* moduli elettronici
+* piccoli attuatori
 
-Arduino è la scelta corretta quando:
+È utile nella didattica perché consente di costruire e modificare rapidamente circuiti sperimentali.
 
-* si controllano dispositivi fisici
-* serve precisione temporale
-* il sistema deve essere semplice e robusto
-* il consumo deve essere minimo
+## 1.8 Quando usare Arduino
 
----
+Arduino è preferibile quando occorre leggere sensori, controllare attuatori, gestire tempi prevedibili e realizzare sistemi semplici, robusti e a basso consumo.
 
-## 1.5 Casi d’uso tipici
+Casi d’uso tipici:
 
-* sistemi di controllo (termostati)
+* termostati
 * robotica semplice
 * sensori ambientali
-* automazione domestica base
-* sistemi embedded industriali
+* automazione domestica di base
+* sistemi embedded industriali semplici
+* controllo di luci, motori, relè e piccoli dispositivi fisici
 
 ---
 
@@ -222,80 +189,71 @@ Arduino è la scelta corretta quando:
 
 ## 2.1 Che cos’è Raspberry Pi
 
+Raspberry Pi è un single-board computer, cioè un computer completo realizzato su una singola scheda.
+
+
 ![Image](https://images.openai.com/static-rsc-4/ToD3Q4dF3Qrpg5WCb9h8ugkmAoa-wSbqtGI3RRvk154_jPJKyZaA95hwGtqA06VuoHh7FtlETo9xPYKDVkBCcSL5g3kY9nJ4bj-7O6h44Eeqvjd9uLGfWDj0kS02y3-2cmtuTaCnoLYfzkH4FT3eT6u8aDIgu9N47rxsebY__tYzoKLsABCrvFw-L-rv5G5G?purpose=fullsize)  
-
-
-![Image](https://images.openai.com/static-rsc-4/mebY_J_g48FbzXMvGkJjLZYVMtspRZvrTIg8A76oh1nXrGQza8hMIHAXsl_FxtIzK0grHSYHF66WINfRWSfYP21gM1UV7RsAcfd0vfqO50O4U4C0d3cc-WWg4PhHysV4MXFnXYW8zhBZUdGT7oAbJc5OFXroyvJlsaAPNWnBT_9mllGMw-KmtOaIyp6013fv?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/hnEHjQWzhCOR636KIWuq2OPsueU0_sJr9V3_NQ1R1PM3PFjDhJRo7Eb8OB2hYKp0jq1pEQJm0w50YdF3t9a5ko43Hk9xaPSYqunUDsk0de80yc6jYoDN3aOSkroHDmnPMp5baxVHsxFm54GjyOKyYNzayY4YNaTNTIVt7yKrx87TWUhQjyoctGdDUBSm97ps?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/Z6IAVriwMYlFtCW_VRSXfULBkKvaoRPXWkCP5yH5MYDS3P7XwexWKLYX_hn2dieDoY3xn8crZNgDhZrG1QEw7c2HgFsQD7PZcb_Uq_oej0uXFfxeI8qi3sX2K-0MK0BII0_Zm3zGrY9XB3t9XVxkUx6kKNocoBiMovc-yj-WbUryKIpPNC8gkTZXuVKeAZDT?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/yV7w14_QPf_mFxgYPOVSxC106DgOb8L-gVB5S5ZW6meisMB7jqVYcpcJKe1IuoP_LLBivCJ80uOYjuhZzB7sWbWiBiHerOkljaLi2blRxwvRi2Yg7nUoZZky5VkjQinJ0y2G1BAeZop8C_0ry8kt0uoVv3kwWUTZIymcBwns9LmkrqfyMJoPbXGZ20THECVk?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/hZ-eOoG-SyazGd1O8yoBVvqxyxWO8KWvyrbzKuDOTH-v4uL7h_LaRDKn7Hwl1vwBwy4FnHWzBEPkLUGBj8wOwc61IBnQvSVaF2mETOgoV307GHMDxaV31XaoBmCOsMAFF_zFP12mgA5ABgy0DYf5SOexvU7DxaI0t9_PHEWdeXxz3B0KYbgNSlIRRFKHrpw-?purpose=fullsize)
-
-Raspberry Pi è un **single-board computer (SBC)**, cioè un computer completo su una singola scheda.
-
-![Image](https://images.openai.com/static-rsc-4/3S1ABFBPCXVK480EU-zfv7Uh8y3Qhg4jNKMQD68wetTWKKE3ebodQcYBi6eOM6cmnyTKvR-RkwcZp8z3UEnWDBDmtdaEgbnUiaAOFj_ufL0K-br6tc6dI5bjb920rvQsgi3VAspeijYtXKkXW9K0ARO7kMFoppaKzspg-B7CauIX9fkawwWFZwrvOYm_F_R2?purpose=fullsize){width=70%}
 
 
 Include:
 
 * CPU
 * RAM
-* storage (microSD)
-* porte USB, rete, video
+* storage, normalmente microSD
+* porte USB
+* rete
+* uscita video
+* GPIO per interazione con hardware esterno
 
-E soprattutto:
+La differenza fondamentale rispetto ad Arduino è che Raspberry Pi esegue un sistema operativo, normalmente Linux.
 
-✔ esegue un sistema operativo (Linux)
+## 2.2 Raspberry Pi come piccolo computer
 
----
+Dal punto di vista concettuale Raspberry Pi è un PC, un **single-board computer (SBC)**, cioè un computer **completo** su una singola scheda.
 
-## 2.2 Differenza rispetto a un PC
+![Image](https://images.openai.com/static-rsc-4/3S1ABFBPCXVK480EU-zfv7Uh8y3Qhg4jNKMQD68wetTWKKE3ebodQcYBi6eOM6cmnyTKvR-RkwcZp8z3UEnWDBDmtdaEgbnUiaAOFj_ufL0K-br6tc6dI5bjb920rvQsgi3VAspeijYtXKkXW9K0ARO7kMFoppaKzspg-B7CauIX9fkawwWFZwrvOYm_F_R2?purpose=fullsize){width=70%}  
+<br/>
 
-Dal punto di vista concettuale:
 
-* Raspberry Pi è un PC
+ma:  
+* è meno potente di un computer tradizionale
+* è molto più piccolo
+* consuma meno
+* può rimanere acceso a lungo
+* può interagire con hardware esterno tramite GPIO
 
-Ma con differenze:
+Raspberry Pi unisce due mondi:
 
-* meno potente
-* molto più piccolo
-* consumo ridotto
-* accesso diretto a pin hardware (GPIO)
+* il mondo dei PC, perché può eseguire software complesso
+* il mondo embedded, perché può comunicare con sensori e dispositivi fisici
 
----
+## 2.3 Cosa può fare Raspberry Pi
 
-## 2.3 Caratteristiche distintive di Raspberry Pi
-
-Raspberry Pi è interessante perché unisce:
-
-* mondo dei PC (software complesso)
-* mondo embedded (interazione hardware)
-
-Può:
+Raspberry Pi può:
 
 * eseguire server web
 * gestire database
 * controllare sensori
 * comunicare in rete
+* eseguire servizi Linux
+* raccogliere dati
+* fornire dashboard e interfacce web
+* funzionare come gateway di rete o gateway IoT
 
----
-
-## 2.4 Quando è preferibile a un PC
+## 2.4 Quando usare Raspberry Pi
 
 Raspberry Pi è preferibile quando serve:
 
-* un sistema sempre acceso
+* elaborazione dati
+* rete
+* interfaccia utente
+* server web
+* sistema sempre acceso
 * basso consumo
 * dimensioni ridotte
 * integrazione con hardware
 
----
-
-## 2.5 Casi d’uso tipici
+Casi d’uso tipici:
 
 * server web leggero
 * sistemi IoT
@@ -303,512 +261,377 @@ Raspberry Pi è preferibile quando serve:
 * gateway di rete
 * automazione avanzata
 * sistemi di controllo con interfaccia web
+* dashboard di monitoraggio
 
 ---
 
-# LEZIONE 3 – Differenze tra Arduino e Raspberry Pi
+# LEZIONE 3 – Confronto tra Arduino e Raspberry Pi
 
 ## 3.1 Differenza concettuale fondamentale
 
-Arduino:
+Arduino è un dispositivo di controllo orientato all’hardware.
 
-* dispositivo di controllo
-* orientato all’hardware
+Raspberry Pi è un computer completo orientato al software.
 
-Raspberry Pi:
+In sintesi:
 
-* computer completo
-* orientato al software
-
----
+* Arduino controlla direttamente il mondo fisico
+* Raspberry Pi gestisce logica, servizi, rete e interfacce
 
 ## 3.2 Sistema operativo
 
 Arduino:
 
-* nessun sistema operativo
-* esecuzione diretta del codice
+* non ha sistema operativo
+* esegue direttamente il codice caricato
+* non ha multitasking reale
 
 Raspberry Pi:
 
-* sistema operativo Linux
-* multitasking
-
----
+* usa Linux
+* supporta multitasking
+* può eseguire più servizi contemporaneamente
 
 ## 3.3 Tempo e determinismo
 
 Arduino:
 
-* comportamento deterministico
-* ideale per real-time
+* ha comportamento prevedibile
+* è adatto a controllo diretto e tempi precisi
+* è più indicato per attività real-time semplici
 
 Raspberry Pi:
 
-* non deterministico
+* non è deterministico nello stesso modo
 * il sistema operativo può introdurre ritardi
-
----
+* è meno adatto al controllo real-time diretto
 
 ## 3.4 Interazione con hardware
 
-Arduino:
+Arduino interagisce con l’hardware in modo diretto, preciso e immediato.
 
-* diretta
-* precisa
-* immediata
-
-Raspberry Pi:
-
-* mediata dal sistema operativo
-* meno precisa nei tempi
-
----
+Raspberry Pi può interagire con l’hardware, ma l’accesso è mediato dal sistema operativo. Per questo è meno preciso nei tempi.
 
 ## 3.5 Complessità
 
-Arduino:
+Arduino è più semplice:
 
-* semplice
 * codice lineare
+* meno configurazione
+* meno servizi da gestire
 
-Raspberry Pi:
+Raspberry Pi è più complesso:
 
-* complesso
-* gestione OS, servizi, rete
+* sistema operativo
+* configurazione di rete
+* servizi
+* sicurezza
+* aggiornamenti
+* gestione utenti e processi
 
----
+## 3.6 Tabella di confronto
 
-## 3.6 Sintesi operativa
-
-* Arduino   → controllo fisico diretto
-* Raspberry → gestione logica e servizi
-
----
-
-# LEZIONE 4 – Scelta e casi d’uso
-
-## 4.1 Quando usare Arduino
-
-Usare Arduino quando:
-
-* si leggono sensori
-* si controllano attuatori
-* serve risposta immediata
-
-Esempi:
-
-* controllo temperatura
-* gestione motori
-* sistemi di sicurezza base
+| Aspetto | Arduino | Raspberry Pi |
+|---|---|---|
+| Tipo di dispositivo | Scheda con microcontrollore | Single-board computer |
+| Sistema operativo | No | Sì, Linux |
+| Programmi contemporanei | No | Sì |
+| Controllo hardware | Diretto | Mediato dal sistema operativo |
+| Tempi prevedibili | Sì | Meno |
+| Rete | Di solito tramite moduli esterni | Integrata nei modelli comuni |
+| Server web | Solo minimale | Completo |
+| Database | Non adatto | Possibile |
+| Consumo | Molto basso | Basso, ma maggiore di Arduino |
+| Uso principale | Sensori e attuatori | Rete, servizi, elaborazione |
 
 ---
 
-## 4.2 Quando usare Raspberry Pi
+# LEZIONE 4 – Uso combinato di Arduino e Raspberry Pi
 
-Usare Raspberry Pi quando:
+## 4.1 Perché usare entrambi
 
-* serve elaborazione dati
-* serve rete
-* serve interfaccia utente
-
-Esempi:
-
-* server web
-* sistema di monitoraggio
-* dashboard
-
----
-
-## 4.3 Uso combinato (concetto chiave)
-
-Molti sistemi reali usano entrambi.
+Molti sistemi reali usano Arduino e Raspberry Pi insieme.
 
 Schema tipico:
 
-```
-Sensori → Arduino → Raspberry Pi → Server
-```
+    Sensori → Arduino → Raspberry Pi → Server / Cloud
 
-Arduino:
+Arduino si occupa dell’acquisizione dei dati e del controllo fisico.
 
-* acquisisce dati
+Raspberry Pi si occupa dell’elaborazione, della memorizzazione, della comunicazione in rete e dell’interfaccia utente.
 
-Raspberry:
+## 4.2 Motivazione tecnica
 
-* elabora
-* invia in rete
+La separazione è utile perché:
 
----
+* Arduino è più adatto al controllo fisico diretto
+* Raspberry Pi è più adatto a rete, software e servizi
+* il sistema diventa più ordinato
+* l’architettura è più scalabile
+* ogni dispositivo svolge il ruolo per cui è più adatto
 
-## 4.4 Motivazione tecnica
+Insieme formano un sistema completo ed efficiente.
 
-Arduino:
+## 4.3 Esempi di uso combinato
 
-* veloce nel controllo fisico
+Monitoraggio sanitario:
 
-Raspberry:
+* Arduino legge sensori di temperatura, battito o altri parametri
+* Raspberry Pi invia i dati a un data-center o a un server
 
-* potente nell’elaborazione
+Smart building:
 
-Insieme:
+* Arduino controlla luci, sensori e porte
+* Raspberry Pi gestisce interfaccia web e log degli eventi
 
-✔ sistema completo ed efficiente
+Sistema industriale:
 
----
+* Arduino controlla macchine o segnali fisici
+* Raspberry Pi raccoglie dati e svolge analisi
 
-# LEZIONE 5 – Casi d’uso da esame
+Rete IoT distribuita:
 
-## 5.1 Monitoraggio sanitario (coerente con tracce reali)
-
-Scenario:
-
-* rilevazione parametri paziente
-
-Soluzione:
-
-* Arduino:
-
-  * legge sensori (temperatura, battito)
-* Raspberry:
-
-  * invia dati al data-center
-
-Motivazione:
-
-* separazione acquisizione / comunicazione
+* molti nodi Arduino o ESP32 raccolgono dati
+* Raspberry Pi funziona da gateway centrale
 
 ---
 
-## 5.2 Smart building
+# LEZIONE 5 – Connettività di rete
 
-* Arduino:
+## 5.1 Concetto generale
 
-  * controlla luci, sensori, porte
-* Raspberry:
-
-  * interfaccia web
-  * log eventi
-
----
-
-## 5.3 Sistema industriale
-
-* Arduino:
-
-  * controllo macchine
-* Raspberry:
-
-  * raccolta dati
-  * analisi
-
----
-
-## 5.4 Rete IoT distribuita
-
-* molti nodi Arduino (sensori)
-* Raspberry come gateway
-
----
-
-## 5.5 Tipico errore da evitare (importante per esame)
-
-Errore:
-
-* usare Raspberry Pi per controllo real-time
-
-Problema:
-
-* il sistema operativo introduce ritardi
-
-Soluzione corretta:
-
-✔ usare Arduino per il controllo diretto
-
----
-
-# CONCLUSIONE  
-
-Arduino e Raspberry Pi non sono alternative equivalenti.
-
-Sono strumenti diversi progettati per problemi diversi:
-
-* Arduino → mondo fisico (tempo reale)
-* Raspberry → mondo logico (software e rete)
-
-La competenza richiesta nella traccia generalmente non è “saperli usare”, ma:  
-✔ saper scegliere correttamente quale usare  
-✔ saper giustificare la scelta  
-
----
-
-# LEZIONE 6 – Connettività di rete: Arduino e Raspberry Pi
-
-## 6.1 Concetto generale
-
-Nei sistemi moderni (IoT, automazione, industria 4.0) la connettività di rete è fondamentale.
+Nei sistemi moderni, come IoT, automazione e industria 4.0, la connettività di rete è fondamentale.
 
 Permette di:
 
 * trasmettere dati a server remoti
 * integrare dispositivi in sistemi distribuiti
-* gestire monitoraggio e controllo remoto
+* gestire monitoraggio remoto
+* gestire controllo remoto
+* collegare sensori, gateway e cloud
 
 Differenza chiave:
 
-* Arduino → **rete opzionale (moduli esterni)**
-* Raspberry Pi → **rete nativa (integrata)**
+* Arduino ha rete opzionale, spesso tramite moduli esterni
+* Raspberry Pi ha rete nativa, integrata nei modelli comuni
 
----
+## 5.2 Connettività di rete di Arduino
 
-## 6.2 Connettività di rete di Arduino
+Arduino classico non include quasi mai connettività di rete integrata, anche se esistono eccezioni moderne.
 
-### Architettura
+Per collegarlo alla rete servono moduli o shield hardware.
 
-Arduino non include quasi mai connettività di rete integrata (eccezioni moderne a parte).
+## 5.3 Arduino con Ethernet
 
-Serve quindi aggiungere moduli hardware.
+Per la rete cablata si usano:
 
----
+* Ethernet Shield W5100 / W5500
+* moduli economici ENC28J60
 
-### 6.2.1 Connessione Ethernet (rete cablata)
-
-![Image](https://images.openai.com/static-rsc-4/wu9Mav2sr15bAzzQTSosX_5MlLB0ZE6dRMT_zcELgmuWpibejTNkV5qBVrULD1keeMSJ-GsjTWIXIFWd79TfAz1GH8Z3uHix0e78_ir1k0lpY8f59EwxW1AD4qGafgMesONQ-PSg3BCTDdR_1oeX6nCsGbaSA0wh4Cxmwqz9CYv-H7Iyucy2GNlFhbbusKM-?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/aj7QVABNaboKeUN3VGQWDiIqBbLJjRYlm826ywEY1Ff_6nw0M1LV16ns9gl7ujFFLwfhuzKKMZDFIEV_BNWiID1y3BJybJ_-sPVYWLkJ8HJIhwZGuzMz1Qlf5yqKUTfz5pzkzyWe0Ex5deUmeNbV8soUI033bPZQOgxysxFYv0ItRQZI4nBhkjid06TleInO?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/Wb7eAYUkgGqznVqgbHv1rl2J4IxrOLxDilzzvu4Z3i2EHqkpmmVCk9iaSC1rnBIecGTsoe5SRtg0EYqQ9rn_owjmT8OSg-7qUP8weArq1hNeqTdX7XMUIHdWOK8TsUWeSvXd3wDT-Izq43ndBNWtE9dzy1p5bIOaasQnWfN2C6CCzNYzdFK4ISNwjbw2Dt9c?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/oB0QFcg8uFlpFUdO8G2cPk7JJ1vhvIbi4n34x252xz_X6x6s-zvU_mKeWwNddzd5Z3CXZ-93SDRdImEV_qagTuclKbnIMGJrnJlc_cppkdP1yWZZPm46ARStFYYEZd4ukzcq7ZrKsCf71gzrou6Iv6e2W8IB7u0eabosIEfZvqZiU0LB3o9QGbBAYl_Qoul2?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/coX4JNE7wqVm2FaIDxtDxCoscZ0yE4vBnYsFHRIMHdXBnGxnO0d2h9tCgxz-z3jMsjoRZ95Po1IKtkUVTUGTV1jy5kL6KVNUbXy2ohMEBoPr_Poym_05X0qR1BohtQ6LZqAN8yYjP-EdhfNNK8iryRGceK3gXxS75O0FKpfaidun5lf86OAXtZ-XOxvqoCQe?purpose=fullsize)
-
-Componenti utilizzati:
-
-* **Ethernet Shield (W5100 / W5500)** → soluzione più stabile e diffusa
-* moduli economici (ENC28J60) → meno performanti
+Gli shield W5100 / W5500 sono generalmente più stabili e diffusi rispetto ai moduli economici.
 
 Caratteristiche:
 
 * connessione RJ45
-* uso di protocollo TCP/IP
-* librerie ufficiali Arduino (Ethernet.h)
+* uso di TCP/IP
+* librerie Arduino come `Ethernet.h`
 
 Uso tipico:
 
-* Arduino come **client HTTP**
-* Arduino come **server web minimale**
+* Arduino come client HTTP
+* Arduino come piccolo server web minimale
 
 Limiti:
 
 * memoria molto ridotta
-* gestione rete semplificata
+* gestione semplificata della rete
+* non adatto a server complessi
 
----
+## 5.4 Arduino con Wi-Fi
 
-### 6.2.2 Connessione Wi-Fi
+Soluzioni diffuse:
 
-![Image](https://images.openai.com/static-rsc-4/4y6NSHbOhO0R_YXJPmvOJqB8Ljx6kE27GO5CSNKNqBxoiT8FlDeyPv9vLpka5dw0DBh6ZSp_iTsvV9p_PLD2XKRz0izDBrLLWrgYKvdCoDC2CkR10AJJHHUBHH_1A15H6cCasZU2bX4T1mDwYWdfQkIRPgtvC-6z9vM9SGRyeNNRvzLiDb-y8j3lVgIESrFa?purpose=fullsize)
+* ESP8266
+* ESP32
+* vecchi WiFi Shield, oggi meno comuni
 
-![Image](https://images.openai.com/static-rsc-4/iZE6HgRCyV6AhmovHCgi6fnG6lTUbibG2awgieoCyP5GQrXpAcgL7QjmE8uqEhDSkoBAntlzMpNWtQc2DzwtpUQLxUOW4vyYv5FXdwrTCZjdUnUwHlvfKZxYF571wwDdY7X_gc3_JP0AZkZJbLVNzc8EkJpxswY4Ce8mpsUEwedTecv4mSYTGkwUyGkWjPHk?purpose=fullsize)
+Oggi spesso si evita Arduino classico con Wi-Fi shield e si usa direttamente un microcontrollore con Wi-Fi integrato, soprattutto ESP8266 o ESP32.
 
-![Image](https://images.openai.com/static-rsc-4/GOScVRUq5Si2I-SoWjLyh_gAOAkukFoDopso6N6P6BW7em-5GmQWkRpikA2GpQUj8_qG0LcZmPJanmT545IgVd2uN3cAseWV7Z-nGh_LXxyyEXK2Qd05enS7IbHb06gQhtGItGiRvzynJyueLfw_zrJ6miN9du042pOaQuV_BV89DkmwVBtzdsYLfbpFpPin?purpose=fullsize)
+ESP32 è oggi molto usato perché integra:
 
-![Image](https://images.openai.com/static-rsc-4/_rDYTzdQiWYH6t76G72SXFDFr8jqUsl9qMlqCfLLRkWFN1CWDXwPKxUtSue4Ugq8MVk69Vu17JCU21SNqN1acui5VlBrMzTx2nXmRYzXoYdgKcRykpslH6aabmwMib57CB-JGM-wr_inJ8ERSFzyJpupfJzTyf-PiQf3L2wBeSEDxO9fZNRqHh65KQXdtIk9?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/XwbmhJglnnXe0SwOb1uK3fYXQh1b8bS0RHOIcuEP3SPopau3XK-joFNMvElkWkggJxiDzNz6ax9aHBpqOZ7IBW02Zb8wW4jHrKF9p-m1s1ME6ihtipGXFib7YTP30Hy0NVPNMZYgakpDigoHR8y4DSu75_Xm3pZpB_cICbR6pohla29QBAtJiPkadULLdNNE?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/2AMQ8zdsDkP_STFHshYqFS-s_dNBV2UuhDygGCsvXTdEM-uBNKXmuiBNNrjnEdD-f89y08yARWPXPqAM2tN4INESlrhQOJuTNx9ptFxJTs4CkBa2CjQLo4gblm2H0bEkOYhpNfAQkLtFc7L-TPJdgahLETG3jIF2cr2qGF6o0OneZI6B7atOi5IogFD6SwlM?purpose=fullsize)
-
-Soluzioni più diffuse oggi:
-
-* moduli **ESP8266**
-* moduli **ESP32** (molto più usati oggi)
-* vecchi WiFi Shield (meno diffusi)
-
-Osservazione importante:
-
-Oggi spesso si evita Arduino + WiFi shield e si usa direttamente:
-
-* ESP8266 o ESP32 → **microcontrollori con Wi-Fi integrato**
-
-Caratteristiche:
-
-* supporto TCP/IP completo
-* supporto HTTP, MQTT
+* microcontrollore
+* Wi-Fi
+* Bluetooth/BLE
+* buone prestazioni
 * basso costo
 
----
+Supporta protocolli come:
 
-### 6.2.3 Altri protocolli di rete (IoT)
+* TCP/IP
+* HTTP
+* MQTT
 
-Arduino può usare anche:
+## 5.5 Altri protocolli usabili con Arduino
 
-* Bluetooth (HC-05, BLE)
-* ZigBee (XBee)
-* LoRa (reti a lungo raggio)
+Arduino può usare anche altri protocolli o tecnologie di comunicazione:
+
+* Bluetooth, ad esempio HC-05
+* BLE
+* ZigBee, ad esempio XBee
+* LoRa, per reti a lungo raggio e basso consumo
 
 Uso tipico:
 
 * sensori distribuiti
 * reti IoT a basso consumo
+* dispositivi periferici alimentati a batteria
 
----
-
-### 6.2.4 Limiti tecnici di Arduino in rete
-
-* RAM molto limitata (pochi KB)
-* gestione connessioni semplificata
-* difficoltà con protocolli complessi (HTTPS, TLS avanzato)
-
-Conclusione:
+## 5.6 Limiti tecnici di Arduino in rete
 
 Arduino è adatto a:
 
-✔ inviare dati semplici
-✔ ricevere comandi
-❌ non adatto a fare da server complesso
+* inviare dati semplici
+* ricevere comandi
+* svolgere il ruolo di nodo periferico
 
----
+Arduino non è adatto a:
 
-## 6.3 Connettività di rete di Raspberry Pi
+* server web complessi
+* database
+* servizi multiutente
+* elaborazioni pesanti
+* gestione avanzata di HTTPS/TLS
 
-### Architettura
+I limiti principali sono:
 
-Raspberry Pi integra già tutto:
+* RAM molto limitata
+* memoria ridotta
+* gestione semplificata delle connessioni
+* difficoltà con protocolli complessi
 
-* porta Ethernet (nei modelli standard)
-* Wi-Fi integrato (modelli recenti)
+## 5.7 Connettività di rete di Raspberry Pi
+
+Raspberry Pi integra già le principali funzioni di rete.
+
+Nei modelli standard sono normalmente presenti:
+
+* porta Ethernet
+* Wi-Fi integrato nei modelli recenti
 * Bluetooth
 
----
+Poiché esegue Linux, Raspberry Pi ha uno stack TCP/IP completo.
 
-### 6.3.1 Connessione Ethernet
+## 5.8 Raspberry Pi con Ethernet
 
-![Image](https://images.openai.com/static-rsc-4/y6QDbuDuk_lZfYBQR_q3S0_pG7saDpkrz9F2J5NSYFCAP3b3ekVH2fgsHrAzhOIzctdZYDhmu3i7on6seNtx5H5eE9t9tsVU4PugTyv3OhyM2CoOPJswmSh-NQxGZDKtUz5_xwsNVIbXjN0eSm_kL4m_jZfrCUqcscnYH7lcfgJzPabY19Wk0A7URdkiDqef?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/BnyCDT9ZHraH6rV76p8cOjbuliXCedlnQDVeiY_KHe-Eq0ciBWl6gCBm3etR-uzNUZgMMUkAlSWJ4ek0If_u9ymSAftGz6uh4_DSBoYMptdF6Z030o4j6yU-wUOTEDUNTHqc0AOqRvnUu-6da3pIUeRPHaTq3staQAgUHvZoiGY8F2shNu9L5DoWHp3pPHlW?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/_fqHwErCFeYb6523eEXs7CI6vpnkquL8b4GP2ndO86mgizAPVEZiYdOkwW4mai4YGIVz8gpQuu-SY6AvSdYUJS3whgkxjFvVjmAmk_BKriIEs2mqZQQZVzRH8o87jv6gAO5e5oXkjry2Vq-gNmLAFZ6GfKARebWP9OwVvI800L7r1PoYS6eo-ZQWj9gWaHsD?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/kppFXthYAJXcTtpavBtEAD3P9iJr74PAogN0ejJNqguWvtLKczBri4LCkrVd5e5750FlZ6odOT3PdGeZpH2wCU_Xcan4MfsXAQhnYI-zN6OK2ZWYzY9rKqknlgveLSBVZkvkPd0QFP7oCgS-Jsr0ZXk8nAQgstuHSAR-HZbS-SeGRE0fVgBkepIJkR8_ZW3q?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/cdYNmwk0c-AlJt2fhHr7sT2Vkh8dsUUa3UTfWwxnS3Wch3EiUjE0fMdnVa_XT1TvahMIDAy5Tmlct9taRz4pRq1eRI0Pvc3DnMIyEX5-ZL2zeLa1OUcMkfWzgKhxcnN6EHNHIexC1Rest3dF4f8SwnaYNP0UoGojiz4HsvRLYxDWxbLpUM4jCNtgD8GIpZY1?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/3Wtp_7x8s-T8lIAMqMCjuqGSSN302JZyBPxx9DR4fBjpXFD1SKfmA36DKFg4ZHa3h_6QfA0pqzBBMsm3ZSU0VZ7hQbrB-A99J2PAraUu_oyUHEKeh0xcZZFKQ7APN0kqwGUhSX1PxIjhHv9D29piWeanx7Leh2KAv_FUnc-EloEYuujAS3rlZStz1x8NfqL-?purpose=fullsize)
+La connessione Ethernet consente di usare Raspberry Pi come nodo di rete stabile.
 
 Caratteristiche:
 
 * interfaccia di rete completa
 * supporto nativo Linux
-* configurazione tramite:
+* configurazione tramite strumenti di sistema
 
-  ifconfig
-  ip addr
-  dhclient
+Comandi e strumenti tipici:
 
-Uso:
+    ifconfig
+    ip addr
+    dhclient
 
-* server web (Apache, Nginx)
+Usi tipici:
+
+* server web con Apache o Nginx
 * gateway di rete
-* nodo di rete stabile
+* nodo IoT stabile
+* server locale
 
----
+## 5.9 Raspberry Pi con Wi-Fi
 
-### 6.3.2 Connessione Wi-Fi
+Raspberry Pi 3 e successivi includono Wi-Fi integrato.
 
-![Image](https://images.openai.com/static-rsc-4/tDmwzaINRNOa0s8SVCJiP0dYZJH-FCbyz1GcqCLXkmSvwx3dgRy7w-hXidhInHL48xJf1tTwHsM4jik3aTtWb2QkxkjwicLbOPUdnySijUXAo_PceqLy7uVnXl8qByQi5Z4VvshoTI9GhTpmqix3OA69YM_TZ4yMYpyW_0xwMf4T0JZ0iam0HgHAyxLRr16u?purpose=fullsize)
+La configurazione può essere gestita dal sistema operativo e, in alcuni casi, tramite file come:
 
-![Image](https://images.openai.com/static-rsc-4/Lxm6qHFf6YCdj6wTnYO0sHG9DNp36tBOPhrZQuQ3OUQey2qPHC3xRko8Ps7cMB7Gz9r8HdomFYl-oX2uLNzwhs23ZnqA8r-EnUWN5E766t9opp2VITHgPdRDkwRNa2D5t9iYBkRyQ45GNtIWGqtxMU7pNqY_Nk2GpNeFB7sr7hdc50lnxN-UKO0k_TWBarMF?purpose=fullsize)
+    /etc/wpa_supplicant/wpa_supplicant.conf
 
-![Image](https://images.openai.com/static-rsc-4/-Dpu4jbEQG8vnwRfrgpjdem0BySd5ZjnJML8rKgGxevnyL4n4x5ZNcvmWMO2UZTv-qvGYAHC8WGYqwLVDETuFQnwgskFHup5OgsljLtTfSSLU9w8D0pTmvBM3-U7A1_7Uuc1M_xl0ieELuPct1kObSnvanJSJXqDho4c97frdROMir8sJi-ppLODp21urkVv?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/O8zfoRdLoIr4Up9pXNwfRD_xWwAKJzOMDUMQtKzZhxoWtjsojJttTzMKVuJdMpLP7yvcpPHB-UXyo2dSEKo1nG2eWJq_f2hqshJuR6rfHuPABnJM9xqrfq7MOBbl7pAKo6agzrRIjkbCW7PNhL-DNLLsERuM4O0ZIL_q3mpznMQeJeyyyTcy9_9h1ki1_omP?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/xb24jHS2itNwKvYMF4bgqRcIyHMc_0C0RQcAPxRcnAh4MHMIclvt4WYrqVvnBGTdMma_4gtvnCq0P7r3nI27OV9WNEsVM_QI-PV88J7cm453WvizG-qSDY7Bc5QCtzoC3efY2FBYwM9D3qwBc-VQMqCwvEw8helIxrmXw79bQUhJ6maHEr4xKv83RHkcsk6f?purpose=fullsize)
-
-![Image](https://images.openai.com/static-rsc-4/d7t2cE5b5YYH69j8XwzAxL9PTN7964c2Xiv0MaPrFC5nQYz6Vi7dR6dJzSwA6tcDKhDROKVLIfqrsxTi9JZ8P8NZZj87HExttbyhzv5f1ykIF8NAXQVrSX4fxBmvbB004ZtzWJioyoLaCC4MZep2qYZiIbSSW3yHViAdSwa1F8ou7h7PEDfge8BmCfYCnqqW?purpose=fullsize)
-
-Caratteristiche:
-
-* Wi-Fi integrato (Raspberry Pi 3 e successivi)
-* configurazione tramite:
-
-  /etc/wpa_supplicant/wpa_supplicant.conf
-
-Supporto completo:
+Raspberry Pi supporta normalmente:
 
 * DHCP
 * DNS
 * routing
 * VPN
+* servizi di rete Linux
 
----
-
-### 6.3.3 Capacità avanzate di rete
+## 5.10 Capacità avanzate di rete di Raspberry Pi
 
 Raspberry Pi può funzionare come:
 
 * server web completo
-* server database (MySQL, PostgreSQL)
+* server database, ad esempio MySQL o PostgreSQL
 * reverse proxy
-* firewall (iptables, nftables)
+* firewall con iptables o nftables
 * gateway IoT
-* broker MQTT (Mosquitto)
+* broker MQTT, ad esempio Mosquitto
+* nodo di raccolta dati
+* sistema di dashboard
 
-Questo è possibile perché:
+Questo è possibile perché esegue Linux e dispone di uno stack di rete completo.
 
-✔ esegue Linux
-✔ ha stack TCP/IP completo
+## 5.11 Confronto rete Arduino / Raspberry Pi
 
----
-
-## 6.4 Confronto rete Arduino vs Raspberry Pi
-
-| Caratteristica        | Arduino        | Raspberry Pi |
-| --------------------- | -------------- | ------------ |
-| Rete integrata        | No (di base)   | Sì           |
-| Complessità rete      | Bassa          | Alta         |
-| Protocollo supportati | Limitati       | Completi     |
-| Server web            | Molto semplice | Completo     |
-| Sicurezza (HTTPS)     | Limitata       | Completa     |
+| Caratteristica | Arduino | Raspberry Pi |
+|---|---|---|
+| Rete integrata | No, di base | Sì, nei modelli comuni |
+| Complessità rete | Bassa | Alta |
+| Protocolli supportati | Limitati | Completi |
+| Server web | Molto semplice | Completo |
+| HTTPS/TLS | Limitato o complesso | Gestibile |
+| Database | Non adatto | Possibile |
+| Ruolo tipico | Nodo periferico | Nodo centrale / gateway |
 
 Sintesi:
 
-* Arduino → nodo semplice di rete
-* Raspberry → nodo intelligente di rete
+* Arduino è un nodo semplice di rete
+* Raspberry Pi è un nodo intelligente di rete
 
 ---
 
-## 6.5 Architetture reali (fondamentale per esame)
+# LEZIONE 6 – Architetture reali e casi da esame
 
-### 6.5.1 Architettura IoT classica
+## 6.1 Architettura IoT classica
 
-```
-[Sensori] → Arduino → Raspberry Pi → Internet → Cloud
-```
+Schema tipico:
+
+    Sensori → Arduino / ESP32 → Raspberry Pi → Internet → Cloud
 
 Ruoli:
 
-* Arduino:
+Arduino o ESP32:
 
-  * acquisizione dati
-  * invio via seriale / Wi-Fi
+* acquisizione dati
+* lettura sensori
+* controllo attuatori
+* invio dati via seriale, Wi-Fi o altro protocollo
 
-* Raspberry:
+Raspberry Pi:
 
-  * aggregazione dati
-  * invio al cloud
+* aggregazione dati
+* normalizzazione dati
+* invio al cloud
+* dashboard web
+* database locale
+* eventuale broker MQTT
 
----
+## 6.2 Raspberry Pi come gateway IoT
 
-### 6.5.2 Raspberry come gateway IoT
+Raspberry Pi può funzionare da gateway IoT.
 
-Funzioni:
+Funzioni principali:
 
-* raccoglie dati da più Arduino
+* raccoglie dati da più Arduino o ESP32
 * normalizza i dati
-* li invia a server remoto
+* memorizza dati localmente
+* invia dati a un server remoto
+* espone una dashboard
+* gestisce comunicazioni con il cloud
 
 Protocolli tipici:
 
@@ -816,116 +639,184 @@ Protocolli tipici:
 * HTTP REST
 * WebSocket
 
----
+## 6.3 Caso da esame: monitoraggio sanitario
 
-### 6.5.3 Caso reale da traccia d’esame
+Scenario:
+
+Sistema di rilevazione di parametri di un paziente.
+
+Soluzione:
+
+* Arduino legge sensori, ad esempio temperatura o battito
+* Raspberry Pi raccoglie i dati
+* Raspberry Pi invia i dati a un data-center o a un server
+
+Motivazione:
+
+* separazione tra acquisizione e comunicazione
+* maggiore affidabilità
+* architettura più chiara
+
+## 6.4 Caso da esame: smart building
+
+Scenario:
+
+Edificio intelligente con controllo di luci, porte e sensori.
+
+Soluzione:
+
+* Arduino controlla luci, sensori e porte
+* Raspberry Pi gestisce interfaccia web, log eventi e rete
+
+Motivazione:
+
+* Arduino gestisce il controllo fisico
+* Raspberry Pi gestisce software, rete e monitoraggio
+
+## 6.5 Caso da esame: sistema industriale
+
+Scenario:
+
+Sistema di controllo e monitoraggio in ambiente industriale.
+
+Soluzione:
+
+* Arduino controlla segnali, sensori o macchine
+* Raspberry Pi raccoglie dati e svolge analisi
+
+Motivazione:
+
+* il controllo diretto resta su microcontrollore
+* l’elaborazione e la raccolta dati sono affidate a Raspberry Pi
+
+## 6.6 Caso da esame: rete IoT distribuita
 
 Scenario:
 
 Sistema di monitoraggio ambientale distribuito.
 
-Soluzione corretta:
+Soluzione:
 
-* nodi periferici:
+Nodi periferici:
 
-  * Arduino + sensori + Wi-Fi (ESP32)
+* Arduino o ESP32
+* sensori
+* comunicazione Wi-Fi, LoRa, ZigBee o altro protocollo
 
-* nodo centrale:
+Nodo centrale:
 
-  * Raspberry Pi
+* Raspberry Pi
 
-Funzioni Raspberry:
+Funzioni del Raspberry Pi:
 
 * server MQTT
 * database locale
 * dashboard web
+* invio dati al cloud
 
 Motivazione tecnica:
 
-✔ separazione livelli
-✔ scalabilità
-✔ affidabilità
+* separazione dei livelli
+* scalabilità
+* affidabilità
+* migliore organizzazione della rete
 
----
+## 6.7 Add-on e scelte tecnologiche attuali
 
-## 6.6 Add-on più usati oggi (aggiornamento tecnologico)
+In passato era comune usare Arduino con shield Ethernet o Wi-Fi.
 
-Situazione attuale (importante):
+Oggi, per molti progetti con rete, è più comune usare:
 
-NON è più comune usare:
+* ESP32 come microcontrollore con Wi-Fi integrato
+* Raspberry Pi come nodo centrale o gateway
 
-❌ Arduino + shield Wi-Fi costosi
+Situazione attuale:
 
-Si usa invece:
+* Arduino classico resta utile per controllo semplice e didattica
+* ESP32 sostituisce spesso Arduino nei progetti IoT con Wi-Fi
+* Raspberry Pi resta adatto per rete, servizi e gestione centralizzata
 
-✔ ESP32 → microcontrollore con Wi-Fi integrato
-✔ Raspberry Pi → nodo centrale
-
-Quindi:
-
-* ESP32 sta in parte sostituendo Arduino nei progetti di rete
-* Arduino “classico” resta utile per controllo puro
-
----
-
-## 6.7 Errori tipici nelle tracce d’esame
+## 6.8 Errori tipici da evitare nelle tracce d’esame
 
 Errore 1:
 
-* usare Arduino come server web complesso
-  ❌ non ha risorse sufficienti
+Usare Arduino come server web complesso.
+
+Problema:
+
+Arduino non ha risorse sufficienti per gestire servizi complessi.
+
+Soluzione:
+
+Usare Arduino o ESP32 come nodo periferico e Raspberry Pi come server o gateway.
 
 Errore 2:
 
-* usare Raspberry per controllo real-time
-  ❌ non deterministico
+Usare Raspberry Pi per controllo real-time diretto.
+
+Problema:
+
+Il sistema operativo può introdurre ritardi non prevedibili.
+
+Soluzione:
+
+Usare Arduino per il controllo diretto e Raspberry Pi per elaborazione e rete.
 
 Errore 3:
 
-* non separare acquisizione e rete
-  ❌ architettura non scalabile
+Non separare acquisizione e rete.
 
-Soluzione corretta:
+Problema:
 
-✔ Arduino/ESP → acquisizione
-✔ Raspberry → rete e servizi
+L’architettura diventa poco scalabile e poco chiara.
 
----
+Soluzione:
 
-## 6.8 Sintesi operativa finale
+Separare i ruoli:
 
-Arduino:
-
-* nodo periferico
-* acquisizione dati
-* comunicazione semplice
-
-Raspberry Pi:
-
-* nodo centrale
-* gestione rete
-* servizi avanzati
-
-Sistema completo:
-
-✔ sensori → microcontrollori → gateway → cloud
+* Arduino / ESP32 → acquisizione dati e controllo fisico
+* Raspberry Pi → rete, servizi, gateway, dashboard e invio al cloud
 
 ---
 
-# INTEGRAZIONE ALLA CONCLUSIONE
+# CONCLUSIONE
 
-La scelta tra Arduino e Raspberry Pi deve considerare anche la rete:
+Arduino e Raspberry Pi non sono alternative equivalenti.
 
-* Arduino → rete limitata, uso periferico
-* Raspberry → rete completa, uso centrale
+Sono strumenti diversi, progettati per problemi diversi.
 
-Nei sistemi reali:
+Arduino è adatto al mondo fisico:
 
-✔ la rete è gestita dal Raspberry
-✔ i dati sono prodotti da Arduino/ESP
+* sensori
+* attuatori
+* controllo diretto
+* tempi prevedibili
+* basso consumo
+* codice semplice
 
-La competenza richiesta all’esame è quindi:
+Raspberry Pi è adatto al mondo logico e di rete:
 
-✔ progettare correttamente l’architettura di rete
-✔ scegliere il dispositivo in base al ruolo
-✔ motivare tecnicamente la scelta
+* Linux
+* servizi
+* database
+* server web
+* dashboard
+* gateway
+* comunicazione con cloud
+
+Nei sistemi reali spesso si usano entrambi:
+
+    sensori → microcontrollori → gateway → cloud
+
+La rete è normalmente gestita dal Raspberry Pi, mentre i dati sono prodotti da Arduino, ESP8266 o ESP32.
+
+Ricordare che anche in questo caso per una traccia d’esame è necessario:
+
+* scegliere il dispositivo corretto  
+* assegnare a ogni componente il ruolo più adatto  
+* separare acquisizione, elaborazione e comunicazione  
+* 
+e soprattutto
+* **motivare tecnicamente la scelta**  
+
+Solitamente nelle griglie di valutazione una voce delle 4-5 è dedicata all'argomentazione

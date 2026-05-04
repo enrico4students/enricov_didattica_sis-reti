@@ -2,7 +2,7 @@
     "version": "0.2.0",
     "configurations": [
     {
-        "name": "Pandoc → PDF file corrente",
+        "name": "→PDF Pandoc file corrente",
         "type": "node-terminal",
         "request": "launch",
         "command": "pandoc \"${file}\" -f markdown+link_attributes -o \"${fileDirname}/../out/${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex --resource-path=\"${fileDirname};${fileDirname}/imgs\" -H \"${workspaceFolder}/005_authoring/latex/header1.tex\"",

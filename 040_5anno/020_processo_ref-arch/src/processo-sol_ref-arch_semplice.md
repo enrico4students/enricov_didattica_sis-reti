@@ -1,4 +1,9 @@
 
+# NOTA BENE
+
+## Draft/ Work in progress, segnalare errori, sviste Etc.
+
+
 # 0. Obiettivo  
 
 * avere uno schema minimo sempre valido in modo da
@@ -12,17 +17,18 @@ Le strutture seguenti rappresentano **una base minima**
 
 ---
 
-# 1. Processo di soluzione (versione minimale)
+# 1. Processo di soluzione (Al momento parziale/embrionale e mischiato con le architetture)  
 
-## 1.1 Individuare gli elementi della traccia
 
-Leggere la traccia e identificare gli elementi ricorrenti, il primo sono le comunità di utenti che tendono a corrispondere a reti dedicate
+## 1.1 Individuare comunità di attori "significative"   
+
+Gruppi di utenti umani (dipendenti, visitatori) ma anche di sistemi (server interni)
 
 ---
 
-## 1.2 Definire le reti "tipiche"  
+## 1.2 Definire le reti "tipiche" ed architettura  
 
-In quasi tutte le tracce ricorrono alcune reti:  
+Tipicamente ad ogni gruppo di attori corrisponde un segmento di rete dedicato, ex:  
 
 * rete "interni"  (dipendenti o simili)
 * rete "visitatori" (ex. Wi-Fi guest)
@@ -32,9 +38,14 @@ In quasi tutte le tracce ricorrono alcune reti:
 
 * eventuali  altre reti in dipendenza dalla traccia.
 
+
+In base al numero di reti ed attori decidere se è più adatta una architettura di rete a 2 layers o a 3 (non confondere con il 3 tier delle architetture sistemiche!!!)  
+
+(qui andrebbero indicati alcuni criteri quantitativi, TBD)  
+
 ---
 
-## 1.3 Separare le reti con VLAN
+## 1.3 Decidere le modalità precise di segmentazione
 
 NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti IP,  
 è la pratica standard ma è **utile spiegarlo esplicitamente**  
@@ -111,6 +122,11 @@ Esempio di casi ricorrenti:
   Solo la rete di management deve poter configurare e monitorare apparati di rete e server, per garantire sicurezza e controllo.
 
 ---
+
+# Definire piano di indirizzamento (documentino dedicato a parte)
+
+--- 
+
 
 
 # 2. Reference architecture a 2 layers (semplice)
@@ -420,86 +436,99 @@ Ovviamente da personalizzare nello svolgimento:
 
 ---
 
+Di seguito una versione corretta, coerente e didatticamente chiara del piano di indirizzamento.
 
-# 6. Aggiunta: indirizzamento IP e VLSM
+Si assume esplicitamente che il numero di host richiesti si riferisca ai **dispositivi finali**, quindi il gateway deve essere aggiunto separatamente nel dimensionamento.
+
+---
+
+# 6. Addizionale: indirizzamento IP e VLSM
+
+A fronte del fatto che l'argomento sembra presentare difficoltà per alcuni studenti viene riportato un esempio (NB vi sono annotazioni dedicate ai piani di indirizzamento)  
 
 ## 6.1 Rete privata di partenza
 
-Per una prova d’esame si può scegliere una rete privata, ad esempio:
+Si utilizzi una rete privata di classe C:
 
 ```
 192.168.10.0/24
 ```
 
-Da questa rete si ricavano sottoreti più piccole usando VLSM.
+Questa rete verrà suddivisa tramite VLSM.
 
 ---
 
-## 6.2 Esempio di fabbisogno host
+## 6.2 Fabbisogno host
 
-| Rete       | Host richiesti |
-| ---------- | -------------: |
-| UTENTI     |             50 |
-| SERVER     |             20 |
-| GUEST_WIFI |             30 |
-| MANAGEMENT |             10 |
-| DMZ        |             10 |
-
----
-
-## 6.3 Ordinare le reti dalla più grande alla più piccola
-
-Con VLSM si parte sempre dalla rete con più host:
-
-1. UTENTI → 50 host
-2. GUEST_WIFI → 30 host
-3. SERVER → 20 host
-4. MANAGEMENT → 10 host
-5. DMZ → 10 host
+| Rete       | Dispositivi | Gateway | Totale richiesto |
+| ---------- | ----------: | ------: | ---------------: |
+| UTENTI     |          50 |       1 |               51 |
+| GUEST_WIFI |          30 |       1 |               31 |
+| SERVER     |          20 |       1 |               21 |
+| MANAGEMENT |          10 |       1 |               11 |
+| DMZ        |          10 |       1 |               11 |
 
 ---
 
-## 6.4 Piano di indirizzamento possibile
+## 6.3 Scelta delle subnet (VLSM)
+
+Si sceglie la subnet minima che soddisfa ogni fabbisogno:
+
+| Rete       | Totale richiesto | Subnet scelta | Host disponibili |
+| ---------- | ---------------- | ------------- | ---------------- |
+| UTENTI     | 51               | /26           | 62               |
+| GUEST_WIFI | 31               | /26           | 62               |
+| SERVER     | 21               | /27           | 30               |
+| MANAGEMENT | 11               | /28           | 14               |
+| DMZ        | 11               | /28           | 14               |
+
+---
+
+## 6.4 Ordinamento (VLSM)
+
+Si assegnano le reti dalla più grande alla più piccola:
+
+1. UTENTI (/26)
+2. GUEST_WIFI (/26)
+3. SERVER (/27)
+4. MANAGEMENT (/28)
+5. DMZ (/28)
+
+---
+
+## 6.5 Piano di indirizzamento
 
 | VLAN | Nome       | Rete              | Netmask         | Gateway        | Host utilizzabili               |
 | ---: | ---------- | ----------------- | --------------- | -------------- | ------------------------------- |
 |   20 | UTENTI     | 192.168.10.0/26   | 255.255.255.192 | 192.168.10.1   | 192.168.10.1 - 192.168.10.62    |
-|   50 | GUEST_WIFI | 192.168.10.64/27  | 255.255.255.224 | 192.168.10.65  | 192.168.10.65 - 192.168.10.94   |
-|   30 | SERVER     | 192.168.10.96/27  | 255.255.255.224 | 192.168.10.97  | 192.168.10.97 - 192.168.10.126  |
-|   10 | MANAGEMENT | 192.168.10.128/28 | 255.255.255.240 | 192.168.10.129 | 192.168.10.129 - 192.168.10.142 |
-|   40 | DMZ        | 192.168.10.144/28 | 255.255.255.240 | 192.168.10.145 | 192.168.10.145 - 192.168.10.158 |
+|   50 | GUEST_WIFI | 192.168.10.64/26  | 255.255.255.192 | 192.168.10.65  | 192.168.10.65 - 192.168.10.126  |
+|   30 | SERVER     | 192.168.10.128/27 | 255.255.255.224 | 192.168.10.129 | 192.168.10.129 - 192.168.10.158 |
+|   10 | MANAGEMENT | 192.168.10.160/28 | 255.255.255.240 | 192.168.10.161 | 192.168.10.161 - 192.168.10.174 |
+|   40 | DMZ        | 192.168.10.176/28 | 255.255.255.240 | 192.168.10.177 | 192.168.10.177 - 192.168.10.190 |
+
+Nota: il gateway è incluso nel range degli host utilizzabili ed è stato scelto come primo indirizzo disponibile.
 
 ---
 
-## 6.5 Broadcast delle sottoreti
+## 6.6 Broadcast delle sottoreti
 
 | VLAN | Nome       | Rete              | Broadcast      |
 | ---: | ---------- | ----------------- | -------------- |
 |   20 | UTENTI     | 192.168.10.0/26   | 192.168.10.63  |
-|   50 | GUEST_WIFI | 192.168.10.64/27  | 192.168.10.95  |
-|   30 | SERVER     | 192.168.10.96/27  | 192.168.10.127 |
-|   10 | MANAGEMENT | 192.168.10.128/28 | 192.168.10.143 |
-|   40 | DMZ        | 192.168.10.144/28 | 192.168.10.159 |
+|   50 | GUEST_WIFI | 192.168.10.64/26  | 192.168.10.127 |
+|   30 | SERVER     | 192.168.10.128/27 | 192.168.10.159 |
+|   10 | MANAGEMENT | 192.168.10.160/28 | 192.168.10.175 |
+|   40 | DMZ        | 192.168.10.176/28 | 192.168.10.191 |
 
 ---
 
-## 6.6 Spazio libero per reti aggiuntive
+## 6.7 Spazio residuo
 
-La parte finale della rete rimane libera:
+Notare che rimane disponibile il seguente intervallo:
 
 ```
-192.168.10.160 - 192.168.10.255
+192.168.10.192 - 192.168.10.255
 ```
-
-Può essere usata per reti aggiuntive richieste dalla traccia, ad esempio:
-
-* sede secondaria
-* IoT
-* backup
-* VPN
-* laboratorio
-* videosorveglianza
-* rete amministrazione separata
 
 ---
 

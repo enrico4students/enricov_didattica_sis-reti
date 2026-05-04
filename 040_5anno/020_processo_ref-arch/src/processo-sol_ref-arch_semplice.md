@@ -16,37 +16,30 @@ Le strutture seguenti rappresentano **una base minima**
 
 ## 1.1 Individuare gli elementi della traccia
 
-Leggere la traccia e identificare:
-
-* utenti (uffici, amministrazione, eventuale management)
-* server interni
-* servizi pubblici (web, API)
-* Wi-Fi (interno e/o guest)
-* eventuali sedi remote
-* eventuale accesso remoto
-* eventuale cloud
+Leggere la traccia e identificare gli elementi ricorrenti, il primo sono le comunità di utenti che tendono a corrispondere a reti dedicate
 
 ---
 
-## 1.2 Definire le reti minime
+## 1.2 Definire le reti "tipiche"  
 
-In quasi tutte le tracce servono almeno:
+In quasi tutte le tracce ricorrono alcune reti:  
 
 * rete "interni"  (dipendenti o simili)
 * rete "visitatori" (ex. Wi-Fi guest)
-* rete DMZ (server raggiungibili da internet)
-* rete server interni (spesso utilizzati da server in DMZ)
-* rete management (separata logicamente o, in contesti di alta sicurezza, fisicamente)
+* rete DMZ (servers raggiungibili da internet, ex WEB Server)
+* rete server interni (spesso utilizzati da server in DMZ, ex eventuale server RDBMS usato da server WEB, applicazioni di business specifiche all'azienda, fermo restando che è sempre più diffuso l'uso di applicazioni in cloud come Salesforce, Jira Etc.)
+* rete management (separata logicamente o, in contesti di alta sicurezza, separatafisicamente)
+
 * eventuali  altre reti in dipendenza dalla traccia.
 
 ---
 
 ## 1.3 Separare le reti con VLAN
 
-NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti,  
-è la pratica standard ma **utile spiegarlo esplicitamente**  
+NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti IP,  
+è la pratica standard ma è **utile spiegarlo esplicitamente**  
 
-Usare VLAN per:
+Come sappiamo questo approcio è usato per "segmentare" la rete interna cioè:  
 
 * isolare utenti e server
 * separare servizi pubblici (DMZ)
@@ -58,9 +51,8 @@ Usare VLAN per:
 
 ## 1.4 DMZ e firewall
 
-Scegliere il tipo di DMZ e specificarlo.
-
-Lo edge firewall deve:
+### 1.4.1
+Avremo sempre un edge firewall che deve:
 
 * separare Internet dalla rete interna
 * proteggere la DMZ
@@ -68,16 +60,21 @@ Lo edge firewall deve:
 
 valutare se sono necessari anche altri firewall interni
 
+### 1.4.2  
+
+Scegliere il tipo di DMZ e motivare la scelta.
+
+Abbiamo studiato due tipologie di DMZ nel libro di testo ...   
+ 
+
 ## 1.5 Gestire il Wi-Fi
 
-Se presente normalmente ci sarà almeno:
+Spesso avremo almeno:
 
 * una rete Wi-Fi interna (accesso alla LAN "interni")
+    - non infrequentemente dovremo avere, per N gruppi di utenti interni, N reti Wi-fi (SSID Service Set Identifier) mappate su N VLAN  
 * una rete Wi-Fi guest   (accesso solo a Internet)
 
-La traccia può inoltre richiedere che una o più VLAN aziendali siano accessibili tramite Wi-Fi.
-
-In tal caso si associano uno o più SSID alle VLAN corrispondenti.
 
 ---
 
@@ -85,27 +82,30 @@ In tal caso si associano uno o più SSID alle VLAN corrispondenti.
 
 Se richiesto:
 
-* VPN per accesso remoto
+* VPN per accesso remoto client server, tipicamente di singolo dipendente (smart work)  
+    - Specificare la "terminazione" TLS (se si è sicuri dell'argomento)  
 * VPN site-to-site per sedi remote
-
 
 ---
 
-## 1.7 Scrivere le regole principali
+## 1.7 Principali regole di accessibilità  
 
-Sempre indicare:
+Se si è sicuri di averne il tempo, come normalmente dovrebbe essere, specificare le connessioni, anche qui abbiamo casi abbastanza comuni che dovremmo conoscere a memoria per poterci focalizzare su eventuali specificità della traccia.  
+
+Esempio di casi ricorrenti:  
 
 * guest → solo Internet  
   Gli utenti guest possono navigare su Internet ma non devono accedere alla rete interna per motivi di sicurezza.
 
 * utenti → server consentito   
-  Gli utenti interni possono accedere ai server aziendali per utilizzare i servizi (applicativi, file, ecc.).  
+  Gli utenti interni, in generale, possono accedere ai server aziendali "standard" per utilizzare i servizi (applicativi, file, ecc.).  
+    - Se alcuni servizi/applicazioni sono confidenziali o dedicati solo ad alcuni gruppi ciò va gestito, quasi sempre con RBAC (role based access control) ma è possibile, e va valutato, a volte ponendo il server in segmenti di rete accessibil solo al gruppo di utenti interessati (la rete di gestione è un esempio di ciò in ambito tecnico, lo stesso può avvenire in ambito business)  
 
 * utenti → DB limitato  
-  L’accesso diretto ai database deve essere limitato o mediato da applicazioni, per evitare accessi non autorizzati.
+  In generale l’accesso diretto ai database deve essere limitato o mediato da applicazioni, per evitare accessi non autorizzati.
 
 * DMZ → LAN limitato  
-  I server in DMZ possono comunicare con la LAN interna solo per servizi specifici e controllati, riducendo il rischio di compromissione.
+  I server in DMZ possono comunicare con la LAN interna (meglio: con i segmenti di LAN) solo per servizi specifici e controllati, riducendo il rischio di compromissione.
 
 * management → accesso agli apparati  
   Solo la rete di management deve poter configurare e monitorare apparati di rete e server, per garantire sicurezza e controllo.
@@ -144,32 +144,59 @@ Il firewall separa la rete interna da Internet e protegge i servizi pubblici.
 
 ## 2.3 Schema prototipale
 
-Prototipale = limitato alle tipologie di dispositivo. 
-Ex. "Switch di accesso" compare una volta sola, ciò non significa che c'è un solo switch di accesso
+Uno diagramma con le reti più comuni e la DMZ di tipo meno "severo" potrebbe essere il seguente:  
 
 ```
 Internet
     |
 Router ISP
     |
-Firewall (sicurezza e controllo traffico)
+Firewall / NGFW
+(zone: WAN / LAN / DMZ)
     |
-    +------ DMZ (servizi pubblici)
-    |         - Web server
-    |         - API REST/SOAP
+    +---------------------- DMZ (zona separata su interfaccia dedicata)
+    |                         |
+    |                         +-- Web Server
+    |                         +-- API REST / SOAP
+    |                         +-- Reverse Proxy / WAF (opzionale)
     |
-Switch centrale (Layer 3)
-    |
-    +------ Rete server
-    |         - server applicativi
-    |         - database
-    |
-    +------ Switch di accesso
-              |
-              +-- PC utenti
-              +-- Access Point Wi-Fi
-              +-- Stampanti
+    +---------------------- LAN (trunk verso core switch)
+                              |
+                    Switch centrale Layer 3
+                    (routing inter-VLAN)
+                              |
+    -----------------------------------------------------------------
+    |                |                |                |              |
+VLAN interni     VLAN visitatori   VLAN server     VLAN management  (altre VLAN)
+    |                |                |                |
+    |                |                |                |
+Switch accesso   Access Point     Server farm      Rete gestione
+    |            (SSID guest)         |                |
+    |                |                |                |
++-- PC dip.      +-- Smartphone   +-- App server   +-- Mgmt switch
++-- Laptop       +-- Notebook     +-- DB server    +-- Mgmt firewall
++-- Stampanti                     +-- File server  +-- Monitoring
 ```
+
+Punti chiave:  
+
+* La DMZ è collegata direttamente al firewall, NON passa dallo switch centrale
+* Il firewall ha almeno 3 interfacce: WAN, LAN, DMZ (architettura “three-legged firewall”)
+* Lo switch centrale Layer 3 gestisce tutte le VLAN interne
+* Il routing interno (inter-VLAN) avviene sullo switch centrale (2 layers utilizzato per reti di dimensioni contenute)
+* Il traffico tra VLAN può essere:
+
+  * filtrato dallo switch L3 (ACL)
+  * oppure forzato verso il firewall (design più sicuro, tipico enterprise)
+
+Separazioni fondamentali:
+
+* VLAN visitatori → solo Internet (isolata da tutte le altre)
+* VLAN server interni → accessibile solo da VLAN autorizzate
+* VLAN management → accessibile solo da amministratori
+* DMZ → accessibile da Internet ma isolata dalla LAN
+
+
 
 ---
 
@@ -219,7 +246,7 @@ In una architettura a 2 layers questo dispositivo è uno **switch Layer 3 (colla
 
 Quindi:
 
-* routing interno → switch Layer 3
+* routing interno       → switch Layer 3
 * uscita verso Internet → firewall + router ISP
 
 In questo modo si separano:
@@ -297,7 +324,7 @@ Va ovviamente **modificata**
 
 ## 2.7 Reminder
 
-Questo schema è solo **una base** di partenza da **estendere e modificare** in base a quanto richiesto dalla traccia. (Che avrete letto almeno 3 volte, meglio **almeno** 5)
+Questo schema è solo **una base** di partenza da **estendere e modificare** in base a quanto richiesto dalla traccia. (Che in sede di esame prima di cominciare il lavoro architetturale avrete letto con attenzione almeno 3 volte)  
 
 ---
 
@@ -315,7 +342,7 @@ Usare questa struttura quando:
 
 ## 3.2 Schema logico
 
-Schema prototipale, rappresenta tipologie di dispositivi. "access" indica una molteplicità di switch, Etc. (Router ISP. Edge firewall sono ovviamente unici, eventualmente ridondati)
+Schema **prototipale**, rappresenta tipologie di dispositivi. "access" indica una molteplicità di switch, Etc. (Router ISP. Edge firewall sono ovviamente unici, eventualmente ridondati)
 
 ```
 Internet
@@ -353,14 +380,15 @@ Core (Layer 3)
 
 ## 3.4 VLAN minime
 
-Uguali alla versione a 2 layers:
+Uguali alla versione a 2 layers, ad esempio:
 
 ```
 VLAN 10  MANAGEMENT
 VLAN 20  UTENTI
-VLAN 30  SERVER
+VLAN 30  SERVER INTERNI
 VLAN 40  DMZ
 VLAN 50  GUEST_WIFI
+Etc.
 ```
 
 ---
@@ -376,14 +404,14 @@ VLAN 50  GUEST_WIFI
 
 ## 3.6 Modello frase esplicativa 
 
-Ovviamente da personalizzare
+Ovviamente da personalizzare nello svolgimento:  
 “La rete è progettata secondo un modello gerarchico a tre livelli (access, distribution, core), che migliora scalabilità e prestazioni. Il firewall protegge la rete e separa la DMZ dai sistemi interni.”
 
 ---
 
-# 4. Regole sempre valide (da ricordare)
+# 4. Regole tipiche  
 
-* i database non devono essere esposti su Internet
+* database (server DB e server interni) non devono essere esposti su Internet
 * la DMZ contiene solo servizi pubblici
 * il Wi-Fi guest deve essere isolato
 * la rete di management deve essere separata

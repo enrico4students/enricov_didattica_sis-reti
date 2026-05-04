@@ -1,5 +1,5 @@
 
-Obiettivo:
+# 0. Obiettivo  
 
 * avere uno schema minimo sempre valido in modo da
 * lavorare per estensione (ovviamente modifiche allo schema minimo sono possibili)
@@ -32,19 +32,19 @@ Leggere la traccia e identificare:
 
 In quasi tutte le tracce servono almeno:
 
-* rete utenti
-* rete server
-* rete DMZ
-* rete management
-* rete Wi-Fi guest (se Wi-Fi presente)
-
-Eventuali reti aggiuntive dipendono dalla traccia.
+* rete "interni"  (dipendenti o simili)
+* rete "visitatori" (ex. Wi-Fi guest)
+* rete DMZ (server raggiungibili da internet)
+* rete server interni (spesso utilizzati da server in DMZ)
+* rete management (separata logicamente o, in contesti di alta sicurezza, fisicamente)
+* eventuali  altre reti in dipendenza dalla traccia.
 
 ---
 
 ## 1.3 Separare le reti con VLAN
 
-NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti
+NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti,  
+è la pratica standard ma **utile spiegarlo esplicitamente**  
 
 Usare VLAN per:
 
@@ -72,8 +72,8 @@ valutare se sono necessari anche altri firewall interni
 
 Se presente normalmente ci sarà almeno:
 
-* una rete Wi-Fi interna (accesso alla LAN)
-* una rete Wi-Fi guest (solo Internet)
+* una rete Wi-Fi interna (accesso alla LAN "interni")
+* una rete Wi-Fi guest   (accesso solo a Internet)
 
 La traccia può inoltre richiedere che una o più VLAN aziendali siano accessibili tramite Wi-Fi.
 

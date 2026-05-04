@@ -129,9 +129,10 @@ Descrivere tale parte dell’infrastruttura di rete dell’azienda.
 
 La sede operativa deve ospitare reparti con esigenze diverse. La scelta più importante non è solo collegare tutti i computer alla rete, ma separare correttamente i reparti.
 
-I reparti A, B e C producono contenuti digitali diversi. Ciascun reparto deve lavorare sul proprio archivio locale e non deve accedere agli archivi degli altri reparti produttivi. Questo requisito porta naturalmente a una rete segmentata, nella quale ogni reparto viene collocato in una VLAN distinta.
+I reparti A, B e C producono contenuti digitali diversi.  
+Ciascun reparto deve lavorare sul proprio archivio locale e non deve accedere agli archivi degli altri reparti produttivi. Questo requisito porta naturalmente a una rete segmentata, nella quale **ogni reparto viene collocato in una VLAN distinta**.
 
-La VLAN permette di separare logicamente i reparti anche se fisicamente gli apparati possono essere collegati alla stessa infrastruttura di switch. Tuttavia la VLAN da sola non basta: se lo switch centrale effettua routing tra VLAN, occorrono ACL o regole firewall per stabilire quali comunicazioni siano consentite e quali debbano essere bloccate.
+La VLAN permette di separare logicamente i reparti anche se fisicamente gli apparati possono essere collegati alla stessa infrastruttura di switch. Tuttavia la VLAN da sola non basta: **se lo switch centrale effettua routing tra VLAN, occorrono ACL o regole firewall** per stabilire quali comunicazioni siano consentite e quali debbano essere bloccate.
 
 I reparti D, E e F hanno esigenze particolari:
 

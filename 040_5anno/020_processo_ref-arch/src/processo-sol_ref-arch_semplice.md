@@ -6,37 +6,34 @@
 
 # 0. Obiettivo  
 
-* avere uno schema minimo sempre valido in modo da
-* lavorare per estensione (ovviamente modifiche allo schema minimo sono possibili)
-
-Ogni traccia tipicamente puòrichiederà **reti aggiuntive**  
-(es. IoT, backup, big data, sedi multiple, cloud avanzato).  
-
-Le strutture seguenti rappresentano **una base minima**  
+* avere uno schema minimo di elementi ricorrenti in modo da  
+* lavorare per estensione  
 
 
 ---
 
-# 1. Processo di soluzione (Al momento parziale/embrionale e mischiato con le architetture)  
+# 1. Processo di soluzione  
+
+( Al momento parziale/embrionale, frammisto alle le architetture  )
 
 
 ## 1.1 Individuare comunità di attori "significative"   
 
-Gruppi di utenti umani (dipendenti, visitatori) ma anche di sistemi (server interni)
+Gruppi di utenti umani (ex. dipendenti, visitatori) ma anche di sistemi (ex. server interni)
 
 ---
 
-## 1.2 Definire le reti "tipiche" ed architettura  
+## 1.2 Identificare reti e architettura  
 
 Tipicamente ad ogni gruppo di attori corrisponde un segmento di rete dedicato, ex:  
 
-* rete "interni"  (dipendenti o simili)
+* rete utenti "interni" (dipendenti o simili)
 * rete "visitatori" (ex. Wi-Fi guest)
-* rete DMZ (servers raggiungibili da internet, ex WEB Server)
-* rete server interni (spesso utilizzati da server in DMZ, ex eventuale server RDBMS usato da server WEB, applicazioni di business specifiche all'azienda, fermo restando che è sempre più diffuso l'uso di applicazioni in cloud come Salesforce, Jira Etc.)
+* rete DMZ (servers raggiungibili da internet, ex. WEB Server, API Endpoints)
+* rete **server** interni (spesso utilizzati da server in DMZ, ex eventuale server RDBMS usato da server WEB, applicazioni di business specifiche all'azienda Etc.)
 * rete management (separata logicamente o, in contesti di alta sicurezza, separatafisicamente)
 
-* eventuali  altre reti in dipendenza dalla traccia.
+* eventuali altre reti in dipendenza dalla traccia.
 
 
 In base al numero di reti ed attori decidere se è più adatta una architettura di rete a 2 layers o a 3 (non confondere con il 3 tier delle architetture sistemiche!!!)  
@@ -47,29 +44,29 @@ In base al numero di reti ed attori decidere se è più adatta una architettura 
 
 ## 1.3 Decidere le modalità precise di segmentazione
 
-NB Normalmente le VLAN corrisponderanno 1 a 1 a (sotto)reti IP,  
+NB Normalmente le VLAN corrisponderanno 1:1 a (sotto)reti IP,  
 è la pratica standard ma è **utile spiegarlo esplicitamente**  
 
-Come sappiamo questo approcio è usato per "segmentare" la rete interna cioè:  
+Consigliabile inserire nella traccia i motivi anche se ovvi:  
 
-* isolare utenti e server
-* separare servizi pubblici (DMZ)
-* isolare ospiti (guest Wi-Fi)
-* proteggere la rete di management
-
+* isolare utenti e server  
+* esporre solo servizi pubblici (DMZ) e proteggere server interni (rete dedicata)  
+* isolare ospiti (guest Wi-Fi)  
+* proteggere la rete di management  
+* Etc.  
 
 ---
 
 ## 1.4 DMZ e firewall
 
 ### 1.4.1
-Avremo sempre un edge firewall che deve:
+Normalmente avremo un edge firewall che deve:
 
 * separare Internet dalla rete interna
 * proteggere la DMZ
-* filtrare il traffico tra VLAN (direttamente o indirettamente)
+* filtrare il traffico  
 
-valutare se sono necessari anche altri firewall interni
+**Sempre valutare se sono necessari anche altri firewall interni**  
 
 ### 1.4.2  
 
@@ -84,7 +81,7 @@ Spesso avremo almeno:
 
 * una rete Wi-Fi interna (accesso alla LAN "interni")
     - non infrequentemente dovremo avere, per N gruppi di utenti interni, N reti Wi-fi (SSID Service Set Identifier) mappate su N VLAN  
-* una rete Wi-Fi guest   (accesso solo a Internet)
+* una rete Wi-Fi guest (accesso solo a Internet)
 
 
 ---
@@ -94,14 +91,15 @@ Spesso avremo almeno:
 Se richiesto:
 
 * VPN per accesso remoto client server, tipicamente di singolo dipendente (smart work)  
-    - Specificare la "terminazione" TLS (se si è sicuri dell'argomento)  
-* VPN site-to-site per sedi remote
+    - Specificare la "terminazione" TLS (se si è sicuri dell'argomento    
+* VPN site-to-site per sedi remote  
+    - consigliabile specificare gestione se si è sicuri dell'argomento   
 
 ---
 
 ## 1.7 Principali regole di accessibilità  
 
-Se si è sicuri di averne il tempo, come normalmente dovrebbe essere, specificare le connessioni, anche qui abbiamo casi abbastanza comuni che dovremmo conoscere a memoria per poterci focalizzare su eventuali specificità della traccia.  
+Se si è sicuri di averne il tempo specificare le connessioni consentite, anche qui abbiamo casi abbastanza comuni e ovvi che dovremmo conoscere a memoria per poterci focalizzare su eventuali specificità della traccia.  
 
 Esempio di casi ricorrenti:  
 
@@ -110,20 +108,24 @@ Esempio di casi ricorrenti:
 
 * utenti → server consentito   
   Gli utenti interni, in generale, possono accedere ai server aziendali "standard" per utilizzare i servizi (applicativi, file, ecc.).  
-    - Se alcuni servizi/applicazioni sono confidenziali o dedicati solo ad alcuni gruppi ciò va gestito, quasi sempre con RBAC (role based access control) ma è possibile, e va valutato, a volte ponendo il server in segmenti di rete accessibil solo al gruppo di utenti interessati (la rete di gestione è un esempio di ciò in ambito tecnico, lo stesso può avvenire in ambito business)  
+    - Se alcuni servizi/applicazioni sono confidenziali o dedicati solo ad alcuni gruppi ciò va gestito, quasi sempre con RBAC (role based access control) ma è possibile, e va valutato, sia necessario porre il server in segmenti di rete accessibil solo al gruppo di utenti interessati (la rete di gestione è un esempio di ciò in ambito tecnico, lo stesso può avvenire in ambito business)  
 
 * utenti → DB limitato  
-  In generale l’accesso diretto ai database deve essere limitato o mediato da applicazioni, per evitare accessi non autorizzati.
+  In generale l’accesso **diretto** ai database non è consentito, normalmente è mediato da applicazioni.
 
 * DMZ → LAN limitato  
-  I server in DMZ possono comunicare con la LAN interna (meglio: con i segmenti di LAN) solo per servizi specifici e controllati, riducendo il rischio di compromissione.
+  I server in DMZ possono comunicare con la LAN interna (meglio: con i segmenti di LAN interna) solo per servizi specifici e controllati, riducendo il rischio di compromissione.
 
 * management → accesso agli apparati  
-  Solo la rete di management deve poter configurare e monitorare apparati di rete e server, per garantire sicurezza e controllo.
+  Solo la rete di management deve poter configurare e monitorare apparati di rete e server. Solo gli amministratori devono avere accesso ad applicazioni e rete di management. Concetto utile da citare se lo si padroneggia: "bastion host"  
 
 ---
 
-# Definire piano di indirizzamento (documentino dedicato a parte)
+# Definire piano di indirizzamento   
+
+Argomento chiave che va trattato a parte
+
+Annotazioni dedicate disponibili
 
 --- 
 
@@ -135,10 +137,10 @@ Esempio di casi ricorrenti:
 
 Usare questa struttura quando:
 
-* una sola sede
-* numero limitato di utenti
-* pochi switch
-* rete semplice da spiegare
+* una sola sede  
+* numero limitato di utenti  
+* pochi switch  
+* rete semplice  
 
 ---
 
@@ -149,12 +151,13 @@ La rete è divisa in due livelli:
 * **Access** → dove si collegano i dispositivi (PC, Wi-Fi, stampanti)
 * **Core/Distribution (collassato)** → dove si concentrano:
 
-  * VLAN
-  * routing
-  * collegamento ai server
-  * uscita verso Internet
+  * VLAN  
+  * routing  
+  * collegamento ai server  
+  * uscita verso Internet  
 
-Il firewall separa la rete interna da Internet e protegge i servizi pubblici.
+
+Il firewall separa la rete interna da Internet e protegge i servizi pubblici.  
 
 ---
 
@@ -340,7 +343,7 @@ Va ovviamente **modificata**
 
 ## 2.7 Reminder
 
-Questo schema è solo **una base** di partenza da **estendere e modificare** in base a quanto richiesto dalla traccia. (Che in sede di esame prima di cominciare il lavoro architetturale avrete letto con attenzione almeno 3 volte)  
+Questo schema è solo **una base** di partenza da **estendere e modificare** in base a quanto richiesto dalla traccia. (Che in sede di esame prima di cominciare il lavoro architetturale avrete letto con attenzione più di una volta ...)  
 
 ---
 
@@ -358,7 +361,9 @@ Usare questa struttura quando:
 
 ## 3.2 Schema logico
 
-Schema **prototipale**, rappresenta tipologie di dispositivi. "access" indica una molteplicità di switch, Etc. (Router ISP. Edge firewall sono ovviamente unici, eventualmente ridondati)
+Schema **prototipale**, rappresenta tipologie di dispositivi.  
+ex. "access" indica una tipologia, quindi una molteplicità di switch concreti, Etc.  
+(Router ISP. Edge firewall sono ovviamente unici, eventualmente ridondati)
 
 ```
 Internet
@@ -390,13 +395,13 @@ Core (Layer 3)
 
 * Access → dispositivi finali
 * Distribution → aggregazione e VLAN
-* Core → trasporto veloce
+* Core → trasporto veloce, backbone interno ad alte prestazioni  
 
 ---
 
-## 3.4 VLAN minime
+## 3.4 VLAN tipiche  
 
-Uguali alla versione a 2 layers, ad esempio:
+Qulle ricorrenti sono le stesse discusse inzialmente e viste nel 2 layers, ad esempio:
 
 ```
 VLAN 10  MANAGEMENT
@@ -407,14 +412,17 @@ VLAN 50  GUEST_WIFI
 Etc.
 ```
 
+Il 3 layer si usa su reti più complesse/estese quindi l'implementazione tenderà ad essere più estesa  
+
 ---
 
 ## 3.5 Spiegazione sintetica
 
-* access collega utenti
-* distribution aggrega e separa le VLAN
-* core collega le varie parti della rete
-* firewall gestisce sicurezza e accesso Internet
+* **access layer**: collega utenti   
+* **distribution layer**: aggrega e separa le VLAN
+* **core layer**: collega le varie parti della rete
+* **edge firewall**: gestisce sicurezza e accesso Internet
+* **internal firewals**: protezione interna, ad hoc o nel distribution layer 
 
 ---
 
@@ -434,11 +442,6 @@ Ovviamente da personalizzare nello svolgimento:
 * il firewall controlla i flussi tra zone
 * le VLAN servono per isolamento e sicurezza
 
----
-
-Di seguito una versione corretta, coerente e didatticamente chiara del piano di indirizzamento.
-
-Si assume esplicitamente che il numero di host richiesti si riferisca ai **dispositivi finali**, quindi il gateway deve essere aggiunto separatamente nel dimensionamento.
 
 ---
 

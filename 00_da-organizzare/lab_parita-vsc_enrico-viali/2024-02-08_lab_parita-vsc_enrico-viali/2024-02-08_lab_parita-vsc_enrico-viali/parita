@@ -1,0 +1,46 @@
+
+
+
+PARI = "pari"
+DISPARI = "dispari"
+
+def inverti_bit(bit):
+    assert bit in [0,1]
+    if bit == 1:
+        return 0
+    else:
+        return 1
+
+
+def calcola_bit_parita(parita: str, messaggio: list):
+    """
+    rappresento i bits con una lista/vettore di interi
+    """
+    assert(parita in [PARI, DISPARI])
+    
+    bit_parita = 0 if parita == PARI else 1
+    for bit in messaggio:
+        if bit == 1:
+            bit_parita = inverti_bit(bit_parita)
+    
+    return bit_parita # per consentire a user di gestire come vuole
+
+
+def test():
+
+    messaggio1 = [0,0,0,0,0,0,0]
+    messaggio2 = [1,1,1,1,1,1,1]
+    messaggio3 = [0,1]
+
+    parita = PARI
+    messaggio = messaggio1
+    print("parità:",parita, "per:", messaggio, " è:", calcola_bit_parita(parita, messaggio))
+
+    messaggio = messaggio2
+    print("parità:",parita, "per:", messaggio, " è:", calcola_bit_parita(parita, messaggio))
+
+    messaggio = messaggio3
+    print("parità:",parita, "per:", messaggio, " è:", calcola_bit_parita(parita, messaggio))
+
+
+test()

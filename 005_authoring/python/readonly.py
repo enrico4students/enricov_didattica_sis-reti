@@ -173,8 +173,7 @@ def main():
     # Percorso fisso attualmente usato.
     # Rimuovere questa riga se si vuole usare il parametro root da riga di comando.
     root_path = Path(
-        "C:\\00_data\\08_dev\\08_dev-didattica\\"
-        "enricov_didattica_sis-reti\\arduino\\"
+        "C:\\00_data\\08_dev\\08_dev-didattica\\enricov_didattica_sis-reti\\040_5anno\\esercizi_focalizzati"
     ).resolve()
 
     if not root_path.exists():

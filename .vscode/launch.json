@@ -10,6 +10,16 @@
     },
 
     {
+        "name": "-> RO PDF readonly.py con argomento",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/005_authoring/python/readonly.py",
+        "console": "integratedTerminal",
+        "args": [ "${fileDirname}\\.."  ]
+    }, 
+
+
+    {
         "name": "TCP Receiver",
         "type": "cppdbg",
         "request": "launch",

@@ -1,4 +1,15 @@
 
+Prompts
+
+esamina l'e-portfolio seguente, poi scrivi un tuo giudizio globale di 2 o 3 frasi poi indica chiaramente:
+- completezza e qualità, valutala con uno score da 0 a 100
+- segnala parti mancanti, per ognuna concisamente indica azioni di rimedio
+- segnala errori o compilazioni improprie
+
+Rispetta la legislazione sulla privacy e ignora il nome e i dati personali
+
+nel 2025/26 il capolavoro è obbligatorio per l'esame di maturità? E' non obbligatorio ma utile all'esame? Spiega
+
 Liste
 Non usare troppe liste o troppi livelli di gerarchia non necessari, 
 non mettere come lista elenchi non importanti, ad esempio il testo seguente

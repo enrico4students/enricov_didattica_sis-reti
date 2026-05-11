@@ -94,7 +94,6 @@ def main():
         logging.getLogger().setLevel(logging.DEBUG)
 
     root_path = Path(args.root).expanduser().resolve()
-    root_path = Path("C:\\00_data\\08_dev\\08_dev-didattica\\enricov_didattica_sis-reti\\arduino\\")
     if not root_path.exists():
         logger.error(f"Directory {root_path} non trovata")
         return 1

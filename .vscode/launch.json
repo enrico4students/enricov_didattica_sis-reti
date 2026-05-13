@@ -1,14 +1,18 @@
-{
-    "version": "0.2.0",
-    "configurations": [
     {
-        "name": "-> .md loc. Py",
+        "version": "0.2.0",
+        "configurations": [
+
+    {
+        "name": "-> .md loc. Py modulare",
         "type": "debugpy",
         "request": "launch",
-        "program": "${workspaceFolder}/005_authoring/python/md_processor.py",
+        "program": "${workspaceFolder}/005_authoring/python/md_processor_modular/md_processor.py",
         "console": "integratedTerminal",
         "args": [
             "--yes",
+            "--verbose",
+            "--pdf-engine",
+            "xelatex",
             "${file}"
         ],
         "cwd": "${workspaceFolder}"

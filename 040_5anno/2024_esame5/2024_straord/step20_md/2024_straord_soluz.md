@@ -137,7 +137,7 @@ Si adottano queste scelte:
 - VLAN separate per reparti e server,  
 - autenticazione centralizzata degli utenti,  
 - firewall perimetrale con VPN verso la sede centrale,  
-- ACL/firewall interni per impedire accessi non autorizzati tra reparti.
+- ACL/firewall **interni** per impedire accessi non autorizzati tra reparti.
 
 La separazione tra reparti è necessaria perché la traccia richiede che 
 - gli sviluppatori dei reparti A, B e C **non** accedano ai sistemi interni degli altri reparti.  
@@ -207,7 +207,7 @@ Core switch L3 / Distribution
 ### Diagramma dettagliato  
 
 
-```text id="claritynet01"
+```text
 
                                     INTERNET
                                         |
@@ -339,8 +339,10 @@ RETE LAN AZIENDALE
                       Dispositivi:
                       - Backup server
                       - Replica dati
+```
 
 
+```text
 ================================================================================
 COLLEGAMENTO TRA SEDI
 ================================================================================
@@ -371,57 +373,64 @@ Sede centrale
 ```
 
 
-
+```text
 ----------------------------------------------------------------------------------------
 ACCESSI PRINCIPALI
 ----------------------------------------------------------------------------------------
 
-Reparto A
-    -> Internet
-    -> File Server A
-    -> Stampante A
-    X  nessun accesso ai sistemi B e C
+Reparto A  
+    -> Internet  
+    -> File Server A  
+    -> Stampante A  
+    X  nessun accesso ai sistemi B e C  
 
-Reparto B
-    -> Internet
-    -> File Server B
-    -> Stampante B
-    X  nessun accesso ai sistemi A e C
+Reparto B  
+    -> Internet  
+    -> File Server B  
+    -> Stampante B  
+    X  nessun accesso ai sistemi A e C  
 
-Reparto C
-    -> Internet
-    -> File Server C
-    -> Stampante C
-    X  nessun accesso ai sistemi A e B
+Reparto C  
+    -> Internet  
+    -> File Server C  
+    -> Stampante C  
+    X  nessun accesso ai sistemi A e B  
 
 Reparto D (Test QA)
-    -> accesso controllato ai File Server A/B/C
+    -> accesso controllato ai File Server A/B/C  
 
-Reparto E (Project Management)
-    -> accesso ai File Server A/B/C
-    -> trasferimento versioni finali verso sede centrale
+Reparto E (Project Management)  
+    -> accesso ai File Server A/B/C  
+    -> trasferimento versioni finali verso sede centrale  
 
-Reparto F (Amministrazione)
-    -> Internet
-    -> sistema gestionale remoto sede centrale
+Reparto F (Amministrazione)  
+    -> Internet  
+    -> sistema gestionale remoto sede centrale  
+```
 
 
+## 5. Diagramma PlantUML  
 
-## 5. Diagramma PlantUML
 
-![PlantUML 1](../imgs/2024_straord_soluz_img1_r412_2024_straord_soluz_1_r412_puml.jpg)
+![PlantUML 1](../imgs/2024_straord_soluz_img1_r415_2024_straord_soluz_1_r415_puml.jpg)
+
 
 ## 6. Piano VLAN e indirizzamento
 
-Si usa una rete privata unica per la nuova sede:
+Rete scelta nuova sede: 10.24.0.0/16 cioè una rete privata RFC1918.
 
-10.24.0.0/16
+`10.24.0.0/16` è stata scelta perché sufficientemente ampia per molte VLAN e future espansioni.  
+Il prefisso `/16` semplifica inoltre la suddivisione ordinata delle sottoreti.
+Sono state escluse 
+- reti più piccole, ad esempio `/24`, perché poco scalabili  
+- 172.16.0.0/12 sarebbe stata tecnicamente corretta, ma offre meno flessibilità complessiva e viene più spesso utilizzata in reti di dimensioni medio-piccole.
+- reti pubbliche perché gli indirizzi interni aziendali devono normalmente usare indirizzi privati non instradabili su Internet.
 
-Le sottoreti sono scelte con VLSM, ma mantenendo blocchi leggibili. 
+Le sottoreti sono definite con VLSM. 
 
 Il reparto C richiede almeno 110 host, quindi si usa /25.  
 I reparti A, B, D, F richiedono meno host ma ricevono margine sufficiente.  
-I server sono separati dagli utenti quando utile per applicare regole più precise.
+In una soluzione professionale i server sono separati dagli utenti per applicare regole di scurezza, se seguiamo questo approccio, correttissimo, abbiamo un grande numero di reti.  
 
 | VLAN | Nome rete        | Subnet        | Gateway    | Host utilizzabili         | Uso                        |
 | ---: | ---------------- | ------------- | ---------- | ------------------------- | -------------------------- |
@@ -439,7 +448,10 @@ I server sono separati dagli utenti quando utile per applicare regole più preci
 |   90 | WiFi ospiti      | 10.24.90.0/24 | 10.24.90.1 | 10.24.90.1 - 10.24.90.254 | ospiti, solo Internet      |
 |   99 | Backup           | 10.24.99.0/27 | 10.24.99.1 | 10.24.99.1 - 10.24.99.30  | backup e replica           |
 
-Nota: negli intervalli “host utilizzabili” è incluso anche il gateway; per assegnazioni ai client si riserva normalmente il gateway e si parte dal secondo indirizzo utile.
+Negli intervalli “**host utilizzabili**” è stato incluso anche il gateway; 
+per assegnazioni ai client(dispositivi utente) spesso negli esercizi si *"riserva"* il router (host ID 1) e si parte dal secondo indirizzo utile.  
+Nel mondo reale a volte il router può avere l'host ID immediatamente precedente il broadcast.  
+
 
 ## 7. Matrice dei principali sistemi
 
@@ -462,9 +474,50 @@ Nota: negli intervalli “host utilizzabili” è incluso anche il gateway; per 
 | Console admin    |    80 | 10.24.80.10     | gestione apparati          |
 | Firewall interno | varie | .1 su ogni VLAN | gateway e policy           |
 
+### Piano semplificato
+
+In una prova d'esame per avere meno reti potrebbe essere accettabile porre file server e stampante nella rete di reparto, ciò normalmente è sconsigliabile nel mondo reale dato che diminuisce la possibilità di applicare regole di sicurezza.  
+
+Il piano semplificato usa sempre 10.24.0.0/16, rete privata RFC1918.
+
+
+
+| VLAN | Nome rete      | Subnet        | Gateway    | Router / interfaccia VLAN | Broadcast      | Primo host utente | Host utilizzabili | Dispositivi principali              |
+| ---: | -------------- | ------------- | ---------- | -------------------------- | -------------- | ----------------- | ----------------- | ----------------------------------- |
+| 90   | WiFi ospiti    | 10.24.90.0/24 | 10.24.90.1 | 10.24.90.1                 | 10.24.90.255   | 10.24.90.2        | 254               | client ospiti, solo Internet        |
+| 30   | Reparto C      | 10.24.30.0/25 | 10.24.30.1 | 10.24.30.1                 | 10.24.30.127   | 10.24.30.20       | 126               | PC C, File Server C, Stampante C    |
+| 10   | Reparto A      | 10.24.10.0/26 | 10.24.10.1 | 10.24.10.1                 | 10.24.10.63    | 10.24.10.20       | 62                | PC A, File Server A, Stampante A    |
+| 20   | Reparto B      | 10.24.20.0/26 | 10.24.20.1 | 10.24.20.1                 | 10.24.20.63    | 10.24.20.20       | 62                | PC B, File Server B, Stampante B    |
+| 40   | Reparto D      | 10.24.40.0/27 | 10.24.40.1 | 10.24.40.1                 | 10.24.40.31    | 10.24.40.10       | 30                | PC test qualità                     |
+| 60   | Reparto F      | 10.24.60.0/27 | 10.24.60.1 | 10.24.60.1                 | 10.24.60.31    | 10.24.60.10       | 30                | PC amministrazione                  |
+| 70   | Servizi locali | 10.24.70.0/27 | 10.24.70.1 | 10.24.70.1                 | 10.24.70.31    | non applicabile   | 30                | AD/LDAP, DNS, DHCP, RADIUS, logging |
+| 99   | Backup         | 10.24.99.0/27 | 10.24.99.1 | 10.24.99.1                 | 10.24.99.31    | non applicabile   | 30                | backup server, replica dati         |
+| 50   | Reparto E      | 10.24.50.0/28 | 10.24.50.1 | 10.24.50.1                 | 10.24.50.15    | 10.24.50.10       | 14                | PC project management               |
+| 80   | Management     | 10.24.80.0/28 | 10.24.80.1 | 10.24.80.1                 | 10.24.80.15    | non applicabile   | 14                | apparati, console amministrazione   |
+
+
+Piano ulteriormente semplificato, senza  
+VLAN 90 - WiFi ospiti  
+VLAN 99 - Backup  
+VLAN 70 - Servizi locali    
+
+<br/>  
+
+
+| VLAN | Nome rete | Subnet        | Gateway    | Router / interfaccia VLAN | Broadcast    | Primo IP disponibile per PC utente | Host utilizzabili | Dispositivi principali           |
+| ---: | --------- | ------------- | ---------- | -------------------------- | ------------ | ---------------------------------- | ----------------- | -------------------------------- |
+| 30   | Reparto C | 10.24.30.0/25 | 10.24.30.1 | 10.24.30.1                 | 10.24.30.127 | 10.24.30.2                         | 126               | PC C, File Server C, Stampante C |
+| 10   | Reparto A | 10.24.10.0/26 | 10.24.10.1 | 10.24.10.1                 | 10.24.10.63  | 10.24.10.2                         | 62                | PC A, File Server A, Stampante A |
+| 20   | Reparto B | 10.24.20.0/26 | 10.24.20.1 | 10.24.20.1                 | 10.24.20.63  | 10.24.20.2                         | 62                | PC B, File Server B, Stampante B |
+| 40   | Reparto D | 10.24.40.0/27 | 10.24.40.1 | 10.24.40.1                 | 10.24.40.31  | 10.24.40.2                         | 30                | PC test qualità                  |
+| 60   | Reparto F | 10.24.60.0/27 | 10.24.60.1 | 10.24.60.1                 | 10.24.60.31  | 10.24.60.2                         | 30                | PC amministrazione               |
+| 50   | Reparto E | 10.24.50.0/28 | 10.24.50.1 | 10.24.50.1                 | 10.24.50.15  | 10.24.50.2                         | 14                | PC project management            |
+
+
+
 ## 8. Policy di comunicazione tra reparti
 
-La regola generale è deny by default: tutto il traffico tra VLAN è bloccato, salvo ciò che viene esplicitamente consentito.
+La regola generale è "deny by default": tutto il traffico tra VLAN è bloccato, salvo ciò che viene esplicitamente consentito.
 
 | Sorgente   | Destinazione                         | Servizi consentiti                | Motivo                        |
 | ---------- | ------------------------------------ | --------------------------------- | ----------------------------- |
@@ -487,41 +540,65 @@ La regola generale è deny by default: tutto il traffico tra VLAN è bloccato, s
 
 ## 9. Autenticazione degli utenti
 
-L’accesso ai computer deve avvenire previa autenticazione. Si propone un dominio aziendale locale o integrato con la sede centrale, basato su Active Directory oppure LDAP/Kerberos.
+L’accesso ai computer deve avvenire previa autenticazione.  
+Una soluzione può essere un "dominio" aziendale locale o integrato con la sede centrale, basato su Active Directory oppure LDAP/Kerberos.  
 
 Gli utenti accedono con credenziali personali. I gruppi principali sono:
 
 DEV_A, DEV_B, DEV_C, TEST_QA, PROJECT_MANAGER, ADMIN_SEDE, IT_ADMIN.
 
-I permessi sui file server vengono assegnati ai gruppi, non ai singoli utenti, perché la gestione è più ordinata e scalabile.
+I permessi sui file server vengono assegnati **ai gruppi**, non ai singoli utenti, perché la gestione è più ordinata e scalabile.  
 
 Esempio sui file server:
 
-File server A: DEV_A lettura/scrittura sulle cartelle di lavoro, TEST_QA accesso alle aree da validare con possibilità di scrivere report e rinominare cartelle, PROJECT_MANAGER accesso completo operativo, altri reparti negati.
+File server A:  
+DEV_A lettura/scrittura sulle cartelle di lavoro,  
+TEST_QA accesso alle aree da validare con possibilità di scrivere report e rinominare cartelle  
+PROJECT_MANAGER accesso completo operativo, altri reparti negati.  
 
-## 10. Misure di sicurezza interna ed esterna
 
-Sicurezza interna:
+## 10. Misure di sicurezza interna ed esterna  
 
-segmentazione VLAN, ACL/firewall tra VLAN, autenticazione centralizzata, autorizzazioni basate su gruppi, 802.1X sulle porte degli switch, porte inutilizzate disabilitate, DHCP snooping, Dynamic ARP Inspection, logging centralizzato, backup, antivirus/EDR sui client, aggiornamenti centralizzati.
+
+Le principali misure di sicurezza adottate nella rete interna aziendale sono:  
+
+* segmentazione tramite VLAN per isolare logicamente reparti e servizi;  
+* ACL e firewall interni per controllare il traffico tra VLAN;  
+* autenticazione centralizzata degli utenti tramite sistemi come Active Directory o RADIUS;  
+* autorizzazioni basate su gruppi e ruoli;  
+  * Ricordiamo che per semplicità a volte un ruolo organizzativo (“amministrazione”, “docente”, “tecnico”, “HR”, “manager”) viene implementato tramite uno o più gruppi e le autorizzazioni vengono assegnate ai gruppi, ciò accade soprattutto nelle applicazioni business.  
+* autenticazione 802.1X sulle porte degli switch;  
+* disabilitazione delle porte switch inutilizzate;  
+* DHCP snooping (awitch accetta risposte DHCP solo da server autorizzati, bloccando eventuali server DHCP falsi o malevoli presenti nella rete.);  
+* Dynamic ARP Inspection contro attacchi ARP spoofing;
+  * Inspection: controllare ogni messaggio ARP per verificare che l’associazione IP-MAC dichiarata coincida con quella registrata come valida nella tabella ottenuta dal DHCP **autorizzato**; in caso contrario il pacchetto ARP viene bloccato.   
+* logging centralizzato per monitoraggio e audit;  
+* backup periodici dei dati e delle configurazioni;  
+* antivirus/EDR sui client aziendali;  
+* aggiornamenti centralizzati di sistemi e software per correggere vulnerabilità.  
+
+
+
 
 Sicurezza esterna:
 
-firewall/NGFW, NAT per l’uscita Internet, VPN IPsec site-to-site verso sede centrale, filtraggio DNS o proxy, IDS/IPS, blocco degli accessi amministrativi da Internet, monitoraggio dei log, MFA per accessi amministrativi e remoti.
+- firewall/NGFW, NAT per l’uscita Internet,   
+- VPN IPsec site-to-site verso sede centrale,  
+- filtraggio DNS o proxy, IDS/IPS,  
+- blocco degli accessi amministrativi da Internet,  
+- monitoraggio dei log,  
+- MFA per accessi amministrativi e remoti.  
 
 La scelta più importante è separare rete utenti, rete server, rete management e rete ospiti. In questo modo un problema su un reparto non consente automaticamente di raggiungere tutti gli altri sistemi.
 
 ## 11. Collegamento verso la sede centrale
 
-Il collegamento tra nuova sede e sede centrale viene realizzato tramite VPN IPsec site-to-site tra i due firewall aziendali.
+Il collegamento tra nuova sede e sede centrale viene realizzato **tramite VPN IPsec site-to-site** tra i due firewall aziendali.
 
-Motivi:
-
-la sede è in città diversa, quindi il traffico passa su rete geografica o Internet;
-
-i dati trasferiti comprendono progetti software, documentazione, dati amministrativi;
-
-serve cifratura, autenticazione dei peer e controllo degli indirizzi raggiungibili.
+Motivi:  
+- la sede è in città diversa, quindi il traffico passa su rete geografica o Internet;  
+- i dati trasferiti, progetti software, documentazione, dati amministrativi, possiamo considerarli riservati    
+- serve cifratura, autenticazione dei peer e controllo degli indirizzi raggiungibili.  
 
 Traffico consentito sulla VPN:
 
@@ -536,15 +613,20 @@ Il repository remoto non viene esposto direttamente a Internet: viene raggiunto 
 
 ## 12. Schema logico della VPN
 
-```
+```text
 Nuova sede
-10.24.0.0/16
+Rete LAN: 10.24.0.0/16
     |
-Firewall nuova sede
+Firewall / VPN Gateway IPsec
+IP pubblico sede nuova
     |
-Tunnel IPsec cifrato
+===============================
+ Tunnel IPsec site-to-site
+ cifratura e autenticazione
+===============================
     |
-Firewall sede centrale
+Firewall / VPN Gateway IPsec
+IP pubblico sede centrale
     |
 Reti sede centrale
 10.10.0.0/16
@@ -554,31 +636,34 @@ Reti sede centrale
 
 Regole principali:
 
-10.24.50.0/28 può raggiungere 10.10.20.10, 10.24.60.0/27 può raggiungere 10.10.30.10, le altre VLAN non accedono ai server centrali salvo necessità documentata.
+10.24.50.0/28 può raggiungere 10.10.20.10,   
+10.24.60.0/27 può raggiungere 10.10.30.10,  
+le altre VLAN non accedono ai server centrali salvo necessità documentata.  
 
 ## 13. Configurazione di un servizio: file server dei reparti
 
 Si dettaglia il servizio file server, perché è centrale nella traccia.
 
-Ogni reparto A, B e C ha un file server dedicato o una VM dedicata. Il servizio può essere SMB/CIFS in ambiente Windows oppure Samba in ambiente Linux integrato con dominio.
+Ogni reparto A, B e C ha un file server dedicato o una VM dedicata.  
+Il servizio può essere SMB/CIFS in ambiente Windows oppure Samba in ambiente Linux integrato con dominio.  
 
-Esempio per File Server A:
+  Esempio per File Server A:
 
-  nome server: FS-A
+    nome server: FS-A
 
-  IP: 10.24.11.10
+    IP: 10.24.11.10
 
-  share principale: \FS-A\progetti_A
+    share principale: \FS-A\progetti_A
 
-  gruppi autorizzati:
+    gruppi autorizzati:
 
-  DEV_A: lettura/scrittura sui progetti in lavorazione;
+    DEV_A: lettura/scrittura sui progetti in lavorazione;
 
-  TEST_QA: lettura sui progetti e scrittura nella sottocartella report_test; possibilità controllata di rinominare cartelle finali;
+    TEST_QA: lettura sui progetti e scrittura nella sottocartella report_test; possibilità controllata di rinominare cartelle finali;
 
-  PROJECT_MANAGER: accesso completo alle versioni finali;
+    PROJECT_MANAGER: accesso completo alle versioni finali;
 
-  IT_ADMIN: amministrazione tecnica.
+    IT_ADMIN: amministrazione tecnica.
 
 Struttura cartelle:
 
@@ -599,9 +684,12 @@ Permessi consigliati:
 | Finali         | lettura  | scrittura controllata/rename tramite procedura | modifica          | controllo completo |
 | Report_Test    | lettura  | scrittura                                      | lettura/scrittura | controllo completo |
 
-Per la richiesta “rinominare la cartella aggiungendo _Final_Version e renderla read-only”, è preferibile non lasciare libertà completa ai tester su tutto il file server. La soluzione più ordinata è prevedere una procedura o script controllato, eseguito con permessi adeguati, che:
-
-verifica che il tester appartenga al gruppo TEST_QA, controlla che il progetto sia in stato “test superato”, scrive il report nella cartella, rinomina la cartella aggiungendo _Final_Version, modifica i permessi rendendo la cartella non più modificabile dagli sviluppatori.
+Per la richiesta “rinominare la cartella aggiungendo _Final_Version e renderla read-only”, è preferibile non lasciare libertà completa ai tester su tutto il file server. La soluzione più ordinata è prevedere una procedura o script controllato, eseguito con permessi adeguati, che:  
+- verifica che il tester appartenga al gruppo TEST_QA,  
+- controlla che il progetto sia in stato “test superato”,  
+- scrive il report nella cartella,  
+- rinomina la cartella aggiungendo _Final_Version,  
+- modifica i permessi rendendo la cartella non più modificabile dagli sviluppatori.
 
 Esempio di logica operativa:
 
@@ -623,15 +711,15 @@ IT_ADMIN: controllo completo.
 
 ## 14. Esempio di configurazione logica del trasferimento al repository
 
-Quando una versione è marcata come finale, i project manager trasferiscono il contenuto al repository centrale.
+Quando una versione è marcata come finale, i project manager trasferiscono il contenuto al repository centrale.  (Nella realtà è assurdo, dovrebbe farilo personale DevOps congiuntamente a personale dello sviluppo come supporto, DevOps sono sistemisti specializzati nella gestione e automazione dello sviluppo)
 
 Protocollo consigliato:
 
-Git over HTTPS se si tratta di codice sorgente versionato;
+- Git over HTTPS se si tratta di codice sorgente versionato;
 
-SFTP/SSH se si tratta di pacchetti, documentazione, manuali o archivi;
+- SFTP (usa SSH) o FTPS (FTP + TLS) se si tratta di pacchetti, documentazione, manuali o archivi;
 
-HTTPS verso piattaforma repository aziendale se il sistema remoto è GitLab, Gitea, Bitbucket Server o simile.
+- HTTPS verso piattaforma repository aziendale se il sistema remoto è GitLab, Bitbucket Server o simile.
 
 Esempio:
 
@@ -647,7 +735,11 @@ backup: repository centrale sottoposto a backup periodico.
 
 ## 15. Sintesi delle scelte adottate
 
-La soluzione usa VLAN separate perché i reparti hanno requisiti di accesso diversi. I file server sono separati per reparto perché la traccia richiede isolamento tra A, B e C. Il reparto D riceve accessi specifici per il test qualità, non accesso generale alla rete. Il reparto E ha accesso più ampio perché deve consolidare le versioni finali e inviarle al repository centrale. Il reparto F ha accesso al gestionale remoto e a Internet, ma non ai sistemi tecnici degli sviluppatori.
+VLAN separate perché i reparti hanno requisiti di accesso diversi.  
+- I file server sono separati per reparto perché la traccia richiede isolamento tra A, B e C.  
+- Il reparto D riceve accessi specifici per il test qualità, non accesso generale alla rete.  
+- Il reparto E ha accesso più ampio perché deve consolidare le versioni finali e inviarle al repository centrale.  
+- Il reparto F (gestione tecnica) ha accesso al gestionale remoto e a Internet, ma non ai sistemi tecnici degli sviluppatori.
 
 La VPN site-to-site è la scelta più coerente per collegare sedi diverse in modo sicuro. Il firewall/NGFW è il punto principale di controllo, mentre la directory centralizzata garantisce autenticazione e autorizzazioni coerenti.
 
@@ -656,41 +748,57 @@ La VPN site-to-site è la scelta più coerente per collegare sedi diverse in mod
 
 ## SECONDA PARTE - Quesito I
 
-Presso la sede centrale si prevede una zona separata per i server pubblici, distinta dalla LAN interna e protetta da firewall. La scelta più corretta è realizzare una DMZ, cioè una rete intermedia nella quale collocare i servizi raggiungibili da Internet: server web e-commerce e server mail.
+Presso la **sede centrale** per i server pubblici la scelta più corretta è realizzare una DMZ, nella quale collocare i servizi raggiungibili da Internet: server web e-commerce e server mail.
 
-Schema testuale:
+Schema:
 
-Internet
-|
-Router ISP
-|
-Firewall perimetrale / NGFW
-|
-|-- DMZ pubblica
-|     |-- Web server e-commerce
-|     |-- Mail server / mail gateway
-|
-|-- LAN sede centrale
-|-- Project repository
-|-- Sistema gestionale
-|-- Database interni
-|-- Postazioni utenti
+    Internet
+        |
+    Router ISP
+        |
+    Firewall perimetrale / NGFW
+        |
+        |-- DMZ
+        |     |-- Web server e-commerce
+        |     |-- Mail server / mail gateway
+        |
+        |-- LAN sede centrale
+              |-- Project repository
+              |-- Sistema gestionale
+              |-- Database interni
+              |-- Postazioni utenti
 
-Il server web e-commerce non deve accedere liberamente alla LAN interna. Se deve consultare dati aziendali, ad esempio prodotti, ordini o disponibilità, è preferibile usare un application server o API server intermedio, con regole firewall molto restrittive. Il database gestionale non va esposto direttamente in DMZ.
 
-Il server mail può essere collocato in DMZ come mail gateway, mentre le caselle effettive possono stare su server interno o su servizio cloud. Il gateway riceve e invia posta tramite SMTP, applica antispam, antivirus e controlli sui messaggi, poi inoltra verso il sistema interno.
+Il server web e-commerce non deve accedere liberamente alla LAN interna.  
+Se deve consultare dati aziendali, ad esempio prodotti, ordini o disponibilità, è preferibile usare un **application server o API server intermedio**, con regole firewall molto restrittive.  Il database gestionale, e in generale tutti i server che non necessitano di esposizione pubblica,  non va esposto direttamente in DMZ.
+
+Il server mail può essere collocato in DMZ come mail gateway, mentre le caselle effettive possono stare su server interno o su servizio cloud.  
+Il gateway riceve e invia posta tramite SMTP, applica antispam, antivirus e controlli sui messaggi, poi inoltra verso il sistema interno.    
+Piu' in dettaglio
+- il server SMTP esposto verso Internet viene spesso collocato nella DMZ, perché deve comunicare con server di posta esterni;  
+- il server POP3/IMAP può essere:
+  - interno oppure
+  - pubblicato in DMZ se accessibile anche dall’esterno.
+NB spesso SMTP e POP3/IMAP non sono server separati ma servizi **dello stesso mail server**.  
+
 
 Porte indicative da consentire:
 
-Servizio web: HTTP 80 e HTTPS 443 verso il web server, preferibilmente solo HTTPS per gli utenti finali.
+Servizio web: 
+HTTP 80 e HTTPS 443 verso il web server,  
+**preferibilmente solo HTTPS** per gli utenti finali.
 
-Servizio mail: SMTP 25 per ricezione tra server, submission 587 per invio autenticato, IMAPS 993 se gli utenti leggono la posta direttamente dal server aziendale.
+eMail  
+* SMTP porta 25: ricezione e inoltro della posta **tra mail server**;
+* SMTP porta 587: invio autenticato dei messaggi da parte degli utenti;
+* IMAPS porta 993: lettura sicura della posta direttamente dal server aziendale.
+
 
 Accessi amministrativi: solo da rete management o tramite VPN, mai direttamente da Internet.
 
 PlantUML:
 
-![PlantUML 2](../imgs/2024_straord_soluz_img2_r693_2024_straord_soluz_2_r825_puml.jpg)
+![PlantUML 2](../imgs/2024_straord_soluz_img2_r801_2024_straord_soluz_2_r933_puml.jpg)
 
 Motivo della scelta: la DMZ limita i danni in caso di compromissione di un server pubblico. Un attaccante che compromettesse il web server non dovrebbe poter raggiungere direttamente file server, repository, gestionale o database interni.
 
@@ -698,67 +806,116 @@ Motivo della scelta: la DMZ limita i danni in caso di compromissione di un serve
 
 La virtualizzazione dei server locali su un unico server fisico modifica soprattutto la parte server della nuova sede. Invece di avere più server fisici separati, si installa un server fisico potente con hypervisor e più macchine virtuali.
 
-Server virtualizzabili: file server reparto A, file server reparto B, file server reparto C, eventuale server autenticazione locale, server backup locale, server monitoraggio.
+Server virtualizzabili:  
+- file server reparto A,  
+- file server reparto B,  
+- file server reparto C,  
+- eventuale server autenticazione locale, 
+- server backup locale, 
+- server monitoraggio.
 
-La rete logica deve rimanere separata. Anche se i server sono nello stesso host fisico, le VM devono continuare ad appartenere a VLAN diverse.
+La rete logica deve rimanere separata.  
+Anche se i server sono nello stesso host fisico, le VM devono continuare ad appartenere a VLAN diverse.
 
-Esempio:
 
-VM File Server A nella VLAN server A, VM File Server B nella VLAN server B, VM File Server C nella VLAN server C, VM dominio/autenticazione nella VLAN servizi, VM backup nella VLAN backup o management.
+
+Esempio di assegnazione delle macchine virtuali:
+
+* VM File Server reparto A → VLAN Server A;  
+* VM File Server reparto B → VLAN Server B;  
+* VM File Server reparto C → VLAN Server C;  
+* VM autenticazione/dominio → VLAN Servizi;  
+* VM backup → VLAN Backup oppure VLAN Management;  
+* VM monitoraggio → VLAN Management o Servizi.  
+
 
 Modifiche fisiche consigliate:
 
-server fisico con CPU multi-core, RAM abbondante, storage RAID o storage ridondato, doppio alimentatore, almeno due schede di rete, collegamento ridondato agli switch, backup esterno.
+* server fisico con almeno 16 core CPU, per eseguire contemporaneamente più macchine virtuali mantenendo buone prestazioni;
+
+* almeno 64 GB di RAM, per assegnare memoria sufficiente alle VM di file server, autenticazione, backup e monitoraggio;
+
+* storage ridondato RAID 1 o RAID 10 con almeno 4 TB totali su dischi SSD o enterprise HDD, per garantire continuità operativa e maggiore affidabilità dei dati;
+
+* doppio alimentatore ridondato da almeno 750 W collegato a linee protette da UPS online da almeno 3000 VA, per mantenere operativo il server durante guasti o blackout;
+
+* almeno 2 schede di rete Gigabit Ethernet o 10 Gigabit Ethernet, per separare traffico dati, management e backup oppure realizzare ridondanza;
+
+* collegamenti ridondati verso due switch distinti tramite almeno 2 link Ethernet configurati in bonding/LACP, per aumentare affidabilità e disponibilità;
+
+* sistema di backup esterno con NAS dedicato da almeno 8 TB oppure backup remoto/cloud, per consentire il ripristino delle VM e dei dati in caso di guasti o attacchi ransomware.
+
 
 Modifiche logiche consigliate:
 
 creazione di virtual switch sull’hypervisor, trunk 802.1Q tra switch fisico e server di virtualizzazione, assegnazione di una VLAN a ogni VM, regole firewall identiche a quelle previste per server fisici, snapshot solo per manutenzione temporanea, backup regolari delle VM.
 
-Schema testuale:
+Schema:
 
+```text
 Switch centrale
-|
-Trunk 802.1Q
-|
-Server fisico con hypervisor
-|
-|-- vSwitch VLAN A server
-|-- VM File Server A
-|
-|-- vSwitch VLAN B server
-|-- VM File Server B
-|
-|-- vSwitch VLAN C server
-|-- VM File Server C
-|
-|-- vSwitch VLAN servizi
-|-- VM autenticazione / DNS / DHCP
+    |
+    +-- Trunk 802.1Q
+            |
+            +-- Server fisico con hypervisor
+                    |
+                    +-- vSwitch VLAN Server A
+                    |       |
+                    |       +-- VM File Server A
+                    |
+                    +-- vSwitch VLAN Server B
+                    |       |
+                    |       +-- VM File Server B
+                    |
+                    +-- vSwitch VLAN Server C
+                    |       |
+                    |       +-- VM File Server C
+                    |
+                    +-- vSwitch VLAN Servizi
+                            |
+                            +-- VM autenticazione / DNS / DHCP
+```
+
+NB **in una infrastruttura virtualizzata il server fisico con hypervisor viene normalmente collegato direttamente allo switch centrale tramite una o più interfacce Ethernet fisiche. Su quel collegamento transitano le diverse VLAN mediante trunk IEEE 802.1Q.**
+
 
 PlantUML:
 
-![PlantUML 3](../imgs/2024_straord_soluz_img3_r739_2024_straord_soluz_3_r901_puml.jpg)
+![PlantUML 3](../imgs/2024_straord_soluz_img3_r884_2024_straord_soluz_3_r1046_puml.jpg)
 
 Differenza tra hypervisor tipo 1 e tipo 2:
 
-Tipo 1: installato direttamente sull’hardware fisico, senza sistema operativo ospitante tradizionale. È più adatto ai server aziendali perché offre migliori prestazioni, maggiore isolamento e gestione più professionale.
+Tipo 1: installato direttamente sull’hardware fisico, **senza sistema operativo** ospitante tradizionale. È più adatto ai server aziendali perché offre **migliori prestazioni**, maggiore isolamento e gestione più **professionale**.
 
 Tipo 2: installato sopra un sistema operativo già esistente, ad esempio Windows o Linux desktop. È più adatto a laboratori, test e uso didattico, ma meno indicato per server di produzione.
 
-Esempi: VMware ESXi, Microsoft Hyper-V Server e Proxmox VE sono esempi di approccio tipo 1; VirtualBox e VMware Workstation sono esempi di tipo 2.
+Esempi:  
+tipo 1: VMware ESXi, Microsoft Hyper-V Server e Proxmox VE  
+tipo 2: VirtualBox, VMware Workstation, Parallels   
 
 ## SECONDA PARTE - Quesito III
 
 I protocolli di sicurezza WiFi si sono evoluti perché le prime soluzioni erano deboli e facilmente attaccabili.
 
-WEP è ormai insicuro. Usa meccanismi crittografici deboli e può essere violato con strumenti comuni. Non deve essere usato in una rete aziendale.
+**WEP**  
+ormai insicuro. Usa meccanismi crittografici deboli e può essere violato con strumenti comuni. Non deve essere usato in una rete aziendale.
 
-WPA è nato come soluzione transitoria per superare WEP. Migliora la sicurezza, ma oggi è superato e non dovrebbe essere scelto per una nuova infrastruttura.
+WPA  
+soluzione transitoria per superare WEP.  
+Migliora la sicurezza, ma oggi è superato e **non dovrebbe essere scelto** per una nuova infrastruttura.
 
-WPA2 è stato per anni lo standard principale. Con WPA2-Personal si usa una password condivisa; è adatto a reti domestiche o piccole reti non critiche. Con WPA2-Enterprise si usa autenticazione individuale, normalmente tramite server RADIUS e credenziali personali. Per un’azienda, WPA2-Enterprise è molto più corretto di WPA2-Personal.
+WPA2  
+è stato per anni lo standard principale.  
+Con WPA2-Personal si usa una password condivisa; è adatto a reti domestiche o piccole reti non critiche.  
+Con WPA2-Enterprise si usa autenticazione **individuale**, normalmente tramite server RADIUS e credenziali personali.  
+Per un’azienda, WPA2-Enterprise è molto più corretto di WPA2-Personal.
 
-WPA3 è l’evoluzione più recente. WPA3-Personal migliora la protezione rispetto alle password condivise tradizionali, grazie a un meccanismo più resistente agli attacchi offline. WPA3-Enterprise offre protezione più forte per ambienti aziendali e può usare configurazioni crittografiche più robuste.
+**WPA3** 
+evoluzione più recente.  
+Offre protezione più forte per ambienti aziendali e può usare configurazioni crittografiche più robuste.  
 
-Scelta per questa prova: nella sede aziendale è opportuno usare WPA2-Enterprise o WPA3-Enterprise, con autenticazione personale degli utenti, integrazione con directory aziendale e separazione in VLAN.
+Scelta per questo caso d'uso:  
+nella sede aziendale è opportuno usare WPA2-Enterprise o WPA3-Enterprise, con autenticazione **personale **degli utenti, integrazione con directory aziendale e separazione in VLAN.
 
 Esempio di reti WiFi:
 
@@ -772,27 +929,39 @@ La scelta Enterprise è coerente con il requisito di autenticazione degli utenti
 
 ## SECONDA PARTE - Quesito IV
 
-Un firewall controlla il traffico tra reti diverse applicando regole di sicurezza. Nel caso della prova serve sia per proteggere la sede locale, sia per separare i reparti, sia per controllare il collegamento verso Internet e verso la sede centrale.
+Un firewall controlla il traffico tra **reti diverse** applicando regole di sicurezza.  
+Nel caso della prova serve  
+- sia per proteggere la sede locale,  
+- sia **per separare i reparti**,  
+- sia per controllare il collegamento verso Internet e verso la sede centrale.
 
 Tipi principali di firewall:
 
-Packet filtering firewall: controlla pacchetti in base a indirizzi IP, porte e protocolli. È semplice e veloce, ma non comprende il contenuto applicativo.
+**Packet filtering firewall/stateless**: controlla pacchetti in base a indirizzi IP, porte e protocolli. È semplice e veloce, ma non comprende il contenuto applicativo.
 
-Stateful firewall: tiene conto dello stato delle connessioni. È più sicuro del semplice packet filtering perché distingue, ad esempio, una connessione legittima già aperta da un pacchetto isolato non atteso.
+**Stateful firewall**: tiene conto dello stato delle connessioni. È più sicuro del semplice packet filtering perché distingue, ad esempio, una connessione legittima già aperta da un pacchetto isolato non atteso.
 
-Next Generation Firewall: integra funzioni più avanzate, come controllo applicativo, IPS, filtraggio URL, ispezione del traffico e integrazione con utenti o gruppi.
+**NGFW** Next Generation Firewall:  
+integra funzioni più avanzate, come controllo applicativo, IPS, filtraggio URL, ispezione del traffico e integrazione con utenti o gruppi.
 
-Firewall interno o di segmentazione: separa reparti, server e reti amministrative. Nella prova è importante perché i reparti A, B e C non devono accedere tra loro, mentre D ed E devono avere permessi specifici sui file server.
+Suddivisione basata su impiego:
+- Edge/perimeter firewall  
+Separazione/Protezione rispetto a WAN (internet)  
+- Firewall interno (o di segmentazione):  
+separa reparti, server e reti amministrative. 
+Qui è importante perché i reparti A, B e C non devono accedere tra loro, mentre D ed E devono avere permessi specifici sui file server.
 
 Application gateway / proxy:
 
-Un proxy lavora a livello applicativo. Non si limita a vedere indirizzo IP e porta, ma interpreta il protocollo applicativo, ad esempio HTTP o HTTPS. Può filtrare siti, registrare accessi, applicare policy aziendali, bloccare contenuti non ammessi e migliorare il controllo sulla navigazione.
+Un proxy lavora a livello applicativo. Non si limita a vedere indirizzo IP e porta, ma interpreta il protocollo applicativo, ad esempio HTTP o HTTPS.  
+Può filtrare siti, registrare accessi, applicare policy aziendali, bloccare contenuti non ammessi e migliorare il controllo sulla navigazione.
 
 Differenza essenziale:
 
-il firewall decide se un traffico tra reti è consentito o bloccato, il proxy agisce come intermediario applicativo tra client e servizio richiesto.
+- il firewall decide se un traffico tra reti è consentito o bloccato,  
+- il proxy agisce come intermediario applicativo tra client e servizio richiesto.
 
-Applicazione alla prova:
+Utilizzo nel nostro scenario:
 
 Firewall perimetrale: protegge l’accesso Internet e gestisce NAT, VPN, regole in ingresso e uscita.
 
@@ -804,4 +973,5 @@ WAF: protegge il sito e-commerce della sede centrale da attacchi applicativi com
 
 IDS/IPS: rileva o blocca traffico sospetto, utile sia sul perimetro sia tra zone interne importanti.
 
-Scelta progettuale: per questa azienda non basta un solo firewall “verso Internet”. È necessario anche controllare il traffico est-ovest, cioè tra reparti e server interni, perché la traccia richiede permessi diversi per sviluppatori, tester, project manager e amministrazione.
+In sintesi: per questa azienda non basta un solo firewall “verso Internet”.  
+È necessario anche controllare il traffico cioè tra reparti e server interni (a volte chiamaato Est-Ovest) perché sono richiesti permessi diversi per sviluppatori, tester, project manager e amministrazione.

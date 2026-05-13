@@ -2,6 +2,19 @@
     "version": "0.2.0",
     "configurations": [
     {
+        "name": "-> .md loc. Py",
+        "type": "debugpy",
+        "request": "launch",
+        "program": "${workspaceFolder}/005_authoring/python/md_processor.py",
+        "console": "integratedTerminal",
+        "args": [
+            "--yes",
+            "${file}"
+        ],
+        "cwd": "${workspaceFolder}"
+    },
+
+    {
         "name": "→PDF Pandoc file corrente",
         "type": "node-terminal",
         "request": "launch",

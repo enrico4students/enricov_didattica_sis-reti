@@ -409,145 +409,15 @@ Reparto F (Amministrazione)
 
 ## 5. Diagramma PlantUML
 
-```
-@startuml
-skinparam linetype ortho
-skinparam shadowing false
-
-title Nuova sede - rete con dispositivi, mezzi trasmissivi e VLAN
-
-cloud "Internet" as INTERNET
-
-rectangle "Rete ISP\ninfrastruttura del provider" as ISP_NET
-
-rectangle "Mezzo trasmissivo WAN\nfibra ottica FTTH business" as WAN_MEDIUM
-
-node "Dispositivo ISP\nONT FTTH + Router/CPE business\n\nFunzioni:\n- terminazione WAN\n- accesso rete ISP\n- eventuale PPPoE/MPLS/BGP" as CPE
-
-node "Dispositivo aziendale\nFirewall / NGFW nuova sede\n\nFunzioni:\n- routing tra VLAN\n- routing verso Internet\n- routing verso VPN site-to-site\n- NAT/PAT\n- ACL inter-VLAN\n- IDS/IPS\n- filtraggio applicativo\n- logging" as FW
-
-node "Dispositivo aziendale\nCore Switch L3 / Distribution\n\nFunzioni:\n- switching centrale\n- trunk VLAN 802.1Q\n- aggregazione collegamenti\n- eventuale routing locale controllato" as CORE
-
-INTERNET --> ISP_NET
-ISP_NET --> WAN_MEDIUM
-WAN_MEDIUM --> CPE
-CPE --> FW
-FW --> CORE
-
-rectangle "LAN nuova sede - 10.24.0.0/16" as LAN {
-
-  rectangle "VLAN 10 - Utenti reparto A\n10.24.10.0/26" as VLAN10 {
-    node "PC sviluppo mobile" as PCA
-  }
-
-  rectangle "VLAN 11 - Servizi reparto A\n10.24.11.0/28" as VLAN11 {
-    node "File Server A" as FSA
-    node "Stampante A" as PRA
-  }
-
-  rectangle "VLAN 20 - Utenti reparto B\n10.24.20.0/26" as VLAN20 {
-    node "PC sviluppo web" as PCB
-  }
-
-  rectangle "VLAN 21 - Servizi reparto B\n10.24.21.0/28" as VLAN21 {
-    node "File Server B" as FSB
-    node "Stampante B" as PRB
-  }
-
-  rectangle "VLAN 30 - Utenti reparto C\n10.24.30.0/25" as VLAN30 {
-    node "PC sviluppo software" as PCC
-  }
-
-  rectangle "VLAN 31 - Servizi reparto C\n10.24.31.0/28" as VLAN31 {
-    node "File Server C" as FSC
-    node "Stampante C" as PRC
-  }
-
-  rectangle "VLAN 40 - Reparto D Test QA\n10.24.40.0/27" as VLAN40 {
-    node "PC tester QA" as PCD
-  }
-
-  rectangle "VLAN 50 - Project Management\n10.24.50.0/28" as VLAN50 {
-    node "PC project manager" as PCE
-  }
-
-  rectangle "VLAN 60 - Amministrazione\n10.24.60.0/27" as VLAN60 {
-    node "PC amministrazione" as PCF
-  }
-
-  rectangle "VLAN 70 - Servizi infrastrutturali\n10.24.70.0/27" as VLAN70 {
-    node "AD / LDAP" as AD
-    node "DNS" as DNS
-    node "DHCP" as DHCP
-    node "RADIUS" as RADIUS
-    node "Logging server" as LOG
-  }
-
-  rectangle "VLAN 80 - Management apparati\n10.24.80.0/28" as VLAN80 {
-    node "Console amministrazione" as ADMIN
-    node "Management\nswitch / firewall / AP" as MGMT
-  }
-
-  rectangle "VLAN 90 - WiFi ospiti\n10.24.90.0/24" as VLAN90 {
-    node "Client WiFi ospiti\nsolo Internet" as GUEST
-  }
-
-  rectangle "VLAN 99 - Backup\n10.24.99.0/27" as VLAN99 {
-    node "Backup server" as BACKUP
-    node "Replica dati" as REPLICA
-  }
-}
-
-CORE --> VLAN10 : VLAN 10
-CORE --> VLAN11 : VLAN 11
-CORE --> VLAN20 : VLAN 20
-CORE --> VLAN21 : VLAN 21
-CORE --> VLAN30 : VLAN 30
-CORE --> VLAN31 : VLAN 31
-CORE --> VLAN40 : VLAN 40
-CORE --> VLAN50 : VLAN 50
-CORE --> VLAN60 : VLAN 60
-CORE --> VLAN70 : VLAN 70
-CORE --> VLAN80 : VLAN 80
-CORE --> VLAN90 : VLAN 90
-CORE --> VLAN99 : VLAN 99
-
-cloud "VPN IPsec site-to-site\nsu Internet / WAN" as VPN
-
-node "Dispositivo aziendale\nFirewall sede centrale" as FW_HQ
-
-rectangle "Sede centrale - 10.10.0.0/16" as HQ {
-  node "Project repository remoto" as REPO
-  node "Sistema gestionale remoto" as ERP
-}
-
-FW --> VPN
-VPN --> FW_HQ
-FW_HQ --> HQ
-
-PCD --> FSA : accesso controllato
-PCD --> FSB : accesso controllato
-PCD --> FSC : accesso controllato
-
-PCE --> FSA : accesso PM
-PCE --> FSB : accesso PM
-PCE --> FSC : accesso PM
-PCE --> REPO : versioni finali
-
-PCF --> ERP : gestionale remoto
-
-PCA --> PRA : stampa A
-PCB --> PRB : stampa B
-PCC --> PRC : stampa C
-
-@enduml
-```
+![PlantUML 1](../imgs/2024_straord_soluz_img1_r412_2024_straord_soluz_1_r412_puml.jpg)
 
 ## 6. Piano VLAN e indirizzamento
 
-Rete scelta nuova sede: 10.24.0.0/16 cioè una rete privata RFC1918.
+Si usa una rete privata unica per la nuova sede:
 
-Le sottoreti sono definite con VLSM. 
+10.24.0.0/16
+
+Le sottoreti sono scelte con VLSM, ma mantenendo blocchi leggibili. 
 
 Il reparto C richiede almeno 110 host, quindi si usa /25.  
 I reparti A, B, D, F richiedono meno host ma ricevono margine sufficiente.  
@@ -592,47 +462,6 @@ Nota: negli intervalli “host utilizzabili” è incluso anche il gateway; per 
 | Console admin    |    80 | 10.24.80.10     | gestione apparati          |
 | Firewall interno | varie | .1 su ogni VLAN | gateway e policy           |
 
-### Piano semplificato
-
-Meno reti ponendo file server e stampante nella rete di reparto, 
-normalmente sconsigliabile ma accettabile nella prova d'esame
-
-Sempre con rete 10.24.0.0/16,  rete privata RFC1918.
-
-Rete nuova sede: 10.24.0.0/16
-
-
-| VLAN | Nome rete      | Subnet        | Gateway    | Router / interfaccia VLAN | Broadcast      | Primo host utente | Host utilizzabili | Dispositivi principali              |
-| ---: | -------------- | ------------- | ---------- | -------------------------- | -------------- | ----------------- | ----------------- | ----------------------------------- |
-| 90   | WiFi ospiti    | 10.24.90.0/24 | 10.24.90.1 | 10.24.90.1                 | 10.24.90.255   | 10.24.90.2        | 254               | client ospiti, solo Internet        |
-| 30   | Reparto C      | 10.24.30.0/25 | 10.24.30.1 | 10.24.30.1                 | 10.24.30.127   | 10.24.30.20       | 126               | PC C, File Server C, Stampante C    |
-| 10   | Reparto A      | 10.24.10.0/26 | 10.24.10.1 | 10.24.10.1                 | 10.24.10.63    | 10.24.10.20       | 62                | PC A, File Server A, Stampante A    |
-| 20   | Reparto B      | 10.24.20.0/26 | 10.24.20.1 | 10.24.20.1                 | 10.24.20.63    | 10.24.20.20       | 62                | PC B, File Server B, Stampante B    |
-| 40   | Reparto D      | 10.24.40.0/27 | 10.24.40.1 | 10.24.40.1                 | 10.24.40.31    | 10.24.40.10       | 30                | PC test qualità                     |
-| 60   | Reparto F      | 10.24.60.0/27 | 10.24.60.1 | 10.24.60.1                 | 10.24.60.31    | 10.24.60.10       | 30                | PC amministrazione                  |
-| 70   | Servizi locali | 10.24.70.0/27 | 10.24.70.1 | 10.24.70.1                 | 10.24.70.31    | non applicabile   | 30                | AD/LDAP, DNS, DHCP, RADIUS, logging |
-| 99   | Backup         | 10.24.99.0/27 | 10.24.99.1 | 10.24.99.1                 | 10.24.99.31    | non applicabile   | 30                | backup server, replica dati         |
-| 50   | Reparto E      | 10.24.50.0/28 | 10.24.50.1 | 10.24.50.1                 | 10.24.50.15    | 10.24.50.10       | 14                | PC project management               |
-| 80   | Management     | 10.24.80.0/28 | 10.24.80.1 | 10.24.80.1                 | 10.24.80.15    | non applicabile   | 14                | apparati, console amministrazione   |
-
-
-Ulteriormente semplificato, senza  
-VLAN 90 - WiFi ospiti  
-VLAN 99 - Backup  
-VLAN 70 - Servizi locali    
-
-
-| VLAN | Nome rete | Subnet        | Gateway    | Router / interfaccia VLAN | Broadcast    | Primo IP disponibile per PC utente | Host utilizzabili | Dispositivi principali           |
-| ---: | --------- | ------------- | ---------- | -------------------------- | ------------ | ---------------------------------- | ----------------- | -------------------------------- |
-| 30   | Reparto C | 10.24.30.0/25 | 10.24.30.1 | 10.24.30.1                 | 10.24.30.127 | 10.24.30.2                         | 126               | PC C, File Server C, Stampante C |
-| 10   | Reparto A | 10.24.10.0/26 | 10.24.10.1 | 10.24.10.1                 | 10.24.10.63  | 10.24.10.2                         | 62                | PC A, File Server A, Stampante A |
-| 20   | Reparto B | 10.24.20.0/26 | 10.24.20.1 | 10.24.20.1                 | 10.24.20.63  | 10.24.20.2                         | 62                | PC B, File Server B, Stampante B |
-| 40   | Reparto D | 10.24.40.0/27 | 10.24.40.1 | 10.24.40.1                 | 10.24.40.31  | 10.24.40.2                         | 30                | PC test qualità                  |
-| 60   | Reparto F | 10.24.60.0/27 | 10.24.60.1 | 10.24.60.1                 | 10.24.60.31  | 10.24.60.2                         | 30                | PC amministrazione               |
-| 50   | Reparto E | 10.24.50.0/28 | 10.24.50.1 | 10.24.50.1                 | 10.24.50.15  | 10.24.50.2                         | 14                | PC project management            |
-
-
-
 ## 8. Policy di comunicazione tra reparti
 
 La regola generale è deny by default: tutto il traffico tra VLAN è bloccato, salvo ciò che viene esplicitamente consentito.
@@ -658,8 +487,7 @@ La regola generale è deny by default: tutto il traffico tra VLAN è bloccato, s
 
 ## 9. Autenticazione degli utenti
 
-L’accesso ai computer deve avvenire previa autenticazione.  
-Si propone un dominio aziendale locale o integrato con la sede centrale, basato su Active Directory oppure LDAP/Kerberos.  
+L’accesso ai computer deve avvenire previa autenticazione. Si propone un dominio aziendale locale o integrato con la sede centrale, basato su Active Directory oppure LDAP/Kerberos.
 
 Gli utenti accedono con credenziali personali. I gruppi principali sono:
 
@@ -669,11 +497,7 @@ I permessi sui file server vengono assegnati ai gruppi, non ai singoli utenti, p
 
 Esempio sui file server:
 
-File server A:  
-DEV_A lettura/scrittura sulle cartelle di lavoro,  
-TEST_QA accesso alle aree da validare con possibilità di scrivere report e rinominare cartelle  
-PROJECT_MANAGER accesso completo operativo, altri reparti negati.  
-
+File server A: DEV_A lettura/scrittura sulle cartelle di lavoro, TEST_QA accesso alle aree da validare con possibilità di scrivere report e rinominare cartelle, PROJECT_MANAGER accesso completo operativo, altri reparti negati.
 
 ## 10. Misure di sicurezza interna ed esterna
 
@@ -683,23 +507,21 @@ segmentazione VLAN, ACL/firewall tra VLAN, autenticazione centralizzata, autoriz
 
 Sicurezza esterna:
 
-- firewall/NGFW, NAT per l’uscita Internet,   
-- VPN IPsec site-to-site verso sede centrale,  
-- filtraggio DNS o proxy, IDS/IPS,  
-- blocco degli accessi amministrativi da Internet,  
-- monitoraggio dei log,  
-- MFA per accessi amministrativi e remoti.  
+firewall/NGFW, NAT per l’uscita Internet, VPN IPsec site-to-site verso sede centrale, filtraggio DNS o proxy, IDS/IPS, blocco degli accessi amministrativi da Internet, monitoraggio dei log, MFA per accessi amministrativi e remoti.
 
 La scelta più importante è separare rete utenti, rete server, rete management e rete ospiti. In questo modo un problema su un reparto non consente automaticamente di raggiungere tutti gli altri sistemi.
 
 ## 11. Collegamento verso la sede centrale
 
-Il collegamento tra nuova sede e sede centrale viene realizzato **tramite VPN IPsec site-to-site** tra i due firewall aziendali.
+Il collegamento tra nuova sede e sede centrale viene realizzato tramite VPN IPsec site-to-site tra i due firewall aziendali.
 
-Motivi:  
-- la sede è in città diversa, quindi il traffico passa su rete geografica o Internet;  
-- i dati trasferiti, progetti software, documentazione, dati amministrativi, possiamo considerarli riservati    
-- serve cifratura, autenticazione dei peer e controllo degli indirizzi raggiungibili.  
+Motivi:
+
+la sede è in città diversa, quindi il traffico passa su rete geografica o Internet;
+
+i dati trasferiti comprendono progetti software, documentazione, dati amministrativi;
+
+serve cifratura, autenticazione dei peer e controllo degli indirizzi raggiungibili.
 
 Traffico consentito sulla VPN:
 
@@ -732,34 +554,31 @@ Reti sede centrale
 
 Regole principali:
 
-10.24.50.0/28 può raggiungere 10.10.20.10,   
-10.24.60.0/27 può raggiungere 10.10.30.10,  
-le altre VLAN non accedono ai server centrali salvo necessità documentata.  
+10.24.50.0/28 può raggiungere 10.10.20.10, 10.24.60.0/27 può raggiungere 10.10.30.10, le altre VLAN non accedono ai server centrali salvo necessità documentata.
 
 ## 13. Configurazione di un servizio: file server dei reparti
 
 Si dettaglia il servizio file server, perché è centrale nella traccia.
 
-Ogni reparto A, B e C ha un file server dedicato o una VM dedicata.  
-Il servizio può essere SMB/CIFS in ambiente Windows oppure Samba in ambiente Linux integrato con dominio.  
+Ogni reparto A, B e C ha un file server dedicato o una VM dedicata. Il servizio può essere SMB/CIFS in ambiente Windows oppure Samba in ambiente Linux integrato con dominio.
 
-  Esempio per File Server A:
+Esempio per File Server A:
 
-    nome server: FS-A
+  nome server: FS-A
 
-    IP: 10.24.11.10
+  IP: 10.24.11.10
 
-    share principale: \FS-A\progetti_A
+  share principale: \FS-A\progetti_A
 
-    gruppi autorizzati:
+  gruppi autorizzati:
 
-    DEV_A: lettura/scrittura sui progetti in lavorazione;
+  DEV_A: lettura/scrittura sui progetti in lavorazione;
 
-    TEST_QA: lettura sui progetti e scrittura nella sottocartella report_test; possibilità controllata di rinominare cartelle finali;
+  TEST_QA: lettura sui progetti e scrittura nella sottocartella report_test; possibilità controllata di rinominare cartelle finali;
 
-    PROJECT_MANAGER: accesso completo alle versioni finali;
+  PROJECT_MANAGER: accesso completo alle versioni finali;
 
-    IT_ADMIN: amministrazione tecnica.
+  IT_ADMIN: amministrazione tecnica.
 
 Struttura cartelle:
 
@@ -780,12 +599,9 @@ Permessi consigliati:
 | Finali         | lettura  | scrittura controllata/rename tramite procedura | modifica          | controllo completo |
 | Report_Test    | lettura  | scrittura                                      | lettura/scrittura | controllo completo |
 
-Per la richiesta “rinominare la cartella aggiungendo _Final_Version e renderla read-only”, è preferibile non lasciare libertà completa ai tester su tutto il file server. La soluzione più ordinata è prevedere una procedura o script controllato, eseguito con permessi adeguati, che:  
-- verifica che il tester appartenga al gruppo TEST_QA,  
-- controlla che il progetto sia in stato “test superato”,  
-- scrive il report nella cartella,  
-- rinomina la cartella aggiungendo _Final_Version,  
-- modifica i permessi rendendo la cartella non più modificabile dagli sviluppatori.
+Per la richiesta “rinominare la cartella aggiungendo _Final_Version e renderla read-only”, è preferibile non lasciare libertà completa ai tester su tutto il file server. La soluzione più ordinata è prevedere una procedura o script controllato, eseguito con permessi adeguati, che:
+
+verifica che il tester appartenga al gruppo TEST_QA, controlla che il progetto sia in stato “test superato”, scrive il report nella cartella, rinomina la cartella aggiungendo _Final_Version, modifica i permessi rendendo la cartella non più modificabile dagli sviluppatori.
 
 Esempio di logica operativa:
 
@@ -811,11 +627,11 @@ Quando una versione è marcata come finale, i project manager trasferiscono il c
 
 Protocollo consigliato:
 
-- Git over HTTPS se si tratta di codice sorgente versionato;
+Git over HTTPS se si tratta di codice sorgente versionato;
 
-- SFTP/SSH se si tratta di pacchetti, documentazione, manuali o archivi;
+SFTP/SSH se si tratta di pacchetti, documentazione, manuali o archivi;
 
-- HTTPS verso piattaforma repository aziendale se il sistema remoto è GitLab, Bitbucket Server o simile.
+HTTPS verso piattaforma repository aziendale se il sistema remoto è GitLab, Gitea, Bitbucket Server o simile.
 
 Esempio:
 
@@ -831,11 +647,7 @@ backup: repository centrale sottoposto a backup periodico.
 
 ## 15. Sintesi delle scelte adottate
 
-VLAN separate perché i reparti hanno requisiti di accesso diversi.  
-- I file server sono separati per reparto perché la traccia richiede isolamento tra A, B e C.  
-- Il reparto D riceve accessi specifici per il test qualità, non accesso generale alla rete.  
-- Il reparto E ha accesso più ampio perché deve consolidare le versioni finali e inviarle al repository centrale.  
-- Il reparto F (gestione tecnica) ha accesso al gestionale remoto e a Internet, ma non ai sistemi tecnici degli sviluppatori.
+La soluzione usa VLAN separate perché i reparti hanno requisiti di accesso diversi. I file server sono separati per reparto perché la traccia richiede isolamento tra A, B e C. Il reparto D riceve accessi specifici per il test qualità, non accesso generale alla rete. Il reparto E ha accesso più ampio perché deve consolidare le versioni finali e inviarle al repository centrale. Il reparto F ha accesso al gestionale remoto e a Internet, ma non ai sistemi tecnici degli sviluppatori.
 
 La VPN site-to-site è la scelta più coerente per collegare sedi diverse in modo sicuro. Il firewall/NGFW è il punto principale di controllo, mentre la directory centralizzata garantisce autenticazione e autorizzazioni coerenti.
 
@@ -846,29 +658,27 @@ La VPN site-to-site è la scelta più coerente per collegare sedi diverse in mod
 
 Presso la sede centrale si prevede una zona separata per i server pubblici, distinta dalla LAN interna e protetta da firewall. La scelta più corretta è realizzare una DMZ, cioè una rete intermedia nella quale collocare i servizi raggiungibili da Internet: server web e-commerce e server mail.
 
-Schema:
+Schema testuale:
 
-    Internet
-        |
-    Router ISP
-        |
-    Firewall perimetrale / NGFW
-        |
-        |-- DMZ pubblica
-        |     |-- Web server e-commerce
-        |     |-- Mail server / mail gateway
-        |
-        |-- LAN sede centrale
-              |-- Project repository
-              |-- Sistema gestionale
-              |-- Database interni
-              |-- Postazioni utenti
+Internet
+|
+Router ISP
+|
+Firewall perimetrale / NGFW
+|
+|-- DMZ pubblica
+|     |-- Web server e-commerce
+|     |-- Mail server / mail gateway
+|
+|-- LAN sede centrale
+|-- Project repository
+|-- Sistema gestionale
+|-- Database interni
+|-- Postazioni utenti
 
+Il server web e-commerce non deve accedere liberamente alla LAN interna. Se deve consultare dati aziendali, ad esempio prodotti, ordini o disponibilità, è preferibile usare un application server o API server intermedio, con regole firewall molto restrittive. Il database gestionale non va esposto direttamente in DMZ.
 
-Il server web e-commerce non deve accedere liberamente alla LAN interna. Se deve consultare dati aziendali, ad esempio prodotti, ordini o disponibilità, è preferibile usare un **application server o API server intermedio**, con regole firewall molto restrittive. Il database gestionale non va esposto direttamente in DMZ.
-
-Il server mail può essere collocato in DMZ come mail gateway, mentre le caselle effettive possono stare su server interno o su servizio cloud.  
-Il gateway riceve e invia posta tramite SMTP, applica antispam, antivirus e controlli sui messaggi, poi inoltra verso il sistema interno.  
+Il server mail può essere collocato in DMZ come mail gateway, mentre le caselle effettive possono stare su server interno o su servizio cloud. Il gateway riceve e invia posta tramite SMTP, applica antispam, antivirus e controlli sui messaggi, poi inoltra verso il sistema interno.
 
 Porte indicative da consentire:
 
@@ -880,37 +690,7 @@ Accessi amministrativi: solo da rete management o tramite VPN, mai direttamente 
 
 PlantUML:
 
-```
-@startuml
-skinparam linetype ortho
-skinparam shadowing false
-
-cloud "Internet" as Internet
-node "Router ISP" as ISP
-node "Firewall perimetrale / NGFW" as FW
-
-rectangle "DMZ pubblica" as DMZ {
-  node "Web server e-commerce\nHTTPS 443" as WEB
-  node "Mail gateway\nSMTP / Antispam / Antivirus" as MAIL
-}
-
-rectangle "LAN sede centrale" as LAN {
-  node "Project repository" as REPO
-  node "Sistema gestionale" as ERP
-  database "Database interni" as DB
-  node "Rete utenti interni" as USERS
-}
-
-Internet --> ISP
-ISP --> FW
-FW --> DMZ
-FW --> LAN
-WEB --> DB : solo query/API autorizzate
-MAIL --> LAN : inoltro posta interna
-USERS --> ERP
-USERS --> REPO
-@enduml
-```
+![PlantUML 2](../imgs/2024_straord_soluz_img2_r693_2024_straord_soluz_2_r825_puml.jpg)
 
 Motivo della scelta: la DMZ limita i danni in caso di compromissione di un server pubblico. Un attaccante che compromettesse il web server non dovrebbe poter raggiungere direttamente file server, repository, gestionale o database interni.
 
@@ -956,40 +736,7 @@ Server fisico con hypervisor
 
 PlantUML:
 
-```
-@startuml
-skinparam linetype ortho
-skinparam shadowing false
-
-node "Switch centrale\ntrunk 802.1Q" as SW
-
-node "Server fisico di virtualizzazione" as HOST {
-  node "Hypervisor tipo 1" as HYP
-
-  rectangle "vSwitch VLAN Server A" as VSA {
-    node "VM File Server A" as FSA
-  }
-
-  rectangle "vSwitch VLAN Server B" as VSB {
-    node "VM File Server B" as FSB
-  }
-
-  rectangle "vSwitch VLAN Server C" as VSC {
-    node "VM File Server C" as FSC
-  }
-
-  rectangle "vSwitch VLAN Servizi" as VSS {
-    node "VM AD/DNS/DHCP" as AD
-  }
-}
-
-SW --> HOST : trunk VLAN
-HYP --> VSA
-HYP --> VSB
-HYP --> VSC
-HYP --> VSS
-@enduml
-```
+![PlantUML 3](../imgs/2024_straord_soluz_img3_r739_2024_straord_soluz_3_r901_puml.jpg)
 
 Differenza tra hypervisor tipo 1 e tipo 2:
 

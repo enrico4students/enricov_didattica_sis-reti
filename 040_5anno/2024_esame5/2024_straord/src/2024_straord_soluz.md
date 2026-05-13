@@ -22,7 +22,7 @@ Il candidato svolga la prima parte della prova e due tra i quesiti proposti nell
 
 ## Azienda Informatica con nuova sede staccata
 
-Un’azienda informatica in forte espansione ha acquisito un capannone per realizzare una nuova sede in una città diversa da quella in cui si trova la sede principale.
+Un’azienda informatica in forte espansione ha acquisito un capannone per realizzare una nuova sede **in una città diversa** da quella in cui si trova la sede principale.
 
 Presso tale capannone l’azienda vuole realizzare tre distinti reparti di produzione software in cui lavoreranno gli sviluppatori:
 
@@ -42,25 +42,30 @@ Ciascun addetto necessita di una propria postazione dotata di computer desktop a
 | ----------- | -- | -- | --- | -- | -- | -- |
 | N° computer | 50 | 30 | 100 | 20 | 10 | 20 |
 
-Ogni reparto prevede inoltre fino ad un 10% di computer di riserva per sopperire ad eventuali guasti.
+Ogni reparto prevede inoltre fino ad un **10% di computer di riserva** per sopperire ad eventuali guasti.
 
-L’accesso a ciascun computer deve avvenire previa autenticazione dell’utente.
+L’accesso a ciascun computer deve avvenire previa **autenticazione** dell’utente.
 
-Ogni sviluppatore dei reparti A, B, C deve potere accedere ad internet, ad una stampante di rete e ad un file server entrambi collocati nel proprio reparto, mentre non deve essergli consentito di accedere ai sistemi interni di altri reparti.
+Ogni sviluppatore dei reparti A, B, C deve potere accedere ad internet, ad una **stampante di rete e ad un file server** entrambi collocati **nel proprio reparto**, mentre non deve essergli consentito di accedere ai sistemi interni di altri reparti.
 
-Gli operatori del reparto D devono potere accedere ai file server locali dei reparti A, B, C per potere effettuare i test sui progetti e qualora un test risulti superato lasciare un report nella relativa cartella, rinominarla aggiungendo al nome della cartella un suffisso per marcare il progetto come terminato (es. “_Final_Version”) e renderla “read-only”.
+Gli operatori del **reparto D devono potere accedere ai file server *locali* dei reparti A, B, C** per potere effettuare i test sui progetti e qualora un test risulti superato lasciare un report nella relativa cartella, rinominarla aggiungendo al nome della cartella un suffisso per marcare il progetto come terminato (es. “_Final_Version”) e renderla “read-only”.
 
-I Project manager del reparto E devono potere accedere a tutti i file server locali del capannone e devono inoltre, ogni qualvolta si ha una versione terminata di un determinato progetto, trasferirne i file su un sistema server remoto (project repository) dislocato presso la sede centrale, aggiungendo la documentazione ed i manuali.
+I Project manager del reparto E devono potere accedere a tutti i file server locali del capannone e devono inoltre, ogni qualvolta si ha una versione terminata di un determinato progetto, trasferirne i file su un sistema server remoto **(project repository) dislocato presso la sede centrale**, aggiungendo la documentazione ed i manuali.
 
-L’amministrazione del reparto F deve potere accedere ad internet ed al sistema gestionale remoto presso la sede centrale.
+L’amministrazione del reparto F deve potere accedere ad internet ed al sistema gestionale **remoto** presso la sede centrale.
 
 ---
 
 Il candidato analizzi la realtà di riferimento e, fatte le opportune ipotesi aggiuntive, sviluppi i seguenti punti:
 
-1. un progetto di massima dell’infrastruttura della rete della nuova sede, anche supportato da uno schema grafico, prevedendo struttura delle sottoreti, apparati, servizi implementati, tipologia delle connessioni interne e verso Internet ed un opportuno piano di indirizzamento dei sistemi;
+1. un progetto **di massima** dell’infrastruttura della rete della nuova sede, anche supportato da uno schema grafico, prevedendo 
+  -  **struttura delle sottoreti**,  
+  -  apparati,  
+  -  servizi implementati,  
+  -  tipologia delle connessioni interne e verso Internet ed  
+  -  un opportuno piano di indirizzamento dei sistemi;
 
-2. le misure ed i sistemi per la gestione della sicurezza interna ed esterna;
+2. le misure ed i sistemi per la gestione della sicurezza **interna** ed esterna;
 
 3. modalità e protocolli di collegamento verso i sistemi remoti nella sede centrale;
 
@@ -72,7 +77,7 @@ Il candidato analizzi la realtà di riferimento e, fatte le opportune ipotesi ag
 
 ## Quesito I
 
-In relazione al tema proposto nella prima parte, si ipotizzi che presso la sede centrale siano inoltre presenti, in aggiunta al server remoto (project repository) ed al sistema gestionale, una serie di server pubblici per offrire i seguenti servizi:
+In relazione al tema proposto nella prima parte, si ipotizzi che **presso la sede centrale** siano inoltre presenti, in aggiunta al server remoto (project repository) ed al sistema gestionale, una serie di **server pubblici** per offrire i seguenti servizi:
 
 * server web aziendale per la pubblicazione del sito di e-commerce dei propri prodotti
 * mail aziendale
@@ -123,13 +128,22 @@ Non è consentito lasciare l’Istituto prima che siano trascorse 3 ore dalla co
 
 ## 1. Ipotesi progettuali
 
-La nuova sede viene progettata come rete aziendale separata dalla sede centrale ma collegata tramite VPN site-to-site.
+La nuova sede viene progettata come rete aziendale separata dalla sede centrale ma collegata tramite **VPN site-to-site**.
 
 Si adottano queste scelte:
 
-rete cablata Gigabit Ethernet per le postazioni, dorsali in fibra o rame 10 GbE tra armadio centrale e armadi di piano/reparto, VLAN separate per reparti e server, autenticazione centralizzata degli utenti, firewall perimetrale con VPN verso la sede centrale, ACL/firewall interni per impedire accessi non autorizzati tra reparti.
+- rete cablata Gigabit Ethernet per le postazioni,  
+- dorsali in fibra o rame 10 GbE tra armadio centrale e armadi di piano/reparto,  
+- VLAN separate per reparti e server,  
+- autenticazione centralizzata degli utenti,  
+- firewall perimetrale con VPN verso la sede centrale,  
+- ACL/firewall interni per impedire accessi non autorizzati tra reparti.
 
-La separazione tra reparti è necessaria perché la traccia richiede che gli sviluppatori dei reparti A, B e C non accedano ai sistemi interni degli altri reparti. I reparti D ed E hanno invece permessi trasversali, ma diversi: D deve accedere ai file server A/B/C per test e marcatura delle versioni finali; E deve accedere a tutti i file server e trasferire le versioni definitive al repository remoto.
+La separazione tra reparti è necessaria perché la traccia richiede che 
+- gli sviluppatori dei reparti A, B e C **non** accedano ai sistemi interni degli altri reparti.  
+- I reparti D ed E hanno invece permessi trasversali, ma diversi: 
+  - D (test & qualità) deve accedere ai file server A/B/C per test e marcatura delle versioni finali;  
+  - E (project manager) deve accedere a tutti i file server e trasferire le versioni definitive al repository remoto.
 
 ## 2. Dimensionamento delle postazioni
 
@@ -148,15 +162,16 @@ Si aggiunge margine per stampanti, server, apparati, crescita futura e gestione.
 
 ## 3. Architettura generale della nuova sede
 
-Si propone una rete a due livelli, adatta a una sede di queste dimensioni:
+Si propone una rete a **due livelli**, adatta a una sede di queste dimensioni:
 
-livello accesso: switch di reparto per PC, stampanti e server locali;
+- **livello accesso**: switch di reparto per PC, stampanti e server locali;
+- livello **core/distribution**: coppia di switch centrali Layer 3 o switch centrale ridondato, collegato al firewall.
 
-livello core/distribution: coppia di switch centrali Layer 3 o switch centrale ridondato, collegato al firewall.
+Il **routing tra VLAN** viene concentrato sul core L3 oppure sul firewall. 
+In questa soluzione si sceglie routing **centralizzato su firewall/NGFW per le VLAN più sensibili**, perché il controllo tra reparti è un requisito importante della traccia. 
+Il core switch gestisce trunk, aggregazioni e connettività interna, mentre il firewall applica le policy principali tra VLAN.
 
-Il routing tra VLAN viene concentrato sul core L3 oppure sul firewall. In questa soluzione si sceglie routing centralizzato su firewall/NGFW per le VLAN più sensibili, perché il controllo tra reparti è un requisito importante della traccia. Il core switch gestisce trunk, aggregazioni e connettività interna, mentre il firewall applica le policy principali tra VLAN.
-
-## 4. Diagramma testuale dell’infrastruttura
+## 4. Diagramma conciso 
 
 ```
 Internet
@@ -188,6 +203,210 @@ Core switch L3 / Distribution
   |-- VLAN 99 - Backup
 ```
 
+
+### Diagramma dettagliato  
+
+
+```text id="claritynet01"
+
+                                    INTERNET
+                                        |
+                                        |
+                         Infrastruttura di rete del provider ISP
+                                        |
+================================================================================
+MEZZO TRASMISSIVO WAN
+Fibra ottica FTTH business
+(collegamento fisico WAN)
+================================================================================
+                                        |
+                                        |
++----------------------------------------------------------------------------+
+| DISPOSITIVO ISP                                                           |
+| ONT FTTH + Router/CPE business provider                                   |
+|                                                                            |
+| Funzioni tipiche:                                                          |
+| - terminazione collegamento WAN                                            |
+| - accesso alla rete ISP                                                    |
+| - eventuale PPPoE/MPLS/BGP                                                 |
++----------------------------------------------------------------------------+
+                                        |
+                                        |
++----------------------------------------------------------------------------+
+| DISPOSITIVO AZIENDALE                                                      |
+| Firewall / NGFW nuova sede                                                 |
+|                                                                            |
+| Funzioni:                                                                  |
+| - routing tra VLAN                                                         |
+| - routing verso Internet                                                   |
+| - routing verso VPN site-to-site                                           |
+| - NAT/PAT                                                                  |
+| - ACL inter-VLAN                                                           |
+| - IDS/IPS                                                                  |
+| - filtraggio applicativo                                                   |
+| - logging e monitoraggio                                                   |
++----------------------------------------------------------------------------+
+                                        |
+                                        |
++----------------------------------------------------------------------------+
+| DISPOSITIVO AZIENDALE                                                      |
+| Core Switch Layer 3 / Distribution                                         |
+|                                                                            |
+| Funzioni:                                                                  |
+| - switching centrale                                                       |
+| - trunk VLAN 802.1Q                                                        |
+| - aggregazione collegamenti                                                |
+| - eventuale routing locale controllato                                     |
++----------------------------------------------------------------------------+
+                                        |
+================================================================================
+RETE LAN AZIENDALE
+================================================================================
+    |
+    |---------------- VLAN 10 - Utenti reparto A
+    |                 10.24.10.0/26
+    |                 Dispositivi:
+    |                 - PC sviluppo mobile
+    |
+    |---------------- VLAN 11 - Servizi reparto A
+    |                 10.24.11.0/28
+    |                 Dispositivi:
+    |                 - File Server A
+    |                 - Stampante A
+    |
+    |---------------- VLAN 20 - Utenti reparto B
+    |                 10.24.20.0/26
+    |                 Dispositivi:
+    |                 - PC sviluppo web
+    |
+    |---------------- VLAN 21 - Servizi reparto B
+    |                 10.24.21.0/28
+    |                 Dispositivi:
+    |                 - File Server B
+    |                 - Stampante B
+    |
+    |---------------- VLAN 30 - Utenti reparto C
+    |                 10.24.30.0/25
+    |                 Dispositivi:
+    |                 - PC sviluppo software
+    |
+    |---------------- VLAN 31 - Servizi reparto C
+    |                 10.24.31.0/28
+    |                 Dispositivi:
+    |                 - File Server C
+    |                 - Stampante C
+    |
+    |---------------- VLAN 40 - Reparto D Test QA
+    |                 10.24.40.0/27
+    |                 Dispositivi:
+    |                 - PC tester
+    |
+    |---------------- VLAN 50 - Project Management
+    |                 10.24.50.0/28
+    |                 Dispositivi:
+    |                 - PC project manager
+    |
+    |---------------- VLAN 60 - Amministrazione
+    |                 10.24.60.0/27
+    |                 Dispositivi:
+    |                 - PC amministrazione
+    |
+    |---------------- VLAN 70 - Servizi infrastrutturali
+    |                 10.24.70.0/27
+    |                 Dispositivi:
+    |                 - AD/LDAP
+    |                 - DNS
+    |                 - DHCP
+    |                 - RADIUS
+    |                 - Logging server
+    |
+    |---------------- VLAN 80 - Management apparati
+    |                 10.24.80.0/28
+    |                 Dispositivi:
+    |                 - Console amministrazione
+    |                 - Management switch
+    |                 - Management firewall
+    |                 - Management access point
+    |
+    |---------------- VLAN 90 - WiFi ospiti
+    |                 10.24.90.0/24
+    |                 Dispositivi:
+    |                 - client WiFi ospiti
+    |                 - solo accesso Internet
+    |
+    |---------------- VLAN 99 - Backup
+                      10.24.99.0/27
+                      Dispositivi:
+                      - Backup server
+                      - Replica dati
+
+
+================================================================================
+COLLEGAMENTO TRA SEDI
+================================================================================
+
+Nuova sede
+10.24.0.0/16
+        |
++----------------------------------------------------------------------------+
+| DISPOSITIVO AZIENDALE                                                      |
+| Firewall nuova sede                                                        |
++----------------------------------------------------------------------------+
+        |
+================================================================================
+MEZZO TRASMISSIVO WAN / INTERNET
+Tunnel VPN IPsec cifrato
+================================================================================
+        |
++----------------------------------------------------------------------------+
+| DISPOSITIVO AZIENDALE                                                      |
+| Firewall sede centrale                                                     |
++----------------------------------------------------------------------------+
+        |
+Sede centrale
+10.10.0.0/16
+        |
+        |-- Project repository
+        |-- Sistema gestionale
+```
+
+
+
+----------------------------------------------------------------------------------------
+ACCESSI PRINCIPALI
+----------------------------------------------------------------------------------------
+
+Reparto A
+    -> Internet
+    -> File Server A
+    -> Stampante A
+    X  nessun accesso ai sistemi B e C
+
+Reparto B
+    -> Internet
+    -> File Server B
+    -> Stampante B
+    X  nessun accesso ai sistemi A e C
+
+Reparto C
+    -> Internet
+    -> File Server C
+    -> Stampante C
+    X  nessun accesso ai sistemi A e B
+
+Reparto D (Test QA)
+    -> accesso controllato ai File Server A/B/C
+
+Reparto E (Project Management)
+    -> accesso ai File Server A/B/C
+    -> trasferimento versioni finali verso sede centrale
+
+Reparto F (Amministrazione)
+    -> Internet
+    -> sistema gestionale remoto sede centrale
+
+
+
 ## 5. Diagramma PlantUML
 
 ```
@@ -195,75 +414,116 @@ Core switch L3 / Distribution
 skinparam linetype ortho
 skinparam shadowing false
 
+title Nuova sede - rete con dispositivi, mezzi trasmissivi e VLAN
+
 cloud "Internet" as INTERNET
-node "Router ISP" as ISP
-node "Firewall / NGFW\nNAT, VPN, policy inter-VLAN" as FW
-node "Core switch L3\ntrunk 802.1Q" as CORE
 
-rectangle "Nuova sede - capannone" {
-  rectangle "Reparto A\nSviluppo mobile" as A {
-    node "PC A" as PCA
-    node "Stampante A" as PRA
+rectangle "Infrastruttura rete ISP" as ISP_NET
+
+rectangle "MEZZO TRASMISSIVO WAN\nFibra ottica FTTH business" as WAN_MEDIUM
+
+node "DISPOSITIVO ISP\nONT FTTH + Router/CPE business\n\nFunzioni:\n- terminazione WAN\n- accesso rete ISP\n- eventuale PPPoE/MPLS/BGP" as CPE
+
+node "DISPOSITIVO AZIENDALE\nFirewall / NGFW nuova sede\n\nFunzioni:\n- routing tra VLAN\n- routing verso Internet\n- routing verso VPN site-to-site\n- NAT/PAT\n- ACL inter-VLAN\n- IDS/IPS\n- filtraggio applicativo\n- logging" as FW
+
+node "DISPOSITIVO AZIENDALE\nCore Switch L3 / Distribution\n\nFunzioni:\n- switching centrale\n- trunk VLAN 802.1Q\n- aggregazione collegamenti\n- eventuale routing locale controllato" as CORE
+
+INTERNET --> ISP_NET
+ISP_NET --> WAN_MEDIUM
+WAN_MEDIUM --> CPE
+CPE --> FW
+FW --> CORE
+
+rectangle "LAN nuova sede - 10.24.0.0/16" as LAN {
+
+  rectangle "VLAN 10 - Utenti reparto A\n10.24.10.0/26" as VLAN10 {
+    node "PC sviluppo mobile" as PCA
+  }
+
+  rectangle "VLAN 11 - Servizi reparto A\n10.24.11.0/28" as VLAN11 {
     node "File Server A" as FSA
+    node "Stampante A" as PRA
   }
 
-  rectangle "Reparto B\nSviluppo web" as B {
-    node "PC B" as PCB
-    node "Stampante B" as PRB
+  rectangle "VLAN 20 - Utenti reparto B\n10.24.20.0/26" as VLAN20 {
+    node "PC sviluppo web" as PCB
+  }
+
+  rectangle "VLAN 21 - Servizi reparto B\n10.24.21.0/28" as VLAN21 {
     node "File Server B" as FSB
+    node "Stampante B" as PRB
   }
 
-  rectangle "Reparto C\nSoftware di settore" as C {
-    node "PC C" as PCC
-    node "Stampante C" as PRC
+  rectangle "VLAN 30 - Utenti reparto C\n10.24.30.0/25" as VLAN30 {
+    node "PC sviluppo software" as PCC
+  }
+
+  rectangle "VLAN 31 - Servizi reparto C\n10.24.31.0/28" as VLAN31 {
     node "File Server C" as FSC
+    node "Stampante C" as PRC
   }
 
-  rectangle "Reparto D\nTest qualità" as D {
-    node "PC Tester" as PCD
+  rectangle "VLAN 40 - Reparto D Test QA\n10.24.40.0/27" as VLAN40 {
+    node "PC tester QA" as PCD
   }
 
-  rectangle "Reparto E\nProject management" as E {
-    node "PC Project Manager" as PCE
+  rectangle "VLAN 50 - Project Management\n10.24.50.0/28" as VLAN50 {
+    node "PC project manager" as PCE
   }
 
-  rectangle "Reparto F\nAmministrazione" as F {
-    node "PC Amministrazione" as PCF
+  rectangle "VLAN 60 - Amministrazione\n10.24.60.0/27" as VLAN60 {
+    node "PC amministrazione" as PCF
   }
 
-  rectangle "Servizi locali" as SERV {
-    node "AD/LDAP\nDNS DHCP RADIUS" as AUTH
-    node "Backup locale" as BACKUP
-    node "Monitoraggio e log" as LOG
+  rectangle "VLAN 70 - Servizi infrastrutturali\n10.24.70.0/27" as VLAN70 {
+    node "AD/LDAP" as AD
+    node "DNS" as DNS
+    node "DHCP" as DHCP
+    node "RADIUS" as RADIUS
+    node "Logging server" as LOG
   }
 
-  rectangle "Management" as MGMT {
-    node "Console admin" as ADMIN
-    node "Switch/AP/Firewall mgmt" as DEV
+  rectangle "VLAN 80 - Management apparati\n10.24.80.0/28" as VLAN80 {
+    node "Console amministrazione" as ADMIN
+    node "Management switch/firewall/AP" as MGMT
+  }
+
+  rectangle "VLAN 90 - WiFi ospiti\n10.24.90.0/24" as VLAN90 {
+    node "Client WiFi ospiti\nsolo Internet" as GUEST
+  }
+
+  rectangle "VLAN 99 - Backup\n10.24.99.0/27" as VLAN99 {
+    node "Backup server" as BACKUP
+    node "Replica dati" as REPLICA
   }
 }
 
-cloud "VPN IPsec site-to-site" as VPN
-rectangle "Sede centrale" as HQ {
+CORE --> VLAN10 : trunk/access VLAN
+CORE --> VLAN11 : trunk/access VLAN
+CORE --> VLAN20 : trunk/access VLAN
+CORE --> VLAN21 : trunk/access VLAN
+CORE --> VLAN30 : trunk/access VLAN
+CORE --> VLAN31 : trunk/access VLAN
+CORE --> VLAN40 : trunk/access VLAN
+CORE --> VLAN50 : trunk/access VLAN
+CORE --> VLAN60 : trunk/access VLAN
+CORE --> VLAN70 : trunk/access VLAN
+CORE --> VLAN80 : trunk/access VLAN
+CORE --> VLAN90 : trunk/access VLAN
+CORE --> VLAN99 : trunk/access VLAN
+
+cloud "MEZZO TRASMISSIVO WAN / Internet\nTunnel VPN IPsec cifrato" as VPN
+
+node "DISPOSITIVO AZIENDALE\nFirewall sede centrale" as FW_HQ
+
+rectangle "Sede centrale - 10.10.0.0/16" as HQ {
   node "Project repository remoto" as REPO
   node "Sistema gestionale remoto" as ERP
 }
 
-INTERNET --> ISP
-ISP --> FW
-FW --> CORE
-
-CORE --> A
-CORE --> B
-CORE --> C
-CORE --> D
-CORE --> E
-CORE --> F
-CORE --> SERV
-CORE --> MGMT
-
 FW --> VPN
-VPN --> HQ
+VPN --> FW_HQ
+FW_HQ --> HQ
 
 PCD --> FSA : accesso controllato
 PCD --> FSB : accesso controllato
@@ -272,9 +532,14 @@ PCD --> FSC : accesso controllato
 PCE --> FSA : accesso PM
 PCE --> FSB : accesso PM
 PCE --> FSC : accesso PM
-PCE --> REPO : trasferimento versioni finali
+PCE --> REPO : versioni finali
 
 PCF --> ERP : gestionale remoto
+
+PCA --> PRA : stampa reparto A
+PCB --> PRB : stampa reparto B
+PCC --> PRC : stampa reparto C
+
 @enduml
 ```
 
@@ -284,7 +549,11 @@ Si usa una rete privata unica per la nuova sede:
 
 10.24.0.0/16
 
-Le sottoreti sono scelte con VLSM, ma mantenendo blocchi leggibili. Il reparto C richiede almeno 110 host, quindi si usa /25. I reparti A, B, D, F richiedono meno host ma ricevono margine sufficiente. I server sono separati dagli utenti quando utile per applicare regole più precise.
+Le sottoreti sono scelte con VLSM, ma mantenendo blocchi leggibili. 
+
+Il reparto C richiede almeno 110 host, quindi si usa /25.  
+I reparti A, B, D, F richiedono meno host ma ricevono margine sufficiente.  
+I server sono separati dagli utenti quando utile per applicare regole più precise.
 
 | VLAN | Nome rete        | Subnet        | Gateway    | Host utilizzabili         | Uso                        |
 | ---: | ---------------- | ------------- | ---------- | ------------------------- | -------------------------- |

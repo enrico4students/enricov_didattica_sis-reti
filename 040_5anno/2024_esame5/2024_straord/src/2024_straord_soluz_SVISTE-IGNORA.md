@@ -409,7 +409,7 @@ Reparto F (Amministrazione)
 ```
 
 
-## 5. Diagramma PlantUML  
+## 5. Diagramma grafico  
 
 
 ```

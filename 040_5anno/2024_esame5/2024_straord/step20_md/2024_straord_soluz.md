@@ -409,7 +409,7 @@ Reparto F (Amministrazione)
 ```
 
 
-## 5. Diagramma PlantUML  
+## 5. Diagramma grafico  
 
 
 ![PlantUML 1](imgs_puml/2024_straord_soluz_1_r415_puml.jpg)

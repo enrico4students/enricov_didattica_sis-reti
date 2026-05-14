@@ -1,0 +1,144 @@
+# Bytecode compilato / file temporanei
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+eggs/
+.eggs/
+parts/
+var/
+sdist/
+develop-eggs/
+.installed.cfg
+lib/
+lib64/
+__pycache__/
+
+# Ambiente virtuale
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+pythonenv*
+.venv
+.virtualenv
+virtualenv/
+pyenv/
+.python-version
+
+# File di database
+*.db
+*.sqlite
+*.sqlite3
+
+# File di log
+*.log
+*.pid
+*.seed
+*.pid.lock
+
+# File di coverage e test
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+.pytest_cache/
+test-results/
+htmlcov/
+.tox/
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.mypy_cache
+.ruff_cache/
+
+# File di distribuzione / pacchetti
+*.whl
+*.tar.gz
+*.tgz
+*.zip
+*.rar
+*.7z
+
+# File di ambiente / configurazione locale
+.env
+.env.*
+!.env.example
+!.env.sample
+.flaskenv
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# File di notebook Jupyter
+.ipynb_checkpoints/
+*.ipynb
+!*.example.ipynb
+
+# File specifici di framework
+*.pot
+*.mo
+local_settings.py
+secret_key.py
+secrets.py
+config.local.py
+settings_local.py
+
+# File di build e package manager
+pip-log.txt
+pip-delete-this-directory.txt
+.pythonlibs
+.pip-cache/
+.poetry/
+poetry.lock
+Pipfile.lock
+uv.lock
+requirements-local.txt
+
+# File di profiling e debug
+profile*.png
+profile*.prof
+*.prof
+*.lprof
+.pydata/
+
+# File specifici di editor
+.vscode/
+.idea/
+*.iml
+project.xml
+.ropeproject
+.spyproject
+.venv/
+*.code-workspace
+
+# File di container
+*.container
+.dockerignore
+!Dockerfile
+
+# Backup
+*.bak
+*.backup
+*.old
+*.orig
+
+# File generati da documentazione
+docs/_build/
+site/
+_api/-e "\n__pycache__/\n*.pyc"  
+__pycache__/

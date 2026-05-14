@@ -347,4 +347,247 @@ Nel nostro caso:
 * WAF per il sito e-commerce.
 
 
+# ------------------ Punti Specifici ----------------------------------------
 
+cosa c'è nella VLAN server?
+chiarisci in quale lan è la stampante e il file server dei reparti 
+
+Nella soluzione semplificata che uno studente può realisticamente svolgere, la situazione può risultare ambigua perché:
+
+* viene citata una “VLAN server”;
+* ma contemporaneamente i file server sembrano associati ai singoli reparti.
+
+Conviene chiarire esplicitamente i due possibili approcci.
+
+# Soluzione più semplice e più adatta all’esame
+
+In una soluzione d’esame semplice e molto comprensibile:
+
+* ogni reparto ha UNA sola VLAN;
+* nella stessa VLAN stanno:
+
+  * PC del reparto;
+  * file server del reparto;
+  * stampante del reparto.
+
+Quindi:
+
+| VLAN    | Contenuto                          |
+| ------- | ---------------------------------- |
+| VLAN 10 | PC A + File Server A + Stampante A |
+| VLAN 20 | PC B + File Server B + Stampante B |
+| VLAN 30 | PC C + File Server C + Stampante C |
+
+Questa soluzione è:
+
+* semplice;
+* coerente con la traccia;
+* facile da spiegare;
+* molto adatta a una seconda prova.
+
+In questo caso NON serve una VLAN server separata per A/B/C.
+
+La VLAN “Server e servizi” può allora contenere solo:
+
+* Active Directory / LDAP;
+* DNS;
+* DHCP;
+* RADIUS;
+* logging;
+* eventuali servizi infrastrutturali comuni.
+
+Quindi:
+
+| VLAN 70   | Servizi infrastrutturali comuni |
+| --------- | ------------------------------- |
+| Contenuto | AD, DNS, DHCP, RADIUS, logging  |
+
+# Soluzione più professionale
+
+In una soluzione più avanzata:
+
+* utenti e server vengono separati.
+
+Esempio:
+
+| VLAN    | Contenuto                   |
+| ------- | --------------------------- |
+| VLAN 10 | utenti reparto A            |
+| VLAN 11 | file server A + stampante A |
+| VLAN 20 | utenti reparto B            |
+| VLAN 21 | file server B + stampante B |
+
+Questo approccio è più professionale perché:
+
+* permette ACL più precise;
+* isola i server;
+* migliora sicurezza e logging.
+
+Ma aumenta:
+
+* complessità;
+* numero VLAN;
+* configurazioni ACL.
+
+# Quale conviene usare all’esame?
+
+Per una seconda prova scritta:
+
+## Consiglio realistico
+
+Usare:
+
+* soluzione semplice se il tempo è limitato;
+* soluzione avanzata solo se si riesce a gestirla bene.
+
+Molti errori nascono proprio dal voler complicare troppo la soluzione.
+
+Quindi, nella versione “studente realistica”, conviene chiarire esplicitamente:
+
+> I file server e le stampanti dei reparti A/B/C sono collocati nella stessa VLAN del relativo reparto per semplificare la progettazione della rete pur mantenendo l’isolamento tra reparti tramite VLAN e ACL.
+
+oppure, nella versione avanzata:
+
+> I file server e le stampanti vengono separati dagli utenti tramite VLAN dedicate ai servizi di reparto.
+
+# ------------ Accesso a file server -------------------------
+
+come viene gestito l'accesso a file server da parte di esterni al reparto che ne hanno diritto? Il reparto D e i Project manager accedono a file server di altri reparti
+
+La traccia richiede esplicitamente che:
+
+* il reparto D acceda ai file server A/B/C;
+* il reparto E (Project Management) acceda ai file server A/B/C.
+
+Quindi NON è corretto dire:
+
+> “i reparti sono completamente isolati”
+
+La situazione corretta è:
+
+* isolamento di default;
+* eccezioni controllate tramite ACL e permessi applicativi.
+
+# Come funziona realmente
+
+Occorre distinguere due livelli:
+
+| Livello                  | Funzione                               |
+| ------------------------ | -------------------------------------- |
+| Rete (VLAN + ACL)        | decidere chi può raggiungere il server |
+| Applicazione/File server | decidere cosa può fare l’utente        |
+
+# Primo livello: ACL di rete
+
+Le ACL permettono SOLO i flussi necessari.
+
+Esempio:
+
+| Sorgente | Destinazione      | Consentito |
+| -------- | ----------------- | ---------- |
+| VLAN A   | File Server A     | sì         |
+| VLAN A   | File Server B     | no         |
+| VLAN D   | File Server A/B/C | sì         |
+| VLAN E   | File Server A/B/C | sì         |
+
+Quindi:
+
+* i tester possono raggiungere i file server;
+* i project manager possono raggiungerli;
+* gli sviluppatori degli altri reparti no.
+
+# Secondo livello: permessi sul file server
+
+Anche se la rete consente la connessione:
+
+* non tutti possono fare tutto.
+
+I permessi dipendono:
+
+* dall’utente autenticato;
+* dai gruppi AD/LDAP;
+* dalle ACL filesystem.
+
+Esempio sul File Server A:
+
+| Gruppo          | Permessi                      |
+| --------------- | ----------------------------- |
+| DEV_A           | lettura/scrittura             |
+| DEV_B           | nessun accesso                |
+| DEV_C           | nessun accesso                |
+| TEST_QA         | accesso controllato aree test |
+| PROJECT_MANAGER | lettura/versioni finali       |
+| IT_ADMIN        | controllo completo            |
+
+# Quindi la sicurezza è “a due livelli”
+
+## Livello rete
+
+Decide:
+
+> “questa VLAN può raggiungere questo server?”
+
+## Livello file system
+
+Decide:
+
+> “questo utente può leggere/modificare questa cartella?”
+
+# Esempio completo realistico
+
+## Caso: tester reparto D
+
+1. PC reparto D in VLAN 40
+
+2. ACL permette:
+
+   ```
+   VLAN40 -> FileServerA SMB 445
+   ```
+
+3. Tester si autentica con account aziendale
+
+4. File server verifica gruppi AD
+
+5. Tester può:
+
+   * leggere area test;
+   * scrivere report;
+   * rinominare progetto finale.
+
+Ma NON può:
+
+* cancellare cartelle amministrative;
+* accedere ad altri dati non autorizzati.
+
+# Caso: Project Manager
+
+Il PM:
+
+* raggiunge i file server;
+* legge versioni finali;
+* pubblica sul repository centrale.
+
+Ma normalmente:
+
+* non modifica codice in lavorazione;
+* non ha privilegi amministrativi completi.
+
+# Perché questa distinzione è molto importante
+
+Molti studenti pensano:
+
+> “ACL = sicurezza completa”
+
+In realtà no.
+
+Le ACL:
+
+* controllano il traffico di rete;
+* NON sostituiscono i permessi applicativi.
+
+Una rete professionale usa entrambi:
+
+* segmentazione di rete;
+* autenticazione;
+* autorizzazioni applicative.

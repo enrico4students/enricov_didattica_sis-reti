@@ -1,3 +1,45 @@
+"""
+Modulo per la gestione centralizzata delle conferme operative.
+
+Questo modulo definisce la classe ConfirmManager, utilizzata per richiedere
+conferma all'utente prima di eseguire operazioni potenzialmente modificanti
+o distruttive, come la creazione, sovrascrittura, eliminazione o modifica di
+file e directory.
+
+La classe supporta tre modalità principali:
+
+- modalità interattiva:
+  ogni operazione proposta viene mostrata all'utente e richiede una scelta
+  esplicita;
+
+- modalità automatica:
+  se assume_yes è attivo, tutte le operazioni vengono confermate senza
+  ulteriori richieste interattive;
+
+- modalità simulazione:
+  se dry_run è attivo, l'operazione viene soltanto descritta a video e
+  considerata confermata, senza che il chiamante debba distinguere il caso
+  dalla normale conferma.
+
+Le risposte supportate in modalità interattiva sono:
+
+- y:
+  confermare l'operazione corrente;
+
+- n:
+  rifiutare l'operazione corrente;
+
+- a:
+  confermare l'operazione corrente e tutte le successive;
+
+- q:
+  interrompere immediatamente il programma con codice di uscita 1.
+
+La classe non esegue direttamente alcuna operazione sui file o sul sistema:
+si limita a gestire la decisione di conferma. Il codice chiamante resta
+responsabile dell'esecuzione effettiva dell'azione proposta.
+"""
+
 from __future__ import annotations
 
 import sys

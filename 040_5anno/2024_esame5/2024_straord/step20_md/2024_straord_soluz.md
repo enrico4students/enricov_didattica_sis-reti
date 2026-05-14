@@ -412,7 +412,7 @@ Reparto F (Amministrazione)
 ## 5. Diagramma PlantUML  
 
 
-![PlantUML 1](../imgs/2024_straord_soluz_img1_r415_2024_straord_soluz_1_r415_puml.jpg)
+![PlantUML 1](imgs_puml/2024_straord_soluz_1_r415_puml.jpg)
 
 
 ## 6. Piano VLAN e indirizzamento
@@ -798,7 +798,7 @@ Accessi amministrativi: solo da rete management o tramite VPN, mai direttamente 
 
 PlantUML:
 
-![PlantUML 2](../imgs/2024_straord_soluz_img2_r801_2024_straord_soluz_2_r933_puml.jpg)
+![PlantUML 2](imgs_puml/2024_straord_soluz_2_r933_puml.jpg)
 
 Motivo della scelta: la DMZ limita i danni in caso di compromissione di un server pubblico. Un attaccante che compromettesse il web server non dovrebbe poter raggiungere direttamente file server, repository, gestionale o database interni.
 
@@ -881,7 +881,7 @@ NB **in una infrastruttura virtualizzata il server fisico con hypervisor viene n
 
 PlantUML:
 
-![PlantUML 3](../imgs/2024_straord_soluz_img3_r884_2024_straord_soluz_3_r1046_puml.jpg)
+![PlantUML 3](imgs_puml/2024_straord_soluz_3_r1046_puml.jpg)
 
 Differenza tra hypervisor tipo 1 e tipo 2:
 

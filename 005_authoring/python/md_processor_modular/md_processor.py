@@ -215,6 +215,9 @@ def main() -> int:
     configure_logging(args.verbose, get_log_file(root))
 
     plantuml_jar = resolve_plantuml_jar(args.plantuml_jar)
+    if plantuml_jar is None:
+        plantuml_jar = os.environ.get("PLANTUML_JAR")
+
 
     try:
         return process_tree(

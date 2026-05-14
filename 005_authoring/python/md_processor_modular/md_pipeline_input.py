@@ -1,3 +1,56 @@
+"""
+Modulo per la raccolta e validazione degli input Markdown della pipeline.
+
+Questo modulo individua quali file Markdown devono essere elaborati dalla
+pipeline, a partire da un file singolo, da una directory src oppure da una
+directory più ampia contenente una o più sottodirectory src.
+
+La logica del modulo applica alcune regole precise:
+
+- vengono accettati solo file Markdown con estensioni riconosciute;
+
+- i file sorgenti devono trovarsi direttamente dentro una directory src;
+
+- i file temporanei con nome che inizia per temp vengono ignorati;
+
+- le directory generate dalla pipeline vengono escluse dalla scansione;
+
+- i file già processati, riconoscibili dal suffisso _processed, vengono
+  esclusi.
+
+Estensioni Markdown riconosciute:
+
+- .md
+- .markdown
+- .mdown
+- .mkd
+
+Funzioni principali:
+
+- is_markdown_file():
+  verifica se un path corrisponde a un file Markdown valido;
+
+- is_already_processed():
+  riconosce file o directory che appartengono a output già generati dalla
+  pipeline e che quindi non devono essere rielaborati;
+
+- should_process_md_file():
+  applica le regole specifiche per decidere se un file Markdown deve essere
+  incluso nell'elaborazione;
+
+- collect_markdown_inputs():
+  restituisce l'elenco ordinato dei file Markdown da elaborare, validando
+  l'input ricevuto e gestendo tre casi:
+    - input come file Markdown singolo;
+    - input come directory src;
+    - input come directory generica da scandire ricorsivamente.
+
+Il modulo non modifica file e directory: si limita a individuare e validare
+gli input da passare alle fasi successive della pipeline. Le informazioni
+operative vengono registrate tramite il logger condiviso del progetto.
+"""
+
+
 from __future__ import annotations
 
 from pathlib import Path

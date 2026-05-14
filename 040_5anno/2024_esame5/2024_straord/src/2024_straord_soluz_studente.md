@@ -346,11 +346,11 @@ Nel nostro caso:
 * ACL per separazione reparti;
 * WAF per il sito e-commerce.
 
+--- 
 
-# ------------------ Punti Specifici ----------------------------------------
+# Punti Specifici  
 
-cosa c'è nella VLAN server?
-chiarisci in quale lan è la stampante e il file server dei reparti 
+## Server di reparto    
 
 Nella soluzione semplificata che uno studente può realisticamente svolgere, la situazione può risultare ambigua perché:
 
@@ -381,9 +381,8 @@ Quindi:
 Questa soluzione è:
 
 * semplice;
-* coerente con la traccia;
+* non totalmente coerente con la traccia e l'orientamento attuale alla sicurezza ma accettabile;
 * facile da spiegare;
-* molto adatta a una seconda prova.
 
 In questo caso NON serve una VLAN server separata per A/B/C.
 
@@ -404,9 +403,7 @@ Quindi:
 
 # Soluzione più professionale
 
-In una soluzione più avanzata:
-
-* utenti e server vengono separati.
+In una soluzione non semplificata utenti e server vengono separati.
 
 Esempio:
 
@@ -417,9 +414,9 @@ Esempio:
 | VLAN 20 | utenti reparto B            |
 | VLAN 21 | file server B + stampante B |
 
-Questo approccio è più professionale perché:
+Questo approccio è tecnicamente migliore e scelta primaria in ambito professionale perché:
 
-* permette ACL più precise;
+* permette ACL più "precise";
 * isola i server;
 * migliora sicurezza e logging.
 
@@ -431,39 +428,32 @@ Ma aumenta:
 
 # Quale conviene usare all’esame?
 
-Per una seconda prova scritta:
+E' preferibile:
 
-## Consiglio realistico
-
-Usare:
-
-* soluzione semplice se il tempo è limitato;
-* soluzione avanzata solo se si riesce a gestirla bene.
+* soluzione semplice se il tempo è limitato o non si è ferratissimi;
+* soluzione avanzata se si ha tempo e si riesce a gestirla bene.
 
 Molti errori nascono proprio dal voler complicare troppo la soluzione.
 
-Quindi, nella versione “studente realistica”, conviene chiarire esplicitamente:
+Se si sceglie la soluzione semplice questo va esplicitamente e chiaramente specificato,  
+molte tracce richiedono di specificare le assunzioni, anche se la traccia non lo richiede va comunque e sempre specificato, questa e qualunque altra assunzione.  
 
-> I file server e le stampanti dei reparti A/B/C sono collocati nella stessa VLAN del relativo reparto per semplificare la progettazione della rete pur mantenendo l’isolamento tra reparti tramite VLAN e ACL.
+Un esempio potrebbe essere:
 
-oppure, nella versione avanzata:
+> per i file server e le stampanti dei reparti A/B/C avere reti dedicate sarebbe desiderabile e allineato all'attuale orientamento alla sicurezza, ma file server e stampanti sono collocati nella stessa VLAN del relativo reparto per semplificare la progettazione della rete   
 
-> I file server e le stampanti vengono separati dagli utenti tramite VLAN dedicate ai servizi di reparto.
+Nella versione avanzata è meno necessario spiegare dato che stiamo scegliendo la soluzione tecnicamente ottimale, è comunque sempre positivo spiegare le scelte, un esempio potrebbe essere:
 
-# ------------ Accesso a file server -------------------------
+> I file server e le stampanti vengono separati dagli utenti del loro reparte e posti in VLAN dedicate per migliorare l'isolamento e quindi migliorare la sicurezza
 
-come viene gestito l'accesso a file server da parte di esterni al reparto che ne hanno diritto? Il reparto D e i Project manager accedono a file server di altri reparti
+## Accesso a file server di altri reparti  
 
 La traccia richiede esplicitamente che:
 
 * il reparto D acceda ai file server A/B/C;
 * il reparto E (Project Management) acceda ai file server A/B/C.
 
-Quindi NON è corretto dire:
-
-> “i reparti sono completamente isolati”
-
-La situazione corretta è:
+Quindi la situazione è:
 
 * isolamento di default;
 * eccezioni controllate tramite ACL e permessi applicativi.
@@ -498,9 +488,7 @@ Quindi:
 
 # Secondo livello: permessi sul file server
 
-Anche se la rete consente la connessione:
-
-* non tutti possono fare tutto.
+Anche se la rete consente la connessione ovviamente **non tutti possono fare tutto** (least previledge).  
 
 I permessi dipendono:
 
@@ -519,7 +507,8 @@ Esempio sul File Server A:
 | PROJECT_MANAGER | lettura/versioni finali       |
 | IT_ADMIN        | controllo completo            |
 
-# Quindi la sicurezza è “a due livelli”
+
+In termini pratici abbiamo due "livelli”
 
 ## Livello rete
 
@@ -533,7 +522,7 @@ Decide:
 
 > “questo utente può leggere/modificare questa cartella?”
 
-# Esempio completo realistico
+# Esempio  
 
 ## Caso: tester reparto D
 
@@ -573,9 +562,9 @@ Ma normalmente:
 * non modifica codice in lavorazione;
 * non ha privilegi amministrativi completi.
 
-# Perché questa distinzione è molto importante
+# Precisazione  
 
-Molti studenti pensano:
+Ingenuamente, ed erroneamente, si potrebbe pensare:
 
 > “ACL = sicurezza completa”
 
@@ -584,10 +573,11 @@ In realtà no.
 Le ACL:
 
 * controllano il traffico di rete;
-* NON sostituiscono i permessi applicativi.
+* NON sostituiscono i **permessi applicativi**.
 
 Una rete professionale usa entrambi:
 
 * segmentazione di rete;
 * autenticazione;
 * autorizzazioni applicative.
+

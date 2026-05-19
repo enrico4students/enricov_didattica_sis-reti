@@ -6,7 +6,7 @@
         "name": "-> .md loc. Py modulare",
         "type": "debugpy",
         "request": "launch",
-        "program": "${workspaceFolder}/005_authoring/python/md_processor_modular/md_processor.py",
+        "program": "${workspaceFolder}/005_authoring_gen/python/md_processor_modular/md_processor.py",
         "console": "integratedTerminal",
         "args": [
             "--yes",
@@ -22,7 +22,7 @@
         "name": "→PDF Pandoc file corrente",
         "type": "node-terminal",
         "request": "launch",
-        "command": "pandoc \"${file}\" -f markdown+link_attributes -o \"${fileDirname}/../out/${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex --resource-path=\"${fileDirname};${fileDirname}/imgs\" -H \"${workspaceFolder}/005_authoring/latex/header1.tex\"",
+        "command": "pandoc \"${file}\" -f markdown+link_attributes -o \"${fileDirname}/../out/${fileBasenameNoExtension}.pdf\" --pdf-engine=xelatex --resource-path=\"${fileDirname};${fileDirname}/imgs\" -H \"${workspaceFolder}/005_authoring_gen/latex/header1.tex\"",
         "cwd": "${workspaceFolder}"
     },
 
@@ -30,7 +30,7 @@
         "name": "-> RO PDF readonly.py con argomento",
         "type": "debugpy",
         "request": "launch",
-        "program": "${workspaceFolder}/005_authoring/python/readonly.py",
+        "program": "${workspaceFolder}/005_authoring_gen/python/readonly.py",
         "console": "integratedTerminal",
         "args": [ "${fileDirname}\\.."  ]
     }, 

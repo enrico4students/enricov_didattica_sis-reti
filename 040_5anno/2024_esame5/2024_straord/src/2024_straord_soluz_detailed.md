@@ -15,15 +15,6 @@ Disciplina: SISTEMI E RETI
 
 Il candidato svolga la prima parte della prova e due tra i quesiti proposti nella seconda parte.
 
----
-
-# NB Quanto segue è probabilmente piu' dettagliato di quanto uno studente medio possa fare in 6 ore 
-
-E' comunque utile esaminare questo esempio di risposta a fini didattici
-
-Notare che l'applicazione rigorosa dei principi di sicurezza, sempre rivolti al massimo possibile, richiederebbe che file server e stampanti di un reparto stiano su una  (sotto) rete ad essi dedicata. Applicare questo sacrosanto principio allo svolgimento di questa traccia porta ad un elevato numero di reti e piano di indirizzamento piuttosto lungo.
-
-
 ---  
 
 # PRIMA PARTE
@@ -132,6 +123,21 @@ Durata massima della prova: 6 ore
 Non è consentito lasciare l'Istituto prima che siano trascorse 3 ore dalla consegna della traccia.
 
 ---
+
+# Importante
+
+**Livello di dettaglio**  
+L'ipotesi di soluzione che seguè è più dettagliata della media, forse è più dettagliata di quanto in media uno studente riesca a produrre in sei ore. Anche alcune tematiche delle domande opzionali sono molto focalizzate.  
+
+**Ipotesi** di soluzione  
+Come giustamente specificato in diverse "soluzioni" disponibili pubblicamente non sempre esiste un'unica soluzione corretta o nettamente migliore delle altre. Questo senza contare la dicotomia fra didattica e mondo professionale. Se avete sviluppato una soluzione diversa ciò non vuol dire che sia errata, potrebbe essere migliore di questa, relativamente o in assoluto. Discutere differenze significative con il docente.
+
+
+Come esempio relativo ai punti sopra esposti possiamo notare che l'applicazione rigorosa dei principi di sicurezza, sempre rivolti alla massima sicurezza possibile, richiederebbe che file server e stampanti di un reparto stiano su una  (sotto)rete ad essi dedicata. Applicare questo giusto principio allo svolgimento di questa traccia, come facciamo qui, porta ad un elevato numero di reti e piano di indirizzamento piuttosto lungo. Una soluzione che applica correttamente questo approccio è desiderabile ma potrebbe risultare complessa o richiedere un considerevole quantitativo di tempo.
+*(E' disponibile un esempio di soluzione più semplice che non applica questo livello di separazione.)*  
+
+
+---  
 
 # PRIMA PARTE - Soluzione
 

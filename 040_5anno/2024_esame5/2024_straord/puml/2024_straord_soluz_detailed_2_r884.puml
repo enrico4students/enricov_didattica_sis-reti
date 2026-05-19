@@ -1,0 +1,29 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+cloud "Internet" as Internet
+node "Router ISP" as ISP
+node "Firewall perimetrale / NGFW" as FW
+
+rectangle "DMZ pubblica (10.10.16.0/28)" as DMZ {
+  node "Web server e-commerce\n10.10.16.10\nHTTPS 443" as WEB
+  node "Mail gateway\n10.10.16.11\nSMTP / Antispam / Antivirus" as MAIL
+}
+
+rectangle "LAN sede centrale (10.10.0.0/20)" as LAN {
+  node "Project repository\n10.10.10.10" as REPO
+  node "Sistema gestionale\n10.10.10.20" as ERP
+  database "Database interni" as DB
+  node "Rete utenti interni" as USERS
+}
+
+Internet --> ISP
+ISP --> FW
+FW --> DMZ
+FW --> LAN
+WEB --> DB : solo query/API autorizzate
+MAIL --> LAN : inoltro posta interna
+USERS --> ERP
+USERS --> REPO
+@enduml

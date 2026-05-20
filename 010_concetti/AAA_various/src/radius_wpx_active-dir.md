@@ -162,7 +162,15 @@ Più precisamente:
 * WPA2/WPA3 forniscono cifratura e protezione del traffico Wi‑Fi;
 * 802.1X controlla l’accesso iniziale alla rete.
 
-È importante osservare che:
+Notare che  
+WPA2 e WPA3 sono protocolli di sicurezza Wi-Fi che operano principalmente a livello 2 del modello ISO/OSI.  
+Per realizzare l’autenticazione enterprise utilizzano 802.1X ed EAP.
+EAP è un protocollo logico di autenticazione, generalmente considerato di livello applicativo (livello 7), che permette l’uso di diversi metodi di autenticazione come password, certificati o token.
+Quindi abbiamo un protocollo di livello alto, EAP, attivato per soddisfare i bisogni di un protocollo di livello basso (WPA2, WPA3)
+Questo mostra bene un concetto molto importante delle architetture di rete moderne: protocolli di livello basso possono delegare funzioni complesse a protocolli di livello più alto; i livelli OSI non sono “compartimenti rigidi”; molti sistemi reali integrano protocolli di livelli diversi.
+
+
+È anche importante osservare che:
 
 * 802.1X non cifra il traffico utente;
 * WPA2/WPA3 invece implementano meccanismi crittografici per proteggere il traffico dati.
@@ -220,8 +228,8 @@ Esempi:
 
 Esempi:
 
-* switch;
-* access point.
+* switch (connessioni cablate)
+* access point (wifi)
 
 ##### Authentication Server
 
@@ -244,11 +252,7 @@ Authentication Server
 
 ### EAPOL
 
-EAPOL significa:
-
-```
-EAP over LAN
-```
+EAPOL significa: EAP **over LAN**
 
 È il protocollo usato fra client e switch/access point.
 
@@ -261,11 +265,17 @@ Il suo compito principale consiste nel **trasportare** messaggi EAP.
 Più precisamente:
 
 * EAP contiene la logica di autenticazione;
-* EAPOL è il trasporto Layer 2 usato da 802.1X;
-* 802.1X funziona sulla tratta locale **fra supplicant e authenticator**.
-  - Nelle reti cablate  il trasporto avviene su Ethernet.  
-  - Nelle reti wireless il trasporto avviene su 802.11.  
-
+* EAPOL (EAP over LAN) è il protocollo Layer 2 usato da 802.1X per trasportare EAP;
+* 802.1X
+    * definisce:
+        - ruoli;
+        - stati porta;
+        - logica di accesso;
+        - comportamento dell’authenticator;
+        - modello di autenticazione;
+    * usa EAPOL per trasportare EAP sulla tratta locale fra supplicant e authenticator.
+        * nelle reti cablate  EAPOL usa Ethernet;
+        * nelle reti wireless EAPOL usa frame dati 802.11.
 
 Schema logico:
 
@@ -365,33 +375,9 @@ Più precisamente:
 
 AAA significa:
 
-* Authentication;
-* Authorization;
-* Accounting.
-
-## Authentication
-
-Verifica identità.
-
-Esempio:
-
-* username/password.
-
-## Authorization
-
-Definisce permessi.
-
-Esempio:
-
-* assegnazione VLAN.
-
-## Accounting
-
-Registra attività.
-
-Esempio:
-
-* tempo di connessione.
+* Authentication: Verifica identità. Esempio: username/password.
+* Authorization: Definisce permessi. Esempio: assegnazione VLAN.
+* Accounting: Registra attività.     Esempio: tempo di connessione.
 
 ## Architettura
 
@@ -413,7 +399,8 @@ RADIUS è un protocollo applicativo AAA usato principalmente fra:
 * access point o switch e
 * server di autenticazione.
 
-Non trasporta direttamente il traffico utente ma messaggi di controllo relativi ad autenticazione, autorizzazione e accounting.
+RADIUS non trasporta il traffico normale degli utenti come Web, email o file sharing.  
+Trasporta solamente messaggi di controllo relativi ad autenticazione, autorizzazione, accounting e, nel caso di 802.1X/WPA Enterprise, messaggi EAP incapsulati.
 
 Esempi di informazioni contenute nei messaggi:
 

@@ -3,7 +3,7 @@
         "./005_authoring/themes/portrait_marp.css"
 ],
 "markdown.styles": [
-    "./005_authoring/themes/portrait.css"
+    "./005_authoring_gen/themes/portrait.css"
 ],
 "python-envs.defaultPackageManager": "ms-python.python:conda",
 "plantuml.render": "Local",

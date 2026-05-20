@@ -1,25 +1,5 @@
-# Autenticazione di rete enterprise con 802.1X, RADIUS e LDAP
+# Autenticazione di rete enterprise ( 802.1X, RADIUS e LDAP )
 
----
-
-## Overview
-
-Le reti Wi‑Fi sono molto diffuse ma introducono problemi di sicurezza importanti.
-
-In una rete cablata normalmente è necessario l’accesso fisico all’edificio.
-
-Nel Wi‑Fi il segnale radio può essere ricevuto anche all’esterno.
-
-Per questo motivo l’autenticazione e la cifratura sono fondamentali.
-
-## Obiettivi della sezione
-
-Comprendere:
-
-* perché il Wi‑Fi necessita di protezione;
-* differenza fra autenticazione e cifratura;
-* concetto di accesso autorizzato;
-* differenza fra reti domestiche e reti enterprise.
 
 ## Concetti fondamentali
 
@@ -83,7 +63,8 @@ Vantaggi:
 
 ## Schema
 
-RADIUS è un protocollo, non il nome di un server. Server RADIUS è, ovviamente, un server in grado di interagire usando il protocollo RADIUS.
+RADIUS è un protocollo, non il nome di un server.  
+Server RADIUS è, ovviamente, un server in grado di interagire usando il protocollo RADIUS.
 
 ```
 Client Wi‑Fi
@@ -106,20 +87,8 @@ Le reti Wi‑Fi moderne utilizzano standard WPA2 o WPA3.
 
 ### WPA Personal
 
-Utilizza:
-
-* PSK;
-* password condivisa.
-
-PSK significa:
-
-```
-Pre‑Shared Key
-```
-
-Tutti i dispositivi utilizzano la stessa chiave.
-
-#### Funzionamento
+Utilizza PSK (**P**re‑**S**hared **K**ey), cioè una password condivisa,  
+quindi tutti i dispositivi utilizzano la stessa chiave.
 
 ```
 Client
@@ -135,7 +104,7 @@ Nessun server centrale.
 
 * nessuna identità individuale;
 * difficile gestione utenti;
-* cambio password necessario per tutti;
+* cambio password impatta tutti;
 * limitata scalabilità.
 
 ### WPA Enterprise
@@ -146,10 +115,9 @@ Usa:
 * RADIUS;
 * EAP.
 
-Ogni utente usa credenziali personali.
+Ogni utente usa credenziali **personali**.
 
-È importante distinguere i ruoli dei diversi elementi:
-
+Sono coinvolti diversi protocolli, con positioning simile che richiede attenzione per essere compreso:
 * 802.1X controlla l’accesso alla rete;
 * EAP definisce il modo in cui avviene l’autenticazione;
 * RADIUS trasporta messaggi AAA ed eventualmente messaggi EAP incapsulati fra access point e server;
@@ -167,7 +135,7 @@ RADIUS = protocollo AAA usato fra access point e server
 WPA Enterprise = uso di 802.1X, EAP e RADIUS nel Wi‑Fi
 ```
 
-### Schema
+Schema
 
 ```
 Client
@@ -257,11 +225,8 @@ Esempi:
 
 ##### Authentication Server
 
-È il server che autentica.
-
-Normalmente:
-
-* server RADIUS.
+È il server che autentica. 
+Spesso, e nel caso di nostro interesse è un server RADIUS.
 
 #### Schema
 
@@ -291,17 +256,16 @@ EAP over LAN
 
 802.1X non definisce direttamente password, certificati o altri meccanismi di autenticazione.
 
-Il suo compito principale consiste nel trasportare messaggi EAP.
+Il suo compito principale consiste nel **trasportare** messaggi EAP.
 
 Più precisamente:
 
 * EAP contiene la logica di autenticazione;
 * EAPOL è il trasporto Layer 2 usato da 802.1X;
-* 802.1X funziona sulla tratta locale fra supplicant e authenticator.
+* 802.1X funziona sulla tratta locale **fra supplicant e authenticator**.
+  - Nelle reti cablate  il trasporto avviene su Ethernet.  
+  - Nelle reti wireless il trasporto avviene su 802.11.  
 
-Nelle reti cablate il trasporto avviene su Ethernet.
-
-Nelle reti wireless il trasporto avviene su 802.11.
 
 Schema logico:
 
@@ -319,7 +283,7 @@ Access Point
 In questo modello:
 
 * EAP è il protocollo logico di autenticazione;
-* EAPOL è il contenitore Layer 2 che trasporta EAP.
+* EAPOL è il contenitore Layer 2 che **trasporta** EAP.
 
 ### Stack protocollare fra client e access point
 
@@ -390,11 +354,14 @@ Nel caso di WPA Enterprise, RADIUS non sostituisce EAP.
 Più precisamente:
 
 * il client usa un metodo EAP;
-* l’access point incapsula i messaggi EAP dentro richieste RADIUS;
+* fra client e access point i messaggi EAP vengono trasportati tramite EAPOL / 802.1X;
+* nel Wi-Fi enterprise WPA2/WPA3 utilizzano questo meccanismo di autenticazione;
+* l’access point incapsula poi i messaggi EAP dentro richieste RADIUS;
 * il server RADIUS verifica le credenziali o i certificati, eventualmente interrogando LDAP o Active Directory;
 * il server RADIUS restituisce all’access point l’esito dell’autenticazione e gli eventuali parametri di autorizzazione.
 
-## AAA
+
+## AAA (recall)
 
 AAA significa:
 
@@ -434,7 +401,7 @@ Client
     v
 Access Point
     |
-    | RADIUS
+    | protocollo RADIUS
     v
 Server RADIUS
 ```
@@ -443,7 +410,7 @@ Server RADIUS
 
 RADIUS è un protocollo applicativo AAA usato principalmente fra:
 
-* access point o switch;
+* access point o switch e
 * server di autenticazione.
 
 Non trasporta direttamente il traffico utente ma messaggi di controllo relativi ad autenticazione, autorizzazione e accounting.
@@ -489,38 +456,32 @@ Accounting-Stop
 
 Fine sessione.
 
-Lo scopo di questa sezione è comprendere il ruolo generale del protocollo, non studiarne il formato dettagliato RFC campo per campo.
 
 ## Stack protocollare RADIUS
 
 RADIUS si appoggia normalmente ai protocolli UDP e IP.
 
-Stack tipico:
+    EAP
+     ↓
+    RADIUS
+     ↓
+    UDP
+     ↓
+    IP
+     ↓
+    Ethernet / Wi-Fi
 
-```
-Ethernet / Wi‑Fi
-    ↓
-IP
-    ↓
-UDP
-    ↓
-RADIUS
-    ↓
-EAP
-```
-
-Questo stack riguarda la seconda tratta:
-
-* authenticator ↔ server RADIUS.
+Questo stack riguarda la seconda tratta cioè la tratta  
+   authenticator ↔ server RADIUS.
 
 È importante confrontarlo con la prima tratta:
 
 ```
-Ethernet / Wi‑Fi
+EAP
     ↓
 EAPOL / 802.1X
     ↓
-EAP
+Ethernet / Wi-Fi
 ```
 
 Nelle due tratte:

@@ -2,26 +2,9 @@
 
 ---  
 
-## Overview
+## Concetti base
 
-Le reti Wi‑Fi sono molto diffuse ma introducono problemi di sicurezza importanti.
-
-In una rete cablata normalmente è necessario l’accesso fisico all’edificio.
-
-Nel Wi‑Fi il segnale radio può essere ricevuto anche all’esterno.
-
-Per questo motivo l’autenticazione e la cifratura sono fondamentali.
-
-## Obiettivi della sezione
-
-Comprendere:
-
-* perché il Wi‑Fi necessita di protezione;
-* differenza fra autenticazione e cifratura;
-* concetto di accesso autorizzato;
-* differenza fra reti domestiche e reti enterprise.
-
-## Concetti fondamentali
+Come caso d'uso nella parte iniziale usiamo il wifi ma i concetti sono totalmente generali, assolutamente NON limitati al WIFI
 
 ### Autenticazione
 
@@ -36,7 +19,7 @@ Esempi:
 
 ### Autorizzazione
 
-L’autorizzazione stabilisce quali risorse siano accessibili.
+L’autorizzazione stabilisce quali risorse siano accessibili (e anche quali operazioni possiamo effettuare su di esse).
 
 Esempio:
 
@@ -83,7 +66,8 @@ Vantaggi:
 
 ## Schema  
 
-RADIUS è un protocollo, non il nome di un server. Server RADIUS è, ovviamente, un server in grado di interagire usando il protocollo RADIUS.
+RADIUS è un protocollo, non il nome di un server.  
+Usiamo il termine server RADIUS per indicare un server in grado di interagire usando il protocollo RADIUS.
 
     Client Wi‑Fi
         |
@@ -107,28 +91,14 @@ Le reti Wi‑Fi moderne utilizzano standard WPA2 o WPA3.
 
 Utilizza:
 
-* PSK;
+* PSK (**P**re‑**S**hared **K**ey);
 * password condivisa.
 
-PSK significa:
-
-    Pre‑Shared Key
-
-Tutti i dispositivi utilizzano la stessa chiave.
-
-#### Funzionamento
-
-    Client
-        |
-        | password Wi‑Fi
-        v
-    Access Point
-
-Nessun server centrale.
+Normalmente non è utilizzato un server centrale.
 
 #### Limiti
 
-* nessuna identità individuale;
+* nessuna identità individuale (ovvio, si usa solo una chiave, uguale per tutti);
 * difficile gestione utenti;
 * cambio password necessario per tutti;
 * limitata scalabilità.
@@ -141,26 +111,12 @@ Usa:
 * RADIUS;
 * EAP.
 
-Ogni utente usa credenziali personali.
-
-È importante distinguere i ruoli dei diversi elementi:
+Ogni utente usa credenziali **personali**.
 
 * 802.1X controlla l’accesso alla rete;
-* EAP definisce il modo in cui avviene l’autenticazione;
-* RADIUS trasporta le informazioni di autenticazione, autorizzazione e accounting fra access point e server;
+* EAP definisce **il modo** in cui avviene l’autenticazione;
+* RADIUS **trasporta** le informazioni di autenticazione, autorizzazione e accounting **fra access point e server**;
 * WPA2 Enterprise o WPA3 Enterprise applicano questi meccanismi alla rete Wi‑Fi.
-
-In forma sintetica:
-
-    802.1X = controllo dell’accesso alla rete
-
-    EAP = metodo o framework di autenticazione
-
-    RADIUS = **protocollo** AAA usato **fra access point e server**
-
-    WPA Enterprise = uso di 802.1X, EAP e RADIUS nel Wi‑Fi
-
-### Schema
 
     Client
         |
@@ -171,6 +127,7 @@ In forma sintetica:
         | RADIUS
         v
     Server RADIUS
+
 
 ### Differenze principali
 
@@ -191,7 +148,7 @@ WPA3 migliora:
 * protezione contro attacchi offline;
 * sicurezza handshake.
 
-Esiste sia:
+Due versioni:
 
 * WPA3 Personal;
 * WPA3 Enterprise.
@@ -206,18 +163,12 @@ Esiste sia:
 
 Serve a consentire l’**accesso solo dopo autenticazione**.
 
-## Componenti principali
+## Componenti  
 
 ### Supplicant
 
 È il client che richiede accesso.
-
-Esempi:
-
-* notebook;
-* smartphone;
-* PC;
-* stampanti.
+Esempi: notebook, smartphone, PC, stampanti.
 
 ### Authenticator
 
@@ -231,12 +182,8 @@ Esempi:
 ##### Authentication Server
 
 È il server che autentica.
+Nel nostro caso normalmente sarà un server RADIUS.
 
-Normalmente:
-
-* server RADIUS.
-
-#### Schema
 
     Supplicant
         |
@@ -250,9 +197,7 @@ Normalmente:
 
 ### EAPOL
 
-EAPOL significa:
-
-    EAP over LAN
+EAPOL significa: **EAP** **o**ver **L**AN
 
 È il protocollo usato fra client e switch/access point.
 
@@ -298,7 +243,7 @@ Se authorized:
 * necessità di server dedicati;
 * configurazione più difficile.
 
-# Sezione 4 — RADIUS e AAA
+# 4 — RADIUS e AAA
 
 ## Overview
 
@@ -310,42 +255,19 @@ Più precisamente:
 
 * il client usa un metodo EAP;
 * l’access point **incapsula i messaggi EAP dentro richieste RADIUS**;
-* il server RADIUS verifica le credenziali o i certificati, eventualmente interrogando LDAP o Active Directory;
+* il server RADIUS verifica le credenziali o i certificati, **eventualmente interrogando LDAP o Active Directory**;
 * il server RADIUS restituisce all’access point l’esito dell’autenticazione e gli eventuali parametri di autorizzazione.
 
 ## AAA
 
-AAA significa:
+AAA: Authentication; Authorization; Accounting.
+- Authentication: Verifica identità. 
+Esempio: username/password.  
+- Authorization: Definisce permessi.
+Esempio: assegnazione VLAN.  
+- Accounting: Registra attività.
+Esempio: tempo di connessione.
 
-* Authentication;
-* Authorization;
-* Accounting.
-
-## Authentication
-
-Verifica identità.
-
-Esempio:
-
-* username/password.
-
-## Authorization
-
-Definisce permessi.
-
-Esempio:
-
-* assegnazione VLAN.
-
-## Accounting
-
-Registra attività.
-
-Esempio:
-
-* tempo di connessione.
-
-## Architettura
 
     Client
         |
@@ -357,14 +279,14 @@ Esempio:
     Server RADIUS
 
 
-## Idea generale del protocollo RADIUS
+## Protocollo RADIUS, concetti base  
 
 RADIUS è un protocollo applicativo AAA usato principalmente fra:
 
 * access point o switch;
 * server di autenticazione.
 
-Non trasporta direttamente il traffico utente ma messaggi di controllo relativi all’autenticazione e autorizzazione.
+Non trasporta direttamente il traffico utente ma **messaggi di controllo relativi all’autenticazione e autorizzazione**.
 
 Esempi di informazioni contenute nei messaggi:
 
@@ -402,7 +324,6 @@ Accounting-Stop
 ```
 Fine sessione.
 
-Lo scopo di questa sezione è comprendere il ruolo generale del protocollo, non studiarne il formato dettagliato dei pacchetti.
 
 
 ## Porte standard
@@ -430,24 +351,12 @@ Non sostituisce però TLS o altri meccanismi crittografici usati dai metodi EAP.
 
 ## Principali server RADIUS
 
-* FreeRADIUS;
-* Microsoft NPS;
+* FreeRADIUS: il server RADIUS open source più diffuso.
+* Microsoft NPS
 * Cisco ISE.
 
-## FreeRADIUS
 
-FreeRADIUS è il server RADIUS open source più diffuso.
-
-Caratteristiche:
-
-* Linux;
-* LDAP;
-* Active Directory;
-* SQL;
-* EAP;
-* VLAN dinamiche.
-
-## Flusso completo
+### Flusso  
 
     Client
         |
@@ -463,19 +372,16 @@ Caratteristiche:
         v
     Active Directory
 
-# Sezione 5 — LDAP e Active Directory
+# 5 — LDAP e Active Directory
 
 ## Overview
 
-LDAP e Active Directory sono concetti collegati ma diversi.
+LDAP e Active Directory sono concetti spesso collegati.
 
 ## LDAP
 
-LDAP significa:
-
-    Lightweight Directory Access Protocol
-
-È un protocollo standard.
+Lightweight Directory Access Protocol, un protocollo standard.  
+LDAP da solo non rappresenta un sistema AAA completo.  
 
 Serve a:
 
@@ -484,14 +390,8 @@ Serve a:
 * verificare credenziali tramite operazioni come il bind LDAP;
 * organizzare directory.
 
-È preferibile dire che LDAP può essere usato da un servizio applicativo, per esempio RADIUS, per verificare credenziali e leggere informazioni sugli utenti.
+LDAP può essere usato da un servizio applicativo, per esempio RADIUS, per verificare credenziali e leggere informazioni sugli utenti.
 
-LDAP da solo non rappresenta un sistema AAA completo come RADIUS.
-
-
-## Idea generale del protocollo LDAP
-
-LDAP è un protocollo applicativo usato per interrogare e gestire directory di utenti e oggetti.
 
 Un client LDAP può:
 
@@ -537,10 +437,8 @@ Esempi di attributi contenuti negli oggetti:
 * reparto;
 * appartenenza VLAN.
 
-Lo scopo della sezione è comprendere il ruolo generale di LDAP, non studiare il protocollo in dettaglio.
 
-
-## Struttura gerarchica
+## Esempio di Struttura LDAP   
 
 Esempio:
 
@@ -564,13 +462,9 @@ Esempi:
 
 ## Active Directory
 
-Active Directory è una piattaforma Microsoft per la gestione centralizzata di utenti, computer, autenticazione e risorse di rete.
+Active Directory non è semplicemente un server LDAP, è una piattaforma Microsoft per la gestione centralizzata di utenti, computer, autenticazione e risorse di rete.
 
-Non è semplicemente un server LDAP.
-
-Active Directory utilizza LDAP, insieme ad altri protocolli e servizi come Kerberos, DNS e Group Policy.
-
-Active Directory include molte funzionalità enterprise, fra cui:
+Active Directory utilizza LDAP, insieme ad altri protocolli e servizi come Kerberos, DNS e Group Policy, e include molte funzionalità enterprise, fra cui:
 
 * directory utenti e gruppi;
 * autenticazione centralizzata;
@@ -582,7 +476,7 @@ Active Directory include molte funzionalità enterprise, fra cui:
 * integrazione DNS;
 * amministrazione centralizzata.
 
-Per la parte Wi‑Fi enterprise interessa soprattutto il suo ruolo come archivio centralizzato di utenti e gruppi utilizzabile tramite LDAP (e Kerberos).
+Per la parte Wi‑Fi enterprise ci interessa soprattutto il suo ruolo come archivio centralizzato di utenti e gruppi utilizzabile tramite LDAP (e Kerberos, un altro importante protocollo).
 
 
 ## LDAP sicuro
@@ -605,21 +499,21 @@ Per sicurezza si usa:
 
 ## Overview
 
-Una rete Wi‑Fi enterprise integra:
+Una rete Wi‑Fi enterprise può integrare:
 
 * 802.1X;
 * EAP;
 * RADIUS;
 * LDAP/AD.
 
-Questi elementi non svolgono lo stesso compito.  
+Dove:    
 - 802.1X controlla l’accesso alla rete.
 - EAP definisce il metodo di autenticazione.  
 - RADIUS permette all’access point di comunicare con il server di autenticazione (server RADIUS).  
 - Servizi directory come Active Directory forniscono directory di utenti, gruppi e attributi, spesso accessibili tramite LDAP.  
 
 
-## Architettura completa
+## Architettura  
 
     Smartphone / PC
         |
@@ -692,7 +586,7 @@ Alcuni attributi usati frequentemente sono:
     * contiene l’identificatore della VLAN da assegnare;
     * per esempio VLAN 10 oppure VLAN 20.
 
-In pratica il server RADIUS non si limita a dire “accesso consentito”, ma può anche indicare in quale VLAN collocare il dispositivo autenticato.
+In pratica il server RADIUS non si limita a dire “accesso consentito”, ma **può anche indicare in quale VLAN collocare il dispositivo autenticato**.
 
 Esempio:
 

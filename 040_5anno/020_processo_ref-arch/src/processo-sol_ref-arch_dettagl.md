@@ -1,3 +1,9 @@
+## Leggere con attenzione
+**Ricordare sempre il divario, notevole in sistemi e reti, fra mondo della scuola e professionale**.  
+Ricordare che il docente, in particolare un commissario esterno, ha come riferimento primario l'approccio scolastico.  
+Soluzioni ottime in ambito professionale in sede di prova potrebbero non essere comprese e addirittura essere penalizzate.    
+In particolare **i libri di testo non enfatizzano o non trattano affatto** le architetture **di rete** 2-layer e 3-layer. Beneficiate il più possibile di questi modelli del mondo professionale **ma valutate attentamente se citarli **esplicitamente** in prove scritte con esterni magari non ferratissimi sul mondo extrascolastico**, anzichè apprezzare potrebbero pensare che state confondendovi e parlando di architetture **applicative** 3-tiers.  
+
 
 
 # Materiale per tracce di Sistemi e Reti
@@ -23,6 +29,7 @@ Conviene conoscere quasi a memoria:
 * una reference architecture a 2 livelli;
 * una reference architecture a 3 livelli;
 * gli elementi ricorrenti: VLAN, DMZ, firewall, Wi-Fi interno/guest, VPN, cloud, server interni, rete di management, monitoraggio, sicurezza, backup, accesso remoto.
+
 
 ---  
 

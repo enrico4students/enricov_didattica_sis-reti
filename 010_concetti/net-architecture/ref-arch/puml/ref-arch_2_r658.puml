@@ -1,0 +1,98 @@
+@startuml
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment left
+
+cloud "Internet" as Internet
+node "ISP CPE / ONT" as ISP
+node "NGFW Cluster HA\nNAT / ACL / IPS\nRA VPN / S2S VPN" as FW
+node "DMZ On-Site\nVLAN 130" as DMZ
+
+node "Core Pair\nHigh-speed backbone" as CORE
+node "Distribution A" as DISTA
+node "Distribution B" as DISTB
+
+node "Access Users" as ASW1
+node "Access Office" as ASW2
+node "Access Wireless" as ASW3
+node "Access Spare / Expansion" as ASW4
+
+node "Server / BigData Distribution" as SVD
+
+node "Business App Servers\nVLAN 50" as APP
+node "DBMS / SAP Backend\nVLAN 60" as DB
+node "Reserved Document Server\nMgmt only\nVLAN 70" as DOC
+database "MongoDB Document Store\nRBAC\nVLAN 80" as MDB
+node "Management Network\nVLAN 110" as MGMT
+node "NMS / SIEM / IDS Collector\nVLAN 120" as SEC
+node "Big Data Cluster\n10 nodes\nVLAN 90/91/100" as BD
+
+node "Reverse Proxy / WAF" as WAF
+node "Public Web Server" as WEB
+node "REST/SOAP Public Facade" as API
+
+node "PTP Radio A" as PTA
+node "PTP Radio B" as PTB
+node "Secondary Dist/Access" as BR2
+node "Secondary Users\nVLAN 150" as BUSER
+node "Secondary Guest\nVLAN 160" as BGUEST
+node "Secondary Mgmt\nVLAN 170" as BMGMT
+
+node "Remote Main Site\nAnother Continent" as RHQ
+actor "Managers Remote Users" as MGR
+
+Internet -- ISP
+ISP -- FW
+
+FW -- DMZ
+FW -- CORE
+FW -- RHQ
+FW -- MGR
+
+DMZ -- WAF
+DMZ -- WEB
+DMZ -- API
+
+CORE -- DISTA
+CORE -- DISTB
+
+DISTA -- ASW1
+DISTA -- ASW2
+DISTA -- ASW3
+DISTB -- ASW4
+DISTB -- SVD
+
+SVD -- APP
+SVD -- DB
+SVD -- DOC
+SVD -- MDB
+SVD -- MGMT
+SVD -- SEC
+SVD -- BD
+
+DISTB -- PTA
+PTA -- PTB
+PTB -- BR2
+BR2 -- BUSER
+BR2 -- BGUEST
+BR2 -- BMGMT
+
+note right of DISTA
+L3 aggregation for campus blocks,
+policy handoff toward core/firewall,
+better modularity and scalability
+end note
+
+note right of FW
+Main enforcement point for:
+- Internet edge
+- VPN access
+- DMZ/Internal traffic
+end note
+
+note right of BD
+Distributed internal big data platform
+with separated access, data, and
+management planes
+end note
+@enduml

@@ -1,0 +1,131 @@
+@startuml
+title Architettura 2 layers - dispositivi fisici e funzionalità logiche
+
+skinparam shadowing false
+skinparam linetype ortho
+skinparam componentStyle rectangle
+
+skinparam rectangle {
+  BorderColor #333333
+  BackgroundColor #FFFFFF
+}
+
+cloud "Internet" as internet
+
+rectangle "Router ISP\n(dispositivo fisico)" as router_isp
+
+rectangle "Firewall perimetrale / NGFW\n(dispositivo fisico)" as ngfw {
+  rectangle "Funzionalità logiche del NGFW" as funzioni_ngfw {
+    rectangle "NAT / PAT" as nat
+    rectangle "Stateful inspection" as stateful
+    rectangle "IDS / IPS" as ips
+    rectangle "Terminazione VPN IPsec\nsite-to-site sede estera" as vpn_s2s
+    rectangle "Terminazione VPN SSL/IPsec\nremote access manager" as vpn_ra
+    rectangle "Policy di sicurezza / ACL" as policy
+  }
+}
+
+rectangle "DMZ on-premise\n(zona di rete)" as dmz {
+  rectangle "Web server pubblico" as web
+  rectangle "API REST/SOAP gateway" as api
+  rectangle "Reverse proxy / WAF" as waf
+}
+
+rectangle "Cloud provider" as cloud_provider {
+  rectangle "VPN IPsec oppure\nDirect Connect / ExpressRoute" as cloud_conn
+  rectangle "Cloud VPC / VNet" as vpc
+  rectangle "Servizi serverless" as serverless
+}
+
+rectangle "Sede estera" as sede_estera {
+  rectangle "Firewall/Router sede estera" as fw_estero
+  rectangle "LAN sede estera" as lan_estera
+}
+
+rectangle "Manager remoto" as manager {
+  rectangle "Notebook aziendale" as notebook
+  rectangle "Client VPN" as client_vpn
+}
+
+rectangle "Coppia switch L3\ncollapsed core/distribution\n(dispositivi fisici)" as core
+
+rectangle "Server interni\n(VLAN server)" as server_interni {
+  rectangle "DBMS" as dbms
+  rectangle "SAP / ERP" as sap
+  rectangle "Sistema custom" as custom
+  rectangle "Documentale riservato" as doc_ris
+  rectangle "MongoDB documentale generale" as mongo
+}
+
+rectangle "Cluster Big Data\n(VLAN Big Data)" as bigdata {
+  rectangle "10 nodi di calcolo/storage" as nodi
+}
+
+rectangle "Storage / Backup\n(VLAN storage)" as storage
+
+rectangle "Access layer" as access {
+  rectangle "Switch access piano 1\n(dispositivo fisico)" as sw_p1 {
+    rectangle "PC utenti" as pc1
+    rectangle "AP Wi-Fi" as ap1
+    rectangle "Stampanti" as stampanti
+  }
+
+  rectangle "Switch access piano 2\n(dispositivo fisico)" as sw_p2 {
+    rectangle "PC utenti" as pc2
+    rectangle "AP Wi-Fi" as ap2
+    rectangle "IoT" as iot
+  }
+}
+
+rectangle "Ponte radio PTP 600 m" as ptp {
+  rectangle "Antenna/bridge PTP sede principale" as antenna_a
+  rectangle "Antenna/bridge PTP ufficio secondario" as antenna_b
+}
+
+rectangle "Ufficio secondario" as ufficio_sec {
+  rectangle "Switch access\n(dispositivo fisico)" as sw_sec
+  rectangle "Utenti" as utenti_sec
+  rectangle "AP Wi-Fi aziendale" as ap_sec
+}
+
+internet --> router_isp
+router_isp --> ngfw
+
+ngfw --> dmz
+ngfw --> core
+ngfw --> cloud_provider : connessione cloud
+ngfw --> fw_estero : tunnel VPN site-to-site
+ngfw --> client_vpn : VPN remote access
+
+fw_estero --> lan_estera
+
+client_vpn --> notebook
+
+core --> server_interni
+core --> bigdata
+core --> storage
+core --> sw_p1
+core --> sw_p2
+core --> antenna_a
+
+antenna_a --> antenna_b
+antenna_b --> sw_sec
+sw_sec --> utenti_sec
+sw_sec --> ap_sec
+
+note right of ngfw
+VPN site-to-site e VPN remote access
+non sono dispositivi separati:
+sono funzionalità logiche terminate
+sul firewall/NGFW.
+end note
+
+note bottom of core
+Lo switch L3 realizza il routing interno,
+ad esempio il routing inter-VLAN.
+Il traffico verso Internet, DMZ, cloud e VPN
+passa invece dal firewall/NGFW.
+end note
+
+@enduml
+@enduml

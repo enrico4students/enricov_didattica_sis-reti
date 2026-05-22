@@ -1,10 +1,7 @@
-# Autenticazione di rete enterprise con 802.1X, RADIUS e LDAP
+# Autenticazione di rete enterprise ( 802.1X, RADIUS e LDAP )
 
----  
 
-## Concetti base
-
-Come caso d'uso nella parte iniziale usiamo il wifi ma i concetti sono totalmente generali, assolutamente NON limitati al WIFI
+## Concetti fondamentali
 
 ### Autenticazione
 
@@ -64,22 +61,23 @@ Vantaggi:
 * segmentazione della rete;
 * revoca utenti singoli.
 
-## Schema  
+## Schema
 
 RADIUS è un protocollo, non il nome di un server.  
-Usiamo il termine server RADIUS per indicare un server in grado di interagire usando il protocollo RADIUS.
+Server RADIUS è, ovviamente, un server in grado di interagire usando il protocollo RADIUS.
 
-    Client Wi‑Fi
-        |
-        v
-    Access Point
-        |
-        v
-    Server RADIUS
-        |
-        v
-    LDAP / Active Directory
-
+```
+Client Wi‑Fi
+    |
+    v
+Access Point
+    |
+    v
+Server RADIUS
+    |
+    v
+LDAP / Active Directory
+```
 
 # Sezione 2 — WPA Personal e WPA Enterprise
 
@@ -89,18 +87,24 @@ Le reti Wi‑Fi moderne utilizzano standard WPA2 o WPA3.
 
 ### WPA Personal
 
-Utilizza:
+Utilizza PSK (**P**re‑**S**hared **K**ey), cioè una password condivisa,  
+quindi tutti i dispositivi utilizzano la stessa chiave.
 
-* PSK (**P**re‑**S**hared **K**ey);
-* password condivisa.
+```
+Client
+    |
+    | password Wi‑Fi
+    v
+Access Point
+```
 
-Normalmente non è utilizzato un server centrale.
+Nessun server centrale.
 
 #### Limiti
 
 * nessuna identità individuale (ovvio, si usa solo una chiave, uguale per tutti);
 * difficile gestione utenti;
-* cambio password necessario per tutti;
+* cambio password impatta tutti;
 * limitata scalabilità.
 
 ### WPA Enterprise
@@ -113,21 +117,63 @@ Usa:
 
 Ogni utente usa credenziali **personali**.
 
+Sono coinvolti diversi protocolli, con positioning simile che richiede attenzione per essere compreso:
 * 802.1X controlla l’accesso alla rete;
-* EAP definisce **il modo** in cui avviene l’autenticazione;
-* RADIUS **trasporta** le informazioni di autenticazione, autorizzazione e accounting **fra access point e server**;
+* EAP definisce il modo in cui avviene l’autenticazione;
+* RADIUS trasporta messaggi AAA ed eventualmente messaggi EAP incapsulati fra access point e server;
 * WPA2 Enterprise o WPA3 Enterprise applicano questi meccanismi alla rete Wi‑Fi.
 
-    Client
-        |
-        | 802.1X / EAP
-        v
-    Access Point
-        |
-        | RADIUS
-        v
-    Server RADIUS
+In forma sintetica:
 
+```
+802.1X = controllo dell’accesso alla rete
+
+EAP = metodo o framework di autenticazione
+
+RADIUS = protocollo AAA usato fra access point e server
+
+WPA Enterprise = uso di 802.1X, EAP e RADIUS nel Wi‑Fi
+```
+
+Schema
+
+```
+Client
+    |
+    | 802.1X / EAPOL
+    | trasporto EAP
+    v
+Access Point
+    |
+    | RADIUS
+    | trasporto EAP incapsulato
+    v
+Server RADIUS
+```
+
+### Relazione fra WPA2/WPA3 ed EAP
+
+WPA2 Enterprise e WPA3 Enterprise non sostituiscono EAP.
+
+Più precisamente:
+
+* WPA2/WPA3 Enterprise usano EAP per autenticare utenti e dispositivi;
+* EAP definisce il metodo di autenticazione;
+* WPA2/WPA3 forniscono cifratura e protezione del traffico Wi‑Fi;
+* 802.1X controlla l’accesso iniziale alla rete.
+
+Notare che  
+WPA2 e WPA3 sono protocolli di sicurezza Wi-Fi che operano principalmente a livello 2 del modello ISO/OSI.  
+Per realizzare l’autenticazione enterprise utilizzano 802.1X ed EAP.
+EAP è un protocollo logico di autenticazione, generalmente considerato di livello applicativo (livello 7), che permette l’uso di diversi metodi di autenticazione come password, certificati o token.
+Quindi abbiamo un protocollo di livello alto, EAP, attivato per soddisfare i bisogni di un protocollo di livello basso (WPA2, WPA3)
+Questo mostra bene un concetto molto importante delle architetture di rete moderne: protocolli di livello basso possono delegare funzioni complesse a protocolli di livello più alto; i livelli OSI non sono “compartimenti rigidi”; molti sistemi reali integrano protocolli di livelli diversi.
+
+
+È anche importante osservare che:
+
+* 802.1X non cifra il traffico utente;
+* WPA2/WPA3 invece implementano meccanismi crittografici per proteggere il traffico dati.
 
 ### Differenze principali
 
@@ -153,7 +199,7 @@ Due versioni:
 * WPA3 Personal;
 * WPA3 Enterprise.
 
----  
+---
 
 # Sezione 3 — Standard IEEE 802.1X
 
@@ -161,7 +207,7 @@ Due versioni:
 
 802.1X è uno standard IEEE per il controllo degli accessi di rete.
 
-Serve a consentire l’**accesso solo dopo autenticazione**.
+Serve a consentire l’accesso solo dopo autenticazione.
 
 ## Componenti  
 
@@ -176,30 +222,86 @@ Esempi: notebook, smartphone, PC, stampanti.
 
 Esempi:
 
-* switch;
-* access point.
+* switch (connessioni cablate)
+* access point (wifi)
 
 ##### Authentication Server
 
-È il server che autentica.
-Nel nostro caso normalmente sarà un server RADIUS.
+È il server che autentica. 
+Spesso, e nel caso di nostro interesse è un server RADIUS.
 
+#### Schema
 
-    Supplicant
-        |
-        | EAPOL
-        v
-    Authenticator
-        |
-        | RADIUS
-        v
-    Authentication Server
+```
+Supplicant
+    |
+    | EAPOL
+    v
+Authenticator
+    |
+    | RADIUS
+    v
+Authentication Server
+```
 
 ### EAPOL
 
-EAPOL significa: **EAP** **o**ver **L**AN
+EAPOL significa: EAP **over LAN**
 
 È il protocollo usato fra client e switch/access point.
+
+### 802.1X come trasporto EAP
+
+802.1X non definisce direttamente password, certificati o altri meccanismi di autenticazione.
+
+Il suo compito principale consiste nel **trasportare** messaggi EAP.
+
+Più precisamente:
+
+* EAP contiene la logica di autenticazione;
+* EAPOL (EAP over LAN) è il protocollo Layer 2 usato da 802.1X per trasportare EAP;
+* 802.1X
+    * definisce:
+        - ruoli;
+        - stati porta;
+        - logica di accesso;
+        - comportamento dell’authenticator;
+        - modello di autenticazione;
+    * usa EAPOL per trasportare EAP sulla tratta locale fra supplicant e authenticator.
+        * nelle reti cablate  EAPOL usa Ethernet;
+        * nelle reti wireless EAPOL usa frame dati 802.11.
+
+Schema logico:
+
+```
+Smartphone
+    |
+    | EAP
+    v
+EAPOL / 802.1X
+    |
+    v
+Access Point
+```
+
+In questo modello:
+
+* EAP è il protocollo logico di autenticazione;
+* EAPOL è il contenitore Layer 2 che **trasporta** EAP.
+
+### Stack protocollare fra client e access point
+
+Nella prima tratta lo stack protocollare tipico è:
+
+```
+EAP
+    ↓
+EAPOL / 802.1X
+    ↓
+Ethernet oppure Wi‑Fi 802.11
+```
+
+Il traffico EAP viene quindi trasportato direttamente sopra il livello 2.
 
 ### Stati della porta
 
@@ -218,17 +320,19 @@ Se authorized:
 
 ### Sequenza semplificata
 
-    1. client collegato
-    
-    2. porta bloccata
-    
-    3. richiesta autenticazione
-    
-    4. inoltro a RADIUS
-    
-    5. verifica credenziali
-    
-    6. autorizzazione accesso
+```
+1. client collegato
+
+2. porta bloccata
+
+3. richiesta autenticazione
+
+4. inoltro a RADIUS
+
+5. verifica credenziali
+
+6. autorizzazione accesso
+```
 
 ### Vantaggi
 
@@ -247,46 +351,49 @@ Se authorized:
 
 ## Overview
 
-RADIUS è il **protocollo** più usato per gestire autenticazione, autorizzazione e accounting nelle reti.
+RADIUS è il protocollo più usato per gestire autenticazione, autorizzazione e accounting nelle reti.
 
 Nel caso di WPA Enterprise, RADIUS non sostituisce EAP.
 
 Più precisamente:
 
 * il client usa un metodo EAP;
-* l’access point **incapsula i messaggi EAP dentro richieste RADIUS**;
-* il server RADIUS verifica le credenziali o i certificati, **eventualmente interrogando LDAP o Active Directory**;
+* fra client e access point i messaggi EAP vengono trasportati tramite EAPOL / 802.1X;
+* nel Wi-Fi enterprise WPA2/WPA3 utilizzano questo meccanismo di autenticazione;
+* l’access point incapsula poi i messaggi EAP dentro richieste RADIUS;
+* il server RADIUS verifica le credenziali o i certificati, eventualmente interrogando LDAP o Active Directory;
 * il server RADIUS restituisce all’access point l’esito dell’autenticazione e gli eventuali parametri di autorizzazione.
 
-## AAA
 
-AAA: Authentication; Authorization; Accounting.
-- Authentication: Verifica identità. 
-Esempio: username/password.  
-- Authorization: Definisce permessi.
-Esempio: assegnazione VLAN.  
-- Accounting: Registra attività.
-Esempio: tempo di connessione.
+## AAA (recall)
 
+AAA significa:
 
-    Client
-        |
-        v
-    Access Point
-        |
-        | RADIUS
-        v
-    Server RADIUS
+* Authentication: Verifica identità. Esempio: username/password.
+* Authorization: Definisce permessi. Esempio: assegnazione VLAN.
+* Accounting: Registra attività.     Esempio: tempo di connessione.
 
 
-## Protocollo RADIUS, concetti base  
+```
+Client
+    |
+    v
+Access Point
+    |
+    | protocollo RADIUS
+    v
+Server RADIUS
+```
+
+## Idea generale del protocollo RADIUS
 
 RADIUS è un protocollo applicativo AAA usato principalmente fra:
 
-* access point o switch;
+* access point o switch e
 * server di autenticazione.
 
-Non trasporta direttamente il traffico utente ma **messaggi di controllo relativi all’autenticazione e autorizzazione**.
+RADIUS non trasporta il traffico normale degli utenti come Web, email o file sharing.  
+Trasporta solamente messaggi di controllo relativi ad autenticazione, autorizzazione, accounting e, nel caso di 802.1X/WPA Enterprise, messaggi EAP incapsulati.
 
 Esempi di informazioni contenute nei messaggi:
 
@@ -299,32 +406,152 @@ Esempi di informazioni contenute nei messaggi:
 
 Esempi concettuali di messaggi RADIUS:
 
-```text
+```
 Access-Request
 ```
+
 Richiesta autenticazione inviata dall’AP al server.
 
-```text
+```
 Access-Accept
 ```
+
 Accesso autorizzato.
 
-```text
+```
 Access-Reject
 ```
+
 Accesso negato.
 
-```text
+```
 Accounting-Start
 ```
+
 Inizio registrazione sessione.
 
-```text
+```
 Accounting-Stop
 ```
+
 Fine sessione.
 
 
+## Stack protocollare RADIUS
+
+RADIUS si appoggia normalmente ai protocolli UDP e IP.
+
+    EAP
+     ↓
+    RADIUS
+     ↓
+    UDP
+     ↓
+    IP
+     ↓
+    Ethernet / Wi-Fi
+
+Questo stack riguarda la seconda tratta cioè la tratta  
+   authenticator ↔ server RADIUS.
+
+È importante confrontarlo con la prima tratta:
+
+```
+EAP
+    ↓
+EAPOL / 802.1X
+    ↓
+Ethernet / Wi-Fi
+```
+
+Nelle due tratte:
+
+* EAP rimane logicamente lo stesso protocollo;
+* cambia invece il protocollo di trasporto.
+
+## Formato semplificato di un pacchetto RADIUS
+
+Un pacchetto RADIUS contiene alcuni campi principali.
+
+Schema semplificato:
+
+```
++----------------+
+| Code           |
++----------------+
+| Identifier     |
++----------------+
+| Length         |
++----------------+
+| Authenticator  |
++----------------+
+| Attributes     |
++----------------+
+```
+
+Significato generale:
+
+* Code
+
+  * tipo di messaggio RADIUS;
+
+* Identifier
+
+  * identificatore della richiesta;
+
+* Length
+
+  * lunghezza del pacchetto;
+
+* Authenticator
+
+  * usato per sicurezza e validazione;
+
+* Attributes
+
+  * informazioni trasportate dal messaggio.
+
+Gli attributi possono contenere:
+
+* username;
+* dati EAP;
+* VLAN assegnata;
+* indirizzo IP;
+* timeout;
+* gruppi LDAP/AD;
+* parametri di autorizzazione.
+
+## Reincapsulamento dei messaggi EAP
+
+Uno dei concetti più importanti consiste nel fatto che EAP viene reincapsulato in protocolli diversi nelle due tratte.
+
+Prima tratta:
+
+* EAP viene trasportato dentro EAPOL / 802.1X.
+
+Seconda tratta:
+
+* lo stesso EAP viene trasportato dentro RADIUS.
+
+Schema:
+
+```
+CLIENT
+    |
+    | EAP inside EAPOL
+    v
+ACCESS POINT
+    |
+    | EAP inside RADIUS
+    v
+SERVER RADIUS
+```
+
+È importante comprendere che:
+
+* il contenuto logico EAP resta coerente;
+* cambia il protocollo contenitore;
+* 802.1X e RADIUS non operano contemporaneamente sulla stessa tratta.
 
 ## Porte standard
 
@@ -355,22 +582,36 @@ Non sostituisce però TLS o altri meccanismi crittografici usati dai metodi EAP.
 * Microsoft NPS
 * Cisco ISE.
 
+## FreeRADIUS
 
-### Flusso  
+FreeRADIUS è il server RADIUS open source più diffuso.
 
-    Client
-        |
-        | EAPOL
-        v
-        AP
-        |
-        | RADIUS
-        v
-    FreeRADIUS server
-        |
-        | LDAP
-        v
-    Active Directory
+Caratteristiche:
+
+* Linux;
+* LDAP;
+* Active Directory;
+* SQL;
+* EAP;
+* VLAN dinamiche.
+
+## Flusso completo
+
+```
+Client
+    |
+    | EAPOL
+    v
+    AP
+    |
+    | RADIUS
+    v
+FreeRADIUS server
+    |
+    | LDAP
+    v
+Active Directory
+```
 
 # 5 — LDAP e Active Directory
 
@@ -380,8 +621,13 @@ LDAP e Active Directory sono concetti spesso collegati.
 
 ## LDAP
 
-Lightweight Directory Access Protocol, un protocollo standard.  
-LDAP da solo non rappresenta un sistema AAA completo.  
+LDAP significa:
+
+```
+Lightweight Directory Access Protocol
+```
+
+È un protocollo standard.
 
 Serve a:
 
@@ -392,6 +638,11 @@ Serve a:
 
 LDAP può essere usato da un servizio applicativo, per esempio RADIUS, per verificare credenziali e leggere informazioni sugli utenti.
 
+LDAP da solo non rappresenta un sistema AAA completo come RADIUS.
+
+## Idea generale del protocollo LDAP
+
+LDAP è un protocollo applicativo usato per interrogare e gestire directory di utenti e oggetti.
 
 Un client LDAP può:
 
@@ -403,29 +654,34 @@ Un client LDAP può:
 
 Esempi concettuali di operazioni LDAP:
 
-```text
+```
 Bind
 ```
+
 Tentativo di autenticazione verso il server directory.
 
-```text
+```
 Search
 ```
+
 Ricerca di utenti o oggetti.
 
-```text
+```
 Add
 ```
+
 Inserimento di un nuovo oggetto.
 
-```text
+```
 Modify
 ```
+
 Modifica attributi.
 
-```text
+```
 Delete
 ```
+
 Eliminazione oggetto.
 
 Esempi di attributi contenuti negli oggetti:
@@ -437,16 +693,19 @@ Esempi di attributi contenuti negli oggetti:
 * reparto;
 * appartenenza VLAN.
 
+Lo scopo della sezione è comprendere il ruolo generale di LDAP, non studiare il protocollo in dettaglio.
 
-## Esempio di Struttura LDAP   
+## Struttura gerarchica
 
 Esempio:
 
-    dc=scuola,dc=local
-        |
-        +-- ou=docenti
-        |
-        +-- ou=studenti
+```
+dc=scuola,dc=local
+    |
+    +-- ou=docenti
+    |
+    +-- ou=studenti
+```
 
 ## Oggetti LDAP
 
@@ -476,8 +735,7 @@ Active Directory utilizza LDAP, insieme ad altri protocolli e servizi come Kerbe
 * integrazione DNS;
 * amministrazione centralizzata.
 
-Per la parte Wi‑Fi enterprise ci interessa soprattutto il suo ruolo come archivio centralizzato di utenti e gruppi utilizzabile tramite LDAP (e Kerberos, un altro importante protocollo).
-
+Per la parte Wi‑Fi enterprise interessa soprattutto il suo ruolo come archivio centralizzato di utenti e gruppi utilizzabile tramite LDAP (e Kerberos).
 
 ## LDAP sicuro
 
@@ -488,12 +746,13 @@ Per sicurezza si usa:
 
 ## Schema tipico
 
-    FreeRADIUS
-        |
-        | LDAP / LDAPS
-        v
-    Active Directory
-
+```
+FreeRADIUS
+    |
+    | LDAP / LDAPS
+    v
+Active Directory
+```
 
 # Sezione 6 — Integrazione Wi‑Fi Enterprise
 
@@ -506,65 +765,143 @@ Una rete Wi‑Fi enterprise può integrare:
 * RADIUS;
 * LDAP/AD.
 
-Dove:    
-- 802.1X controlla l’accesso alla rete.
-- EAP definisce il metodo di autenticazione.  
-- RADIUS permette all’access point di comunicare con il server di autenticazione (server RADIUS).  
-- Servizi directory come Active Directory forniscono directory di utenti, gruppi e attributi, spesso accessibili tramite LDAP.  
+Questi elementi non svolgono lo stesso compito.
 
+* 802.1X controlla l’accesso alla rete;
+* EAP definisce il metodo di autenticazione;
+* RADIUS permette all’access point di comunicare con il server di autenticazione;
+* Active Directory e LDAP forniscono directory utenti e informazioni sugli account.
 
 ## Architettura  
 
-    Smartphone / PC
-        |
-        | EAPOL
-        v
-    Access Point
-        |
-        | RADIUS
-        v
-    FreeRADIUS
-        |
-        | LDAP
-        v
-    Active Directory
+```
+Smartphone / PC
+    |
+    | EAP
+    |
+    | EAPOL / 802.1X
+    |
+    v
+Access Point
+    |
+    | EAP
+    |
+    | RADIUS
+    |
+    | UDP
+    |
+    | IP
+    |
+    v
+FreeRADIUS
+    |
+    | LDAP / Kerberos
+    v
+Active Directory
+```
 
+Questo diagramma evidenzia che:
+
+* EAP resta il protocollo logico di autenticazione;
+* EAPOL viene usato nella tratta locale;
+* RADIUS viene usato fra access point e server AAA;
+* LDAP e Kerberos vengono usati dal server RADIUS per verificare utenti e gruppi.
 
 ## Sequenza dettagliata
 
 * Fase 1
-    * il client si collega all’SSID.
+
+  * il client si collega all’SSID.
 
 * Fase 2
-    * l’access point richiede autenticazione 802.1X.
+
+  * l’access point richiede autenticazione 802.1X.
 
 * Fase 3
-    * il client e il server avviano lo scambio EAP;
-    * a seconda del metodo scelto, lo scambio può usare:
-        * username/password;
-        * certificati;
-        * altri meccanismi di autenticazione.
+
+  * il client e il server avviano lo scambio EAP;
+  * a seconda del metodo scelto, lo scambio può usare:
+
+    * username/password;
+    * certificati;
+    * altri meccanismi di autenticazione.
 
 * Fase 4
-    * l’access point non verifica direttamente le credenziali;
-    * l’access point incapsula i messaggi EAP in pacchetti RADIUS;
-    * i pacchetti vengono inoltrati al server RADIUS.
+
+  * l’access point non verifica direttamente le credenziali;
+  * l’access point incapsula i messaggi EAP in pacchetti RADIUS;
+  * i pacchetti vengono inoltrati al server RADIUS.
 
 * Fase 5
-    * il server RADIUS verifica credenziali o certificati;
-    * se necessario, il server interroga LDAP o Active Directory;
-    * la verifica può riguardare:
-        * utenti;
-        * password;
-        * gruppi;
-        * attributi.
+
+  * il server RADIUS verifica credenziali o certificati;
+  * se necessario, il server interroga LDAP o Active Directory;
+  * la verifica può riguardare:
+
+    * utenti;
+    * password;
+    * gruppi;
+    * attributi.
 
 * Fase 6
-    * se autenticazione corretta:
-        * accesso consentito;
-    * altrimenti:
-        * accesso negato.  
 
+  * se autenticazione corretta:
+
+    * accesso consentito;
+  * altrimenti:
+
+    * accesso negato.
+
+## Due tratte distinte
+
+Nel processo completo esistono due tratte di comunicazione differenti.
+
+### Prima tratta
+
+Fra:
+
+* supplicant;
+* authenticator.
+
+Protocollo usato:
+
+* EAPOL / 802.1X.
+
+Schema:
+
+```
+Smartphone
+    |
+    | EAP over LAN
+    v
+Access Point
+```
+
+### Seconda tratta
+
+Fra:
+
+* authenticator;
+* server AAA.
+
+Protocollo usato:
+
+* RADIUS.
+
+Schema:
+
+```
+Access Point
+    |
+    | RADIUS over UDP/IP
+    v
+Server RADIUS
+```
+
+Nelle due tratte:
+
+* EAP rimane logicamente identico;
+* cambiano i protocolli di trasporto.
 
 ## VLAN dinamiche
 
@@ -574,17 +911,20 @@ Questa assegnazione viene spesso comunicata all’access point o allo switch tra
 
 Alcuni attributi usati frequentemente sono:
 
-* **Tunnel-Type**  
-    * indica il tipo di tunnel o meccanismo utilizzato;
-    * nel caso delle VLAN normalmente indica VLAN.
+* Tunnel-Type
 
-* **Tunnel-Medium-Type**  
-    * indica il mezzo di trasporto della rete;
-    * normalmente Ethernet.
+  * indica il tipo di tunnel o meccanismo utilizzato;
+  * nel caso delle VLAN normalmente indica VLAN.
 
-* **Tunnel-Private-Group-ID**  
-    * contiene l’identificatore della VLAN da assegnare;
-    * per esempio VLAN 10 oppure VLAN 20.
+* Tunnel-Medium-Type
+
+  * indica il mezzo di trasporto della rete;
+  * normalmente Ethernet.
+
+* Tunnel-Private-Group-ID
+
+  * contiene l’identificatore della VLAN da assegnare;
+  * per esempio VLAN 10 oppure VLAN 20.
 
 In pratica il server RADIUS non si limita a dire “accesso consentito”, ma **può anche indicare in quale VLAN collocare il dispositivo autenticato**.
 
@@ -596,15 +936,12 @@ Esempio:
 | Studenti | 20   |
 | Ospiti   | 30   |
 
-
 ## Benefici
 
 * segmentazione;
 * sicurezza;
 * gestione centralizzata;
 * tracciabilità.
-
-
 
 # Sezione 6B — Autenticazione nelle reti cablate
 
@@ -618,7 +955,7 @@ In questo caso il controllo accessi avviene sulle porte dello switch, l’authen
 
 ## Schema tipico
 
-```text
+```
 PC
     |
     | EAPOL
@@ -644,7 +981,7 @@ Il dispositivo viene collegato alla porta Ethernet.
 
 La porta dello switch inizialmente è in stato:
 
-```text
+```
 unauthorized
 ```
 
@@ -720,7 +1057,7 @@ Esempi:
 
 In questi casi alcuni switch possono usare:
 
-```text
+```
 MAC Authentication Bypass
 ```
 
@@ -739,12 +1076,55 @@ Il server decide:
 * necessità di gestione certificati in alcuni casi;
 * problemi con dispositivi legacy.
 
-
 # Sezione 7 — Metodi EAP
 
 ## Overview
 
 EAP definisce diversi metodi di autenticazione.
+
+EAP non è un protocollo di cifratura del traffico Wi‑Fi.
+
+EAP definisce:
+
+* il metodo di autenticazione;
+* il formato logico dei messaggi EAP;
+* il dialogo fra client e server.
+
+I messaggi EAP possono essere trasportati:
+
+* dentro EAPOL / 802.1X;
+* dentro RADIUS;
+* in altri protocolli compatibili.
+
+## Struttura logica di un messaggio EAP
+
+Un messaggio EAP contiene normalmente:
+
+* Code;
+* Identifier;
+* Length;
+* Data.
+
+Schema semplificato:
+
+```
++----------------+
+| Code           |
++----------------+
+| Identifier     |
++----------------+
+| Length         |
++----------------+
+| Data           |
++----------------+
+```
+
+Il campo Code può indicare:
+
+* Request;
+* Response;
+* Success;
+* Failure.
 
 ## EAP-TLS
 
@@ -822,18 +1202,20 @@ La decisione può dipendere da:
 
 ## Schema
 
-    Utente
-        |
-        v
-    RADIUS
-        |
-        +--> VLAN 10
-        +--> VLAN 20
-        +--> VLAN 30
+```
+Utente
+    |
+    v
+RADIUS
+    |
+    +--> VLAN 10
+    +--> VLAN 20
+    +--> VLAN 30
+```
 
 ## NAC
 
-802.1X è spesso parte di sistemi NAC (Network Access Control)  
+802.1X è spesso parte di sistemi NAC (Network Access Control)
 
 Permette:
 
@@ -874,17 +1256,23 @@ Le reti 802.1X possono essere difficili da diagnosticare.
 
 Filtri utili:
 
-    eapol
+```
+eapol
+```
 
 oppure:
 
-    radius
+```
+radius
+```
 
 ## Log FreeRADIUS
 
 Comando:
 
-    freeradius -X
+```
+freeradius -X
+```
 
 Avvia FreeRADIUS in modalità debug.
 
@@ -919,41 +1307,55 @@ Comprendere:
 
 Ubuntu:
 
-    sudo apt update
-    sudo apt install freeradius
+```
+sudo apt update
+sudo apt install freeradius
+```
 
 ## Avvio debug
 
-    sudo freeradius -X
+```
+sudo freeradius -X
+```
 
 ## Configurazione client RADIUS
 
 File:
 
-    /etc/freeradius/3.0/clients.conf
+```
+/etc/freeradius/3.0/clients.conf
+```
 
 Esempio:
 
-    client ap_scuola {
-        ipaddr = 192.168.1.2
-        secret = segretoRadius
-    }
+```
+client ap_scuola {
+    ipaddr = 192.168.1.2
+    secret = segretoRadius
+}
+```
 
 ## Utente locale di test
 
 File:
 
-    /etc/freeradius/3.0/users
+```
+/etc/freeradius/3.0/users
+```
 
 Esempio:
 
-    studente1 Cleartext-Password := "Password123"
+```
+studente1 Cleartext-Password := "Password123"
+```
 
 ## Test locale
 
 Comando:
 
-    radtest studente1 Password123 localhost 0 testing123
+```
+radtest studente1 Password123 localhost 0 testing123
+```
 
 ## Configurazione access point
 
@@ -979,27 +1381,34 @@ Configurare:
 
 ## Schema finale laboratorio
 
-    Notebook
-        |
-        v
-    Access Point
-        |
-        v
-    FreeRADIUS
-        |
-        v
-    LDAP / Active Directory
+```
+Notebook
+    |
+    | EAPOL
+    v
+Access Point
+    |
+    | RADIUS / UDP / IP
+    v
+FreeRADIUS
+    |
+    | LDAP
+    v
+Active Directory
+```
 
-# Verifica 
+# Verifica
 
-## Concetti  
+## Concetti
 
 * differenza fra WPA Personal e WPA Enterprise;
 * ruolo di RADIUS;
 * differenza fra LDAP e Active Directory;
 * funzione di 802.1X;
 * ruolo di EAP;
-* significato di AAA.
+* differenza fra EAPOL e RADIUS;
+* significato di AAA;
+* concetto di reincapsulamento EAP.
 
 ## Attività pratiche
 

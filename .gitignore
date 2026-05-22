@@ -1,4 +1,7 @@
 
+
+005_authoring_gen/
+
 *.db
 
 .~lock*

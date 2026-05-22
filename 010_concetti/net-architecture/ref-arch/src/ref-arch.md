@@ -1,623 +1,973 @@
----
-
-# Reference Architecture Generale per Aziende Multinazionali
-
-## Indice esteso
-1. Scopo e ambito
-2. Requisiti generici (checklist)
-3. Piano di indirizzamento IP flessibile
-4. Layer 2 – Data Link (dettagli completo)
-   - VLAN standard e opzionali
-   - Spanning Tree, LACP, LLDP
-   - WiFi enterprise (802.1X, captive portal)
-5. Layer 3 – Network (routing avanzato)
-   - Subnetting e aggregazione
-   - OSPF / BGP / ridondanza
-   - NAT, VRF, QoS
-6. Sicurezza perimetrale e interna
-   - Firewall policy template
-   - IDS/IPS, segmentazione zero trust
-7. Connettività geografica
-   - PTP bridge LOS (L2/L3)
-   - VPN site-to-site (IPsec, DMVPN, SD-WAN)
-8. Cloud ibrido (AWS, Azure, GCP)
-   - VPN / Direct Connect
-   - Reverse proxy per chiamate on-prem
-9. Remote access per soli ruoli privilegiati (Manager)
-   - SSL VPN, MFA, split tunneling
-10. Rete di gestione (Out-of-Band)
-    - Console server, OOB switch, monitoring
-11. Tabella dei flussi di dati (esempi)
-12. Diagrammi PlantUML (estesi)
-13. Diagrammi ASCII testuali
-14. Snippet di configurazione (esempi reali)
-15. Checklist di verifica per studenti
-
----
-
-## 1. Scopo e ambito
-
-Questa architettura di riferimento è **generale** e può essere adattata a qualsiasi organizzazione che necessiti di:
-- Segmentazione di rete (VLAN) per dipendenti, ospiti, server critici, gestione.
-- Connettività WiFi separata per interni e ospiti.
-- Server interni: ERP/SAP, contabilità, file server con dati sensibili, DBMS relazionali e NoSQL.
-- Collegamento con una sede secondaria in line-of-sight (max 1 km).
-- Collegamento con un’altra sede principale in un continente diverso via VPN site-to-site.
-- Accesso remoto solo per personale con ruolo manageriale.
-- Esposizione di servizi REST su cloud pubblico (AWS, Azure, GCP) che richiamano API interne on-premises.
-- Rete di gestione out-of-band dedicata.
-
-L’architettura è indipendente dal vendor e può essere implementata con Cisco, Juniper, Fortinet, Palo Alto, Ubiquiti, MikroTik, o open-source (pfSense, OPNsense).
-
----
-
-## 2. Requisiti generici (checklist)
-
-| ID   | Requisito                                                                 | Priorità |
-|------|---------------------------------------------------------------------------|----------|
-| R01  | Segmentazione traffico interno (wired) e WiFi con VLAN separate           | Alta     |
-| R02  | WiFi interni con autenticazione 802.1X (RADIUS)                           | Alta     |
-| R03  | WiFi ospiti con captive portal e isolamento client                        | Media    |
-| R04  | Server SAP/contabilità su VLAN dedicata, accesso solo da LAN interna      | Alta     |
-| R05  | File server con dati riservati (SMB cifrato, auditing)                    | Alta     |
-| R06  | Database relazionale (PostgreSQL/MySQL) e NoSQL (MongoDB) su VLAN server | Alta     |
-| R07  | Collegamento L2 o L3 a sede secondaria LOS (max 1 km)                     | Media    |
-| R08  | VPN site-to-site IPsec con altra sede continentale                        | Alta     |
-| R09  | Remote access SSL VPN solo per manager (filtro AD)                        | Alta     |
-| R10  | Rete di gestione out-of-band (console, SNMP, syslog)                      | Alta     |
-| R11  | Servizi REST su cloud che invocano API interne on-prem                    | Media    |
-| R12  | Piano di indirizzamento gerarchico e aggregabile                          | Alta     |
-| R13  | Ridondanza link e dispositivi (opzionale ma consigliata)                  | Bassa    |
-
----
-
-## 3. Piano di indirizzamento IP flessibile
-
-Si consiglia l’uso dello spazio privato `10.0.0.0/8` con suddivisione per **sede**, **funzione** e **tipo**.
-
-### 3.1 Schema di allocazione generico
-
-| Sede                     | Blocco CIDR assegnato | Sotto-blocchi tipici                     |
-|--------------------------|------------------------|------------------------------------------|
-| Sede principale (EU)     | 10.10.0.0/16           | 10.10.VLAN.0/24                          |
-| Sede secondaria (LOS)    | 10.11.0.0/16           | 10.11.VLAN.0/24 (o estensione L2)        |
-| Sede altro continente    | 10.20.0.0/16           | 10.20.VLAN.0/24                          |
-| Cloud (AWS/Azure/GCP)    | 172.31.0.0/16          | Subnet pubbliche/private                  |
-| VPN remote (manager)     | 172.16.200.0/24        | Pool dinamico                            |
-| P2P /30 (se routing L3)  | 10.255.255.0/30        | Link punto-punto tra sedi                |
-
-### 3.2 VLAN consigliate (per ogni sede, salvo diversa indicazione)
-
-| VLAN | Nome funzione            | Subnet (esempio per sede principale) | Note                                      |
-|------|--------------------------|--------------------------------------|-------------------------------------------|
-| 10   | Wired Staff              | 10.10.10.0/24                        | Dipendenti standard                        |
-| 20   | WiFi Interni (802.1X)    | 10.10.20.0/24                        | Dispositivi aziendali                     |
-| 30   | WiFi Ospiti              | 172.16.30.0/24                       | Solo Internet (NAT)                        |
-| 40   | Server ERP/SAP           | 10.10.40.0/24                        | SAP, Oracle, contabilità                  |
-| 50   | File Server Confidenziali| 10.10.50.0/24                        | SMB con encryption, auditing              |
-| 60   | DBMS + NoSQL             | 10.10.60.0/24                        | PostgreSQL, MongoDB, Redis                |
-| 70   | Management (OOB)         | 10.10.70.0/24                        | Console, SNMP, SSH, RADIUS                |
-| 80   | DMZ (Reverse Proxy)      | 10.10.80.0/24                        | Per esposizione controllata               |
-| 90   | P2P LOS (se L3)          | 10.255.255.0/30                      | Collegamento punto-punto                  |
-
-> **Nota di generalizzazione**: Gli indirizzi possono essere modificati in base alle esigenze (es. `192.168.0.0/16` per piccole sedi). L’importante è mantenere la gerarchia.
-
----
-
-## 4. Layer 2 – Data Link (dettaglio completo)
-
-### 4.1 VLAN e trunking
-- **Core switch** con trunk 802.1q verso access switch e server farm.
-- **Native VLAN** non utilizzata (disabilitata per sicurezza) o messa su VLAN fantasma.
-- **Port security** sulle porte di accesso: max 2 MAC address, violazione shutdown.
-- **DHCP snooping** e **IP Source Guard** su VLAN clienti.
+# ARCHITETTURE DI RIFERIMENTO PER SISTEMI E RETI
 
-### 4.2 Spanning Tree Protocol
-- **RSTP (802.1w)** o **MSTP**.
-- Root bridge primario sul core switch, secondario su un altro switch di distribution.
-- **Portfast** su porte di accesso (con BPDUguard).
-- **Loopguard** e **Rootguard** su porte trunk.
+## Leggere con attenzione
+**Ricordare sempre il divario, notevole in sistemi e reti, fra mondo della scuola e professionale**.  
+Ricordare che il docente, in particolare un commissario esterno, ha come riferimento primario l'approccio scolastico.  
+Soluzioni ottime in ambito professionale in sede di prova potrebbero non essere comprese e addirittura essere penalizzate.  
+In particolare i libri di testo non enfatizzano o non trattano affatto le architetture **di rete** 2-layer e 3-layer. Beneficiate il pi\ possibile di questi modelli del mondo professionale ma valutate attentamente se citarli **esplicitamente** in prove scritte con esterni magari non ferratissimi sul mondo extrascolastico, anzichè apprezzare potrebbero pensare che state confondendovi e parlando di architetture **applicative** 3-tiers.  
 
-### 4.3 LACP (Link Aggregation)
-- Tra core e distribution switch: bundle da 2-4 porte Gigabit/10GbE.
-- Modalità attiva (LACP active).
 
-### 4.4 WiFi enterprise
-- **Controller WiFi** o **cloud-based** (Cisco Meraki, UniFi, Aruba Central).
-- **SSID interno**:
-  - VLAN 20.
-  - Autenticazione 802.1X (EAP-PEAP/MSCHAPv2 o EAP-TLS).
-  - RADIUS server su VLAN 70 (es. FreeRADIUS o Windows NPS).
-- **SSID ospiti**:
-  - VLAN 30.
-  - Captive portal (autenticazione via social, voucher o solo accettazione termini).
-  - Client isolation, limitazione banda (es. 2 Mbps down/up).
-  - Filtro DNS per bloccare contenuti malevoli.
+1. Obiettivo generale
 
----
+Definire due reference architecture realistiche, riusabili in ottica di traccia di esame di stato ma aderenti a casi enterprise reali:
 
-## 5. Layer 3 – Network (routing avanzato)
+* versione 2-layer
+* versione 3-layer
+
+Le due architetture devono includere in modo coerente:
+
+* connettività wired e wireless
+* WiFi corporate e WiFi guest
+* server pubblici on-site
+* servizi interni business-critical
+* segmentazione di rete
+* DMZ
+* rete di management
+* accesso remoto solo per il management
+* collegamento a sede secondaria locale a 600 m in line-of-sight
+* collegamento VPN site-to-site verso altra sede in altro continente
+* integrazione con cloud e servizi serverless
+* IDS/IPS con integrazione verso NMS / piattaforma di monitoraggio-sicurezza
+* cluster big data interno di circa 10 nodi
 
-### 5.1 Gateway e routing interno
-- **Firewall** o **router L3** fa da gateway per ogni VLAN (SVI – Switch Virtual Interface).
-- **Routing statico** per reti semplici, **OSPF area 0** per medie/grandi.
-- **ECMP** (Equal Cost Multi-Path) se ci sono più link.
+Questa impostazione è coerente con le guide di campus design Cisco, con le linee guida NIST sui firewall e con le architetture ibride cloud/on-prem documentate da AWS. ([Cisco][1])
 
-### 5.2 Routing dinamico consigliato (OSPF)
-- Area 0 backbone.
-- Annuncio delle subnet /24 e delle reti P2P.
-- Metriche: costi più alti per tunnel VPN (es. 1000) rispetto a link diretti (10).
-
-### 5.3 NAT e firewall
-- **NAT overload** (masquerading) per VLAN ospiti e per traffico verso Internet.
-- **NAT statico** per reverse proxy se esposto (opzionale).
+2. Servizi e requisiti funzionali comuni
 
-### 5.4 VRF (Virtual Routing and Forwarding)
-Opzionale per isolare completamente la rete di gestione e la rete ospiti.
+Le due architetture devono supportare gli stessi servizi.
 
----
-
-## 6. Sicurezza perimetrale e interna
+Servizi pubblici on-site:
 
-### 6.1 Firewall policy – template generico
-
-| Origine                    | Destinazione               | Azione  | Porte/protocollo                        | Note                                         |
-|----------------------------|----------------------------|---------|------------------------------------------|----------------------------------------------|
-| VLAN 10,20 (Staff+WiFi int)| VLAN 40 (SAP/ERP)          | Allow   | TCP 32xx, 33xx, 1433                     | Solo IP specifici                           |
-| VLAN 10,20                 | VLAN 50 (File segreti)     | Allow   | TCP 445 (SMB over TLS)                   | Autenticazione AD, logging                  |
-| VLAN 10,20                 | VLAN 60 (DB)               | Allow   | TCP 5432, 27017, 3306                    | Solo application server                     |
-| VLAN 30 (Ospiti)           | any                        | Allow   | TCP 80,443, UDP 53                       | NAT verso Internet, nessuna LAN             |
-| VLAN 70 (Management)       | VLAN 10,20,40,50,60,80     | Allow   | TCP 22, 161, 514, 1812 (RADIUS)          | Solo da jump host (10.10.70.10)            |
-| VLAN 80 (DMZ)              | VLAN 40,50,60 (server)     | Allow   | HTTP/HTTPS                               | Solo reverse proxy autorizzato              |
-| Cloud VPN (172.31.0.0/16)  | VLAN 80                    | Allow   | TCP 443,80                               | Chiamate REST da Lambda/ECS                 |
-| VPN Manager (172.16.200.0/24) | VLAN 40,50,60          | Allow   | Porte applicative                         | MFA obbligatorio                            |
-| Internet                   | VLAN 80 (Reverse Proxy)    | Deny   | (salvo eccezioni)                         | Se esposto, solo HTTPS con WAF              |
+* web server pubblico
+* server o API gateway che espone endpoint REST e SOAP
+* reverse proxy / WAF davanti ai servizi web pubblici
 
-### 6.2 IDS/IPS
-- **IPS** attivo sul firewall sul traffico Internet-bound e tra VLAN critiche.
-- **File server** con FIM (File Integrity Monitoring).
-
-### 6.3 Zero Trust Network Access (ZTNA) – opzionale
-- Micro-segmentazione con agenti sui client per accesso solo a servizi autorizzati.
-
----
-
-## 7. Connettività geografica
-
-### 7.1 Sede secondaria in line-of-sight (LOS) – 600m / 1 km
+Servizi interni:
 
-#### Opzione A: Bridge L2 trasparente (semplice)
-- Bridge radio (Ubiquiti airFiber, MikroTik Wireless Wire).
-- Estende le stesse VLAN della sede principale.
-- **Vantaggi**: IP unico, mobilità client.
-- **Svantaggi**: dominio di broadcast condiviso, rischio loop.
-
-#### Opzione B: Routing L3 (consigliata per sicurezza)
-- Assegnare una subnet /30 (es. `10.255.255.0/30`) tra i due firewall/router.
-- La sede secondaria ha il proprio firewall che annuncia le sue LAN (es. `10.11.0.0/16`) via OSPF.
-- **Vantaggi**: isolamento guasti, controllo traffico granulare.
+* DBMS relazionale
+* sistema SAP
+* business application custom
+* server documentale altamente confidenziale, accessibile solo al management
+* MongoDB per gestione documentale generale, accessibile ai dipendenti secondo RBAC
+* servizi di identità, autenticazione, log e monitoraggio
+* NMS
+* IDS/IPS e raccolta eventi di sicurezza
+* cluster big data di circa 10 nodi
 
-### 7.2 VPN site-to-site con altro continente
-- **IPsec IKEv2** con crittografia AES256-GCM, PFS (DH group 14+).
-- **Routing**: OSPF o BGP over tunnel (BGP preferito per grandi reti).
-- **Redundancy**: secondo tunnel su link di backup (LTE, MPLS).
-- **NAT traversal** abilitato.
-
-### 7.3 SD-WAN (opzionale per generalizzazione)
-In alternativa a IPsec manuale, si può usare SD-WAN (Fortinet SD-WAN, Cisco Viptela, VMware Velocloud) per gestire più link, traffic steering e failover automatico.
-
----
-
-## 8. Cloud ibrido (AWS, Azure, GCP)
-
-### 8.1 Connettività VPN
-- **Cloud VPN Gateway** (AWS VPN Gateway, Azure VPN Gateway, Google Cloud VPN).
-- Tunnel IPsec verso il firewall on-prem.
-- **BGP dinamico** per scambio route (opzionale ma consigliato).
-
-### 8.2 Chiamate da servizi REST cloud verso server interno on-prem
-1. Il servizio REST (API Gateway + Lambda/Cloud Function) risiede in una **subnet privata** della VPC.
-2. La funzione apre una connessione HTTP/HTTPS verso il **reverse proxy** on-prem (in VLAN 80).
-3. Il reverse proxy (Nginx, HAProxy, Apache) inoltra al server interno (es. legacy su VLAN 40).
-4. Il firewall on-prem consente il traffico solo dalla subnet cloud (es. `172.31.2.0/24`) verso il reverse proxy.
-
-### 8.3 Sicurezza cloud
-- Security group: permette solo traffico uscita verso on-prem.
-- Nessuna esposizione diretta del reverse proxy su Internet.
-
----
-
-## 9. Remote access per soli ruoli privilegiati (Manager)
-
-### 9.1 Componenti
-- **VPN concentrator** (integrato nel firewall o appliance dedicata).
-- **SSL VPN** (AnyConnect, OpenVPN, WireGuard con interfaccia web).
-
-### 9.2 Autenticazione e autorizzazione
-- **LDAP / Active Directory** per autenticare utenti.
-- Filtro gruppo: solo `CN=Managers,OU=...`.
-- **MFA obbligatorio** (TOTP, SMS, push notifica).
-- **Client certificate** opzionale per rafforzamento.
-
-### 9.3 Pool IP e routing
-- Pool dedicato: `172.16.200.0/24`.
-- **Split tunneling**:
-  - Instradare solo le subnet aziendali necessarie (VLAN 40,50,60).
-  - Traffico Internet esce direttamente dal client.
-- **Session timeout** massimo 8 ore, idle 30 minuti.
-- **Logging** di tutti gli accessi remoti.
-
----
-
-## 10. Rete di gestione (Out-of-Band – OOB)
-
-### 10.1 Architettura OOB
-- **Console server** (Opengear, Raritan, o Raspberry Pi con ser2net) collegato alle porte console di:
-  - Switch core, access switch, firewall, router, bridge radio.
-- **Switch di gestione dedicato** (VLAN 70 fisicamente separata o logicalmente isolata).
-- **Jump host** (Linux o Windows) su VLAN 70 con accesso SSH e strumenti di network management.
-
-### 10.2 Protocolli di gestione
-- **SSHv2** per accesso CLI.
-- **SNMPv3** (sola lettura) per monitoraggio (Zabbix, PRTG, LibreNMS).
-- **Syslog** centralizzato (rsyslog o Graylog) su 10.10.70.20.
-- **RADIUS / TACACS+** per autenticazione centralizzata degli admin.
-
-### 10.3 Accesso di emergenza
-- **Modem 4G/5G** collegato al console server per accesso OOB remoto se la rete primaria è down.
-
----
-
-## 11. Tabella dei flussi di dati (esempi concreti)
-
-| Caso d'uso                                      | IP sorgente (es.)    | IP destinazione (es.) | Porta  | Attraversa                                    |
-|-------------------------------------------------|----------------------|-----------------------|--------|-----------------------------------------------|
-| Dipendente wired → SAP                          | 10.10.10.105         | 10.10.40.20           | 3200   | Firewall (policy VLAN10→VLAN40)               |
-| WiFi interno → file segreti                     | 10.10.20.50          | 10.10.50.10           | 445    | Firewall + AD autenticazione                  |
-| Ospite → Internet                               | 172.16.30.110        | 8.8.8.8               | 443    | Firewall (NAT, captive portal)                |
-| Manager remoto → MongoDB                        | 172.16.200.15        | 10.10.60.30           | 27017  | SSL VPN → Firewall → VLAN 60                  |
-| AWS Lambda → Reverse proxy on-prem              | 172.31.2.45          | 10.10.80.10           | 443    | AWS VPN → Firewall → DMZ                      |
-| Amministratore → Core switch (SSH)              | 10.10.70.10 (jump)   | 10.10.70.2            | 22     | VLAN 70 (OOB)                                 |
-| Sede secondaria (L3) → file server segreti      | 10.11.10.20          | 10.10.50.10           | 445    | Firewall secondario → Firewall EU → VLAN 50   |
-
----
-
-## 12. Diagrammi PlantUML (estesi)
-
-### 12.1 Architettura generale (C4 style)
-
-```plantuml
-@startuml
-!include <C4/C4_Container>
-!include <C4/C4_Context>
-title Reference Architecture Generalizzata
-
-Person(remote_manager, "Manager (remoto)", "Solo manager con MFA")
-Person(staff, "Dipendente interno", "Ufficio")
-Person(guest, "Ospite", "WiFi pubblico")
-
-System_Boundary(sede_principale, "Sede Principale (HQ)") {
-    Container(fw, "Firewall / Router", "FortiGate/Palo/pfSense", "Gateway, VPN, NAT")
-    Container(core_sw, "Core Switch", "Layer 2/3", "Trunk, STP, LACP")
-    Container(access_sw, "Access Switch", "Layer 2", "VLAN 10,20,30,70")
-    Container(wlc, "WiFi Controller", "802.1X, Captive portal", "RADIUS")
-    Container(ap, "Access Point", "PoE", "SSID interni/ospiti")
-    
-    Container_Boundary(server_farm, "Server Farm") {
-        Container(erp, "Server ERP/SAP", "VLAN 40", "Contabilità, ERP")
-        Container(secure_fs, "File Server Riservato", "VLAN 50", "SMB over TLS, auditing")
-        Container(db, "DBMS + NoSQL", "VLAN 60", "PostgreSQL, MongoDB")
-        Container(reverse_proxy, "Reverse Proxy", "VLAN 80", "Nginx, HAProxy")
-        Container(oob, "Gestione OOB", "VLAN 70", "Console server, SNMP")
-    }
-}
-
-System_Boundary(sede_secondaria, "Sede Secondaria (LOS)") {
-    Container(sw_sec, "Switch secondario", "Layer 2/3", "Bridge o routing")
-    Container(ap_sec, "AP secondario", "WiFi", "VLAN 20,30")
-}
-
-System_Boundary(sede_altra, "Sede Altro Continente") {
-    Container(fw_altra, "Firewall remoto", "IPsec VPN")
-    Container(sw_altra, "Switch remoto", "LAN locale")
-}
-
-System_Boundary(cloud, "Cloud Pubblico (AWS/Azure/GCP)") {
-    Container(api_gw, "API Gateway", "REST endpoints")
-    Container(function, "Function/Lambda", "Business logic")
-    Container(vpn_cloud, "Cloud VPN Gateway", "IPsec tunnel")
-}
-
-Rel(remote_manager, fw, "SSL VPN", "Solo manager")
-Rel(staff, access_sw, "Ethernet", "VLAN 10")
-Rel(guest, ap, "WiFi", "VLAN 30")
-Rel(ap, wlc, "CAPWAP", "VLAN 70")
-
-Rel(core_sw, fw, "Trunk", "Routing inter-VLAN")
-Rel(fw, server_farm, "Policy", "Firewall rules")
-Rel(fw, vpn_cloud, "IPsec", "BGP/OSPF")
-Rel(fw, fw_altra, "IPsec S2S", "Internet")
-Rel(core_sw, sw_sec, "PTP LOS", "L2 bridge o /30")
-Rel(api_gw, function, "Invoke")
-Rel(function, vpn_cloud, "HTTPS", "Chiamata verso reverse proxy")
-Rel(vpn_cloud, fw, "Tunnel", "Cloud -> On-prem")
-@enduml
+Servizi cloud:
+
+* frontend e servizi pubblici su cloud provider
+* funzioni serverless
+* invocazione controllata di alcuni servizi on-site da parte di componenti serverless
+
+Connettività geografica:
+
+* sede principale locale
+* sede secondaria locale a 600 m LOS
+* altra sede principale in altro continente
+* accesso remoto consentito solo ai manager
+
+3. Principi architetturali comuni
+
+Le due reference architecture seguono gli stessi principi.
+
+Separazione delle zone:
+
+* zona Internet
+* zona DMZ
+* zona server interni
+* zona utenti
+* zona management
+* zona security/monitoring
+* zona big data
+
+Controllo dei flussi:
+
+* il firewall deve essere il punto di enforcement tra zone con postura di sicurezza diversa
+* Internet non deve raggiungere direttamente DBMS, SAP, documentale interno, MongoDB interno, management, NMS, cluster big data
+* la DMZ deve poter raggiungere solo i backend strettamente necessari
+* il WiFi guest deve uscire solo verso Internet
+* il management remoto ordinario non deve esistere; il remote access è consentito solo ai manager, e solo verso risorse loro autorizzate
+* la rete di management degli apparati deve essere separata dalla rete degli utenti
+
+Questo è coerente con NIST SP 800-41 Rev. 1, che tratta il firewall come punto di controllo tra reti con livelli di fiducia differenti e richiede policy specifiche e amministrazione sicura. ([NIST Computer Security Resource Center][2])
+
+4. Piano di segmentazione comune
+
+Per entrambe le architetture conviene adottare una segmentazione leggibile e riusabile.
+
+* VLAN 10   Uffici operativi                10.10.10.0/24
+* VLAN 20   Management utenti               10.10.20.0/24
+* VLAN 30   WiFi corporate                  10.10.30.0/24
+* VLAN 40   WiFi guest                      10.10.40.0/24
+* VLAN 50   Server business interni         10.10.50.0/24
+* VLAN 60   Backend DBMS / SAP              10.10.60.0/24
+* VLAN 70   Documentale riservato Mgmt      10.10.70.0/24
+* VLAN 80   MongoDB documentale ordinario   10.10.80.0/24
+* VLAN 90   Big Data client / ingest        10.10.90.0/24
+* VLAN 91   Big Data data plane             10.10.91.0/24
+* VLAN 100  Big Data management             10.10.100.0/24
+* VLAN 110  Management rete                 10.10.110.0/24
+* VLAN 120  Security / NMS / SIEM           10.10.120.0/24
+* VLAN 130  DMZ on-site                     10.10.130.0/24
+* VLAN 140  Transit / WAN / VPN             10.10.140.0/24
+* VLAN 150  Secondario utenti               10.10.150.0/24
+* VLAN 160  Secondario guest                10.10.160.0/24
+* VLAN 170  Secondario management           10.10.170.0/24
+
+Nota importante: la DMZ può avere una subnet dedicata, ma architetturalmente deve essere una security zone separata sul firewall, non semplicemente una VLAN interna “come le altre”. Questo punto è pienamente coerente con le linee guida NIST sui firewall e sulle policy perimetrali. ([NIST Computer Security Resource Center][2])
+
+5. Policy di accesso comuni
+
+Internet verso on-site:
+
+* consentire solo HTTPS verso reverse proxy / WAF / web frontend in DMZ
+* consentire gli endpoint pubblici REST/SOAP solo attraverso il livello pubblicato in DMZ
+* negare accesso diretto a DBMS, SAP, file server, MongoDB interni, NMS, management, cluster big data
+
+DMZ verso interno:
+
+* consentire solo i flussi applicativi strettamente necessari verso application server interni
+* consentire solo le connessioni necessarie dai web/API layer verso i backend
+* negare accesso verso VLAN utenti
+* negare accesso verso management
+
+Utenti ordinari:
+
+* accesso a business app, SAP front-end, MongoDB documentale ordinario secondo RBAC
+* nessun accesso al documentale altamente riservato del management
+* nessun accesso alla rete di management
+* nessun accesso amministrativo al cluster big data
+
+Management:
+
+* accesso al documentale riservato
+* accesso remoto via VPN con MFA
+* accesso alle dashboard e ai servizi autorizzati
+* nessun accesso implicito alla rete di management degli apparati, salvo ruolo amministrativo specifico
+
+Amministratori IT:
+
+* accesso alla rete di management solo da jump host o postazioni amministrative
+* protocolli di gestione solo cifrati
+* autenticazione forte
+* logging e audit delle sessioni
+
+WiFi guest:
+
+* solo Internet
+* isolamento client-to-client
+* nessun accesso alla LAN aziendale
+
+6. Reference Architecture 1: campus 2-layer
+
+6.1 Descrizione generale
+
+Questa è la reference architecture da considerare come soluzione base più adatta a una traccia d’esame completa ma ancora leggibile.
+
+Struttura:
+
+* access layer
+* collapsed core, che accorpa core e distribution
+* cluster NGFW come punto di controllo principale
+* DMZ separata sul firewall
+* server farm interna
+* fabric o blocco dedicato per il cluster big data
+
+Cisco documenta il two-tier design e il collapsed core come approccio reale per campus non enormi, pur mantenendo caratteristiche enterprise di ridondanza, sicurezza e scalabilità. ([Cisco][1])
+
+6.2 Perché scegliere il 2-layer
+
+Il modello 2-layer è preferibile quando:
+
+* il campus non è enorme
+* non esistono molti edifici o blocchi indipendenti
+* si vuole una topologia più semplice
+* si vuole ridurre complessità e costi
+* si vuole una soluzione molto spiegabile in sede d’esame
+
+6.3 Diagramma ASCII completo della versione 2-layer
+
+```
++---------------------- INTERNET ----------------------+
+                          |
+                          |
+                  +----------------+
+                  |  ISP CPE / ONT |
+                  +----------------+
+                          |
+                          |
+                +----------------------+
+                | NGFW CLUSTER HA      |
+                | NAT / ACL / IPS      |
+                | RA VPN / S2S VPN     |
+                +----------------------+
+                 |         |         |
+                 |         |         |
+                 |         |         +--------------------+
+                 |         |                              |
+                 |         |                      +------------------+
+                 |         |                      |  DMZ ON-SITE     |
+                 |         |                      |  VLAN 130        |
+                 |         |                      |------------------|
+                 |         |                      | Reverse Proxy    |
+                 |         |                      | WAF              |
+                 |         |                      | Web Public       |
+                 |         |                      | REST/SOAP Facade |
+                 |         |                      +------------------+
+                 |         |
+                 |         +-----------------------------------------------+
+                 |                                                         |
+         +--------------------------+                             +----------------------+
+         | COLLAPSED CORE PAIR      |                             | WAN / VPN SERVICES   |
+         | L3 campus aggregation    |                             | VLAN 140             |
+         | redundant uplinks        |                             +----------------------+
+         +--------------------------+
+            |        |         |             \
+            |        |         |              \
+            |        |         |               \
+            |        |         |                \
+            |        |         |                 \
+    +-----------+ +-----------+ +-----------+   +-------------------------+
+    | Access SW | | Access SW | | Access SW |   | Server / BigData Agg    |
+    | users     | | office    | | wireless  |   | 10/25 GbE recommended   |
+    +-----------+ +-----------+ +-----------+   +-------------------------+
+        |             |             |                  |         |        |
+        |             |             |                  |         |        |
+    PC / VoIP     PC / printer     APs            +--------+ +--------+ +------------------+
+                                                  | Server | | SecOps | | Big Data Fabric  |
+                                                  | Farm   | | / NMS  | | 10 nodes         |
+                                                  +--------+ +--------+ +------------------+
+                                                     |          |           |      |    |
+                                                     |          |           |      |    |
+                                            +----------------+  |     +----------------------+
+                                            | VLAN 50        |  |     | VLAN 90 client/ing  |
+                                            | Business App   |  |     | VLAN 91 data plane  |
+                                            +----------------+  |     | VLAN100 mgmt       |
+                                                                 |     +----------------------+
+                                            +----------------+   |
+                                            | VLAN 60        |   |
+                                            | DBMS / SAP     |   |
+                                            +----------------+   |
+                                                                 |
+                                            +----------------+   |
+                                            | VLAN 70        |   |
+                                            | Doc Mgmt only  |   |
+                                            +----------------+   |
+                                                                 |
+                                            +----------------+   |
+                                            | VLAN 80        |   |
+                                            | MongoDB RBAC   |   |
+                                            +----------------+   |
+                                                                 |
+                                            +----------------+   |
+                                            | VLAN 110       |<--+
+                                            | Mgmt network   |
+                                            +----------------+
+                                                                 |
+                                            +----------------+
+                                            | VLAN 120       |
+                                            | NMS / SIEM     |
+                                            | IDS collector  |
+                                            +----------------+
+
+Collegamenti geografici:
+
+    COLLAPSED CORE / NGFW
+           |
+           +---- bridge radio PTP A  )) 600 m LOS ((  bridge radio PTP B ----+
+                                                                               |
+                                                                        +--------------+
+                                                                        | SW secondario|
+                                                                        +--------------+
+                                                                          |     |     |
+                                                                          |     |     |
+                                                                     VLAN150 VLAN160 VLAN170
+                                                                     users   guest   mgmt
+
+    NGFW CLUSTER
+           |
+           +---- Site-to-Site VPN IPsec ---- Internet ---- Remote HQ another continent
+
+    NGFW CLUSTER
+           |
+           +---- Remote Access VPN (MFA) ---- only managerial users
 ```
 
-### 12.2 Layer 2 dettagliato con VLAN e indirizzi
+6.4 Diagramma PlantUML completo della versione 2-layer
 
-```plantuml
+```
 @startuml
-title Layer 2 - Segmentazione VLAN (con indirizzi esemplificativi)
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment left
 
-node "Core Switch (Root STP)" as core {
-    frame "Trunk 802.1q" as trunk
-}
+cloud "Internet" as Internet
+node "ISP CPE / ONT" as ISP
+node "NGFW Cluster HA\nNAT / ACL / IPS\nRA VPN / S2S VPN" as FW
+node "DMZ On-Site\nVLAN 130" as DMZ
+node "Collapsed Core Pair\nCampus aggregation" as CORE
 
-node "Access Switch" as acc {
-    component [VLAN 10\nStaff\n10.10.10.0/24] as v10
-    component [VLAN 20\nWiFi Int\n10.10.20.0/24] as v20
-    component [VLAN 30\nGuest\n172.16.30.0/24] as v30
-    component [VLAN 70\nMgmt\n10.10.70.0/24] as v70
-}
+node "Access SW Users" as ASW1
+node "Access SW Office" as ASW2
+node "Access SW Wireless" as ASW3
+node "Server / BigData Aggregation\n10/25 GbE recommended" as SVA
 
-node "Server Switch" as srv_sw {
-    component [VLAN 40\nERP\n10.10.40.0/24] as v40
-    component [VLAN 50\nFileSecr\n10.10.50.0/24] as v50
-    component [VLAN 60\nDB NoSQL\n10.10.60.0/24] as v60
-    component [VLAN 80\nDMZ\n10.10.80.0/24] as v80
-    component [VLAN 70\nMgmt] as v70_srv
-}
+node "Business App Servers\nVLAN 50" as APP
+node "DBMS / SAP Backend\nVLAN 60" as DB
+node "Reserved Document Server\nMgmt only\nVLAN 70" as DOC
+database "MongoDB Document Store\nRBAC\nVLAN 80" as MDB
+node "Management Network\nVLAN 110" as MGMT
+node "NMS / SIEM / IDS Collector\nVLAN 120" as SEC
+node "Big Data Cluster\n10 nodes\nVLAN 90/91/100" as BD
 
-node "Bridge Radio PTP (LOS)" as radio {
-    component [VLAN 90\nP2P\n10.255.255.0/30] as v90
-}
+node "Reverse Proxy / WAF" as WAF
+node "Public Web Server" as WEB
+node "REST/SOAP Public Facade" as API
 
-node "Sede Secondaria Switch" as sec_sw {
-    component [Estensione VLAN 10,20,30,70] as sec_vlans
-}
+node "PTP Radio A" as PTA
+node "PTP Radio B" as PTB
+node "Secondary Office Switch" as BR2
+node "Secondary Users\nVLAN 150" as BUSER
+node "Secondary Guest\nVLAN 160" as BGUEST
+node "Secondary Mgmt\nVLAN 170" as BMGMT
 
-core --> acc : trunk (10,20,30,70)
-core --> srv_sw : trunk (40,50,60,70,80)
-core --> radio : access / trunk (VLAN 90)
-radio --> sec_sw : bridge L2 trasparente
+node "Remote Main Site\nAnother Continent" as RHQ
+actor "Managers Remote Users" as MGR
 
-note right of core
-  RSTP root
-  LACP trunk verso acc
-  BPDUguard su porte access
+Internet -- ISP
+ISP -- FW
+
+FW -- DMZ
+FW -- CORE
+FW -- RHQ
+FW -- MGR
+
+DMZ -- WAF
+DMZ -- WEB
+DMZ -- API
+
+CORE -- ASW1
+CORE -- ASW2
+CORE -- ASW3
+CORE -- SVA
+
+SVA -- APP
+SVA -- DB
+SVA -- DOC
+SVA -- MDB
+SVA -- MGMT
+SVA -- SEC
+SVA -- BD
+
+CORE -- PTA
+PTA -- PTB
+PTB -- BR2
+BR2 -- BUSER
+BR2 -- BGUEST
+BR2 -- BMGMT
+
+note right of FW
+Main security enforcement point:
+- Internet/DMZ
+- DMZ/Internal
+- Remote Access VPN
+- Site-to-Site VPN
+end note
+
+note right of MGMT
+Separate management network:
+switches, APs, firewalls,
+hypervisors, iDRAC/iLO/IPMI,
+security sensors
+end note
+
+note right of BD
+Distributed processing and
+high east-west traffic.
+Separate data and mgmt planes.
 end note
 @enduml
 ```
 
-### 12.3 Layer 3 con routing dinamico e VPN
+6.5 Funzionamento logico
 
-```plantuml
+Nel modello 2-layer:
+
+* gli access switch servono terminali, AP, telefoni, stampanti
+* il collapsed core aggrega il traffico del campus
+* il firewall mantiene il ruolo di controllo interzona e perimetrale
+* la DMZ è separata
+* le zone server e big data sono dedicate
+
+È opportuno evitare che tutta la logica di sicurezza venga delegata al solo switching multilayer del campus. La scelta migliore, per questa reference architecture, è fare in modo che il traffico tra zone con differente livello di fiducia sia visibile e controllabile dal NGFW.
+
+6.6 WiFi corporate e guest
+
+Cisco tratta esplicitamente l’accesso wireless enterprise, il guest wireless, la sicurezza WLAN e l’alta disponibilità dei controller/AP nel design campus. ([Cisco][1])
+
+Scelta progettuale:
+
+* SSID Corp-WiFi -> VLAN 30
+* SSID Guest-WiFi -> VLAN 40
+* autenticazione corporate preferibilmente 802.1X / RADIUS
+* guest access separato e confinato verso Internet
+* eventuale captive portal per guest
+
+6.7 DMZ on-site
+
+In DMZ:
+
+* reverse proxy / WAF
+* web server pubblico
+* facade REST/SOAP
+* eventuale load balancer reverse
+
+Flussi tipici:
+
+* Internet -> WAF / reverse proxy
+* WAF -> web / API facade
+* API facade -> application server interno specifico
+* application server -> DB specifico se necessario
+* nessun accesso DMZ -> management
+* nessun accesso Internet -> DB interni
+
+6.8 Ufficio secondario a 600 m LOS
+
+Per un sito a 600 metri con line-of-sight, la soluzione più realistica è un ponte radio point-to-point dedicato.
+
+Scelta consigliata:
+
+* radio bridge PTP
+* preferibilmente collegamento routed oppure trunk limitato
+* subnet locali separate per il sito secondario
+* segmentazione locale users/guest/management
+
+La soluzione evita di trattare il sito remoto come “un piano in più” dello stesso edificio. È un sito separato, pur vicino.
+
+6.9 Sede in altro continente
+
+Collegamento:
+
+* VPN site-to-site IPsec terminata sul firewall
+* scambio controllato dei prefissi
+* filtri espliciti tra reti
+* logging centralizzato
+
+6.10 Remote access solo per i manager
+
+Implementazione:
+
+* remote access VPN sul firewall
+* MFA obbligatoria
+* autorizzazione basata su gruppo directory “Managers”
+* rete VPN dedicata
+* ACL che consentono solo le risorse necessarie ai manager
+
+Questo significa che non tutti i dipendenti possono lavorare da remoto: solo quelli appartenenti al gruppo manageriale.
+
+6.11 Rete di management
+
+La rete di management deve essere implementata come rete separata e protetta.
+
+Implementazione:
+
+* VLAN 110 dedicata
+* indirizzi di management di switch, AP, firewall, controller, hypervisor, server management board, UPS, storage
+* accessibile solo da postazioni amministrative o jump host
+* protocolli solo sicuri: SSH, HTTPS, SNMPv3, syslog cifrato quando supportato
+* nessun accesso dagli utenti ordinari
+
+Motivazione:
+
+* ridurre la superficie di attacco
+* impedire che una compromissione su una VLAN utente diventi compromissione degli apparati
+* centralizzare audit e controllo
+* separare traffico utente e traffico amministrativo
+
+NIST richiede amministrazione sicura dei firewall e l’uso di autenticazione forte e canali protetti; lo stesso principio va esteso alla management network in modo coerente. ([NIST Computer Security Resource Center][2])
+
+6.12 IDS/IPS integrato con NMS
+
+Snort è documentato come Network Intrusion Detection & Prevention System. Wazuh documenta integrazioni con NIDS come Suricata e inoltro verso piattaforme analitiche. ([Snort][3])
+
+Quindi, nella reference architecture:
+
+* IPS inline sul NGFW per il traffico nord-sud
+* sensore NIDS passivo per traffico est-ovest critico
+* raccolta eventi su piattaforma security centrale
+* integrazione con NMS per correlare performance, availability e security alert
+
+Occorre distinguere:
+
+* NMS: disponibilità, inventario, telemetria, allarmi infrastrutturali
+* piattaforma security / SIEM / XDR: eventi IDS/IPS, log, correlazione, incident analysis
+
+6.13 Cluster big data
+
+Hadoop HDFS documenta un modello di storage distribuito su cluster e tratta anche la rack awareness. Questo giustifica una progettazione che distingua bene traffico client, traffico dati interno e management del cluster. ([Apache Hadoop][4])
+
+Scelta progettuale:
+
+* circa 10 nodi
+* separazione tra:
+
+  * access/ingest plane
+  * data plane / replica
+  * management plane
+* collegamento con fabric dedicata o blocco server ad alta capacità
+* preferenza progettuale per 10/25 GbE sui collegamenti del cluster
+* evitare che il traffico di replica saturi la rete office
+
+La scelta 10/25 GbE è una scelta di progetto coerente con la presenza di traffico east-west elevato; non è un obbligo della fonte Hadoop, ma una conseguenza tecnica ragionevole del tipo di carico. ([Apache Hadoop][4])
+
+7. Reference Architecture 2: campus 3-layer
+
+7.1 Descrizione generale
+
+La versione 3-layer mantiene gli stessi servizi e gli stessi requisiti, ma separa chiaramente:
+
+* access layer
+* distribution layer
+* core layer
+
+Cisco tratta esplicitamente both two-tier design e three-tier design nelle guide di campus design. ([Cisco][1])
+
+7.2 Perché scegliere il 3-layer
+
+Il 3-layer è preferibile quando:
+
+* il campus è più grande
+* esistono più edifici o blocchi
+* serve maggiore modularità
+* serve miglior isolamento dei domini di guasto
+* si vuole una crescita più ordinata nel tempo
+
+7.3 Diagramma ASCII completo della versione 3-layer
+
+```
++---------------------- INTERNET ----------------------+
+                          |
+                          |
+                  +----------------+
+                  |  ISP CPE / ONT |
+                  +----------------+
+                          |
+                          |
+                +----------------------+
+                | NGFW CLUSTER HA      |
+                | NAT / ACL / IPS      |
+                | RA VPN / S2S VPN     |
+                +----------------------+
+                 |         |         |
+                 |         |         +--------------------+
+                 |         |                              |
+                 |         |                      +------------------+
+                 |         |                      |  DMZ ON-SITE     |
+                 |         |                      |  VLAN 130        |
+                 |         |                      |------------------|
+                 |         |                      | Reverse Proxy    |
+                 |         |                      | WAF              |
+                 |         |                      | Web Public       |
+                 |         |                      | REST/SOAP Facade |
+                 |         |                      +------------------+
+                 |         |
+                 |         +-----------------------------------------------+
+                 |                                                         |
+                +---------------------------+
+                | CORE PAIR                 |
+                | high-speed backbone       |
+                +---------------------------+
+                    |                  |
+                    |                  |
+         +------------------+   +------------------+
+         | Distribution A   |   | Distribution B   |
+         | block A          |   | block B          |
+         +------------------+   +------------------+
+          |      |      |         |      |       |
+          |      |      |         |      |       |
+     +--------+ +--------+ +--------+ +--------+ +----------------------+
+     |Access  | |Access  | |Access  | |Access  | | Server/BigData Dist  |
+     |Users   | |Office  | |Wireless| |Spare   | | aggregation          |
+     +--------+ +--------+ +--------+ +--------+ +----------------------+
+                                                     |        |         |
+                                                     |        |         |
+                                              +-----------+ +---------+ +------------------+
+                                              | Server    | | SecOps  | | Big Data Fabric  |
+                                              | Farm      | | / NMS   | | 10 nodes         |
+                                              +-----------+ +---------+ +------------------+
+                                                 |             |            |      |      |
+                                                 |             |            |      |      |
+                                          +----------------+   |    +----------------------+
+                                          | VLAN 50        |   |    | VLAN 90 client/ing  |
+                                          | Business App   |   |    | VLAN 91 data plane  |
+                                          +----------------+   |    | VLAN100 mgmt       |
+                                                               |    +----------------------+
+                                          +----------------+   |
+                                          | VLAN 60        |   |
+                                          | DBMS / SAP     |   |
+                                          +----------------+   |
+                                                               |
+                                          +----------------+   |
+                                          | VLAN 70        |   |
+                                          | Doc Mgmt only  |   |
+                                          +----------------+   |
+                                                               |
+                                          +----------------+   |
+                                          | VLAN 80        |   |
+                                          | MongoDB RBAC   |   |
+                                          +----------------+   |
+                                                               |
+                                          +----------------+   |
+                                          | VLAN 110       |<--+
+                                          | Mgmt network   |
+                                          +----------------+
+                                                               |
+                                          +----------------+
+                                          | VLAN 120       |
+                                          | NMS / SIEM     |
+                                          | IDS collector  |
+                                          +----------------+
+
+Collegamenti geografici:
+
+      Core / Distribution / NGFW
+                 |
+                 +---- bridge radio PTP A  )) 600 m LOS ((  bridge radio PTP B ----+
+                                                                                     |
+                                                                              +--------------+
+                                                                              | Dist/Access  |
+                                                                              | secondario   |
+                                                                              +--------------+
+                                                                                |    |     |
+                                                                                |    |     |
+                                                                            VLAN150 VLAN160 VLAN170
+                                                                            users   guest   mgmt
+
+      NGFW CLUSTER
+                 |
+                 +---- Site-to-Site VPN IPsec ---- Internet ---- Remote HQ another continent
+
+      NGFW CLUSTER
+                 |
+                 +---- Remote Access VPN (MFA) ---- only managerial users
+```
+
+7.4 Diagramma PlantUML completo della versione 3-layer
+
+```
 @startuml
-title Layer 3 - Routing OSPF e VPN site-to-site
+skinparam componentStyle rectangle
+skinparam shadowing false
+skinparam defaultTextAlignment left
 
-cloud Internet {
-    component "Internet" as internet
-}
+cloud "Internet" as Internet
+node "ISP CPE / ONT" as ISP
+node "NGFW Cluster HA\nNAT / ACL / IPS\nRA VPN / S2S VPN" as FW
+node "DMZ On-Site\nVLAN 130" as DMZ
 
-node "Firewall HQ (10.10.0.1)" as fw_hq {
-    component "Gateway VLAN" as gw
-    component "SSL VPN (172.16.200.0/24)" as ssl
-    component "IPsec HQ" as ipsec_hq
-}
+node "Core Pair\nHigh-speed backbone" as CORE
+node "Distribution A" as DISTA
+node "Distribution B" as DISTB
 
-node "Firewall Altro Continente (10.20.0.1)" as fw_cont {
-    component "IPsec branch" as ipsec_cont
-}
+node "Access Users" as ASW1
+node "Access Office" as ASW2
+node "Access Wireless" as ASW3
+node "Access Spare / Expansion" as ASW4
 
-node "Cloud VPN Gateway (172.31.3.1)" as cloud_vpn {
-    component "IPsec tunnel" as tunnel_cloud
-}
+node "Server / BigData Distribution" as SVD
 
-node "Router Sede Secondaria (10.255.255.2)" as router_sec {
-    component "OSPF over P2P" as ospf_sec
-}
+node "Business App Servers\nVLAN 50" as APP
+node "DBMS / SAP Backend\nVLAN 60" as DB
+node "Reserved Document Server\nMgmt only\nVLAN 70" as DOC
+database "MongoDB Document Store\nRBAC\nVLAN 80" as MDB
+node "Management Network\nVLAN 110" as MGMT
+node "NMS / SIEM / IDS Collector\nVLAN 120" as SEC
+node "Big Data Cluster\n10 nodes\nVLAN 90/91/100" as BD
 
-node "Manager" as mgr {
-    component "SSL Client" as client
-}
+node "Reverse Proxy / WAF" as WAF
+node "Public Web Server" as WEB
+node "REST/SOAP Public Facade" as API
 
-fw_hq -[#green]--> internet : default route
-fw_hq -[#blue]--> fw_cont : IPsec (10.20.0.0/16)
-fw_hq -[#red]--> cloud_vpn : IPsec (172.31.0.0/16)
-fw_hq -[#orange]--> router_sec : OSPF su 10.255.255.0/30
-mgr -[#purple]--> fw_hq : SSL VPN
+node "PTP Radio A" as PTA
+node "PTP Radio B" as PTB
+node "Secondary Dist/Access" as BR2
+node "Secondary Users\nVLAN 150" as BUSER
+node "Secondary Guest\nVLAN 160" as BGUEST
+node "Secondary Mgmt\nVLAN 170" as BMGMT
 
-note bottom of fw_hq
-  OSPF area 0:
-  - 10.10.0.0/16 (HQ)
-  - 10.255.255.0/30 (P2P)
-  - Tunnel IPsec (annuncio reti remote)
+node "Remote Main Site\nAnother Continent" as RHQ
+actor "Managers Remote Users" as MGR
+
+Internet -- ISP
+ISP -- FW
+
+FW -- DMZ
+FW -- CORE
+FW -- RHQ
+FW -- MGR
+
+DMZ -- WAF
+DMZ -- WEB
+DMZ -- API
+
+CORE -- DISTA
+CORE -- DISTB
+
+DISTA -- ASW1
+DISTA -- ASW2
+DISTA -- ASW3
+DISTB -- ASW4
+DISTB -- SVD
+
+SVD -- APP
+SVD -- DB
+SVD -- DOC
+SVD -- MDB
+SVD -- MGMT
+SVD -- SEC
+SVD -- BD
+
+DISTB -- PTA
+PTA -- PTB
+PTB -- BR2
+BR2 -- BUSER
+BR2 -- BGUEST
+BR2 -- BMGMT
+
+note right of DISTA
+L3 aggregation for campus blocks,
+policy handoff toward core/firewall,
+better modularity and scalability
+end note
+
+note right of FW
+Main enforcement point for:
+- Internet edge
+- VPN access
+- DMZ/Internal traffic
+end note
+
+note right of BD
+Distributed internal big data platform
+with separated access, data, and
+management planes
 end note
 @enduml
 ```
 
----
+7.5 Ruolo dei layer
 
-## 13. Diagrammi ASCII testuali (pronti per documenti)
+Access:
 
-### 13.1 Architettura fisica/logica
+* collega endpoint utente, AP, telefoni, periferiche
+* applica VLAN, edge policy, eventuale NAC/802.1X
+* PoE per AP e telefoni, se necessario
 
-```text
-                          +-------------------------+
-                          |       Cloud (AWS)       |
-                          |  API Gateway -> Lambda  |
-                          +------------+------------+
-                                       | IPsec VPN
-+------------------------+             |
-| Sede Altro Continente  |             |
-| (USA)                  |             |
-| Firewall -> LAN locale |             |
-+-----------+------------+             |
-            | IPsec S2S                |
-            | (Internet)               |
-+-----------+------------+             |
-|     Sede Principale    |             |
-|     (EU) - Firewall    |<------------+
-+-----------+------------+
-            |
-   +--------+---------+
-   |   Core Switch    |
-   | (Trunk, STP)     |
-   +--------+---------+
-            |
-   +--------+---------+       +--------------------+
-   | Access Switch    |       | Server Farm Switch |
-   | VLAN 10,20,30,70 |       | VLAN 40,50,60,70,80|
-   +--------+---------+       +--------------------+
-            |                           |
-   +--------+---------+                 |
-   | WiFi AP (20,30)  |                 |
-   +------------------+                 |
-            |                           |
-   +--------+---------+                 |
-   | Bridge PTP (LOS) |                 |
-   +--------+---------+                 |
-            | (600m)                    |
-   +--------+---------+                 |
-   | Sede Secondaria  |                 |
-   | Switch + AP      |                 |
-   +------------------+                 |
-                                        |
-   +------------------------------------+
-   | Rete di Gestione (VLAN 70)         |
-   | Console server, Jump host, SNMP    |
-   +------------------------------------+
+Distribution:
+
+* aggrega i blocchi di accesso
+* costituisce il confine L3 locale
+* migliora modularità, fault isolation e scalabilità
+* consente gateway ridondati, ACL locali e migliore controllo dei domini
+
+Core:
+
+* trasporto veloce e resiliente
+* backbone interno
+* minimo numero di policy applicative
+* massima efficienza di forwarding
+
+7.6 Cosa cambia rispetto al 2-layer
+
+Restano invariati:
+
+* DMZ
+* VPN
+* WiFi corporate e guest
+* remote access solo per manager
+* management network
+* integrazione IDS/IPS con NMS
+* cluster big data
+* servizi cloud/serverless ibridi
+
+Cambia:
+
+* la gerarchia interna del campus
+* la distribuzione delle funzioni L3
+* la scalabilità
+* la capacità di crescita ordinata su più edifici o blocchi
+
+8. Cloud e servizi serverless ibridi
+
+AWS documenta scenari in cui API Gateway funge da singolo punto di ingresso per workload ibridi e in cui API private possono essere raggiunte in modo controllato da reti on-prem tramite VPN site-to-site o Direct Connect. ([Amazon Web Services, Inc.][5])
+
+Per la reference architecture si prevede:
+
+In cloud:
+
+* frontend pubblici
+* API pubbliche cloud-native
+* funzioni serverless
+* eventuale orchestrazione applicativa
+
+Interazione con on-site:
+
+* alcune funzioni serverless invocano API on-site specifiche
+* le API on-site esposte al cloud non sono “tutta la LAN”, ma solo servizi selezionati
+* autenticazione forte tra cloud e on-prem
+* logging e rate limiting
+* preferenza per transitare attraverso API facade / gateway controllati
+
+Diagramma logico sintetico del blocco cloud:
+
+```
++------------------------- CLOUD PROVIDER -------------------------+
+|                                                                 |
+|   +------------------+      +-------------------------------+   |
+|   | API Gateway      |----->| Serverless Functions          |   |
+|   | public/private   |      | business logic / orchestration|   |
+|   +------------------+      +-------------------------------+   |
+|              |                             |                    |
+|              +-----------------------------+                    |
+|                              |                                  |
++------------------------------|----------------------------------+
+                               |
+                    Hybrid link / controlled VPN
+                               |
+                        +--------------+
+                        | NGFW / DMZ   |
+                        +--------------+
+                               |
+                    selected on-site APIs only
 ```
 
-### 13.2 Flussi di sicurezza
+9. Rete di management: implementazione e motivazione
 
-```text
-[Internet] --> [FW] --> [DMZ (VLAN80)] --> [Reverse Proxy] --> [Server Interno (VLAN40/50/60)]
-                ^
-                |
-[Manager remoto] --> SSL VPN --> [FW] --> [VLAN40/50/60]
-                |
-[Ospiti] --> WiFi (VLAN30) --> [FW] --> NAT --> Internet (blocco LAN)
-```
+Questa parte va sempre esplicitata, perché nelle reti reali è essenziale.
 
----
+Implementazione:
 
-## 14. Snippet di configurazione (esempi reali)
+* management network separata, VLAN 110
+* indirizzi dedicati per switch, AP, firewall, controller, sensori IDS, hypervisor, storage, iLO/iDRAC/IPMI
+* accesso consentito solo da:
 
-### 14.1 Cisco IOS – configurazione trunk e VLAN
+  * postazioni amministrative dedicate
+  * jump host
+  * eventuale VPN amministrativa distinta dalla VPN dei manager
+* protocolli amministrativi solo sicuri
+* firewall e ACL dedicate
+* logging centralizzato
 
-```cisco
-vlan 10
- name Wired_Staff
-vlan 20
- name WiFi_Internal
-vlan 30
- name WiFi_Guest
-vlan 40
- name Server_ERP
-vlan 50
- name Server_File_Segreti
-vlan 60
- name Server_DB
-vlan 70
- name Management
-vlan 80
- name DMZ
-vlan 90
- name P2P_LOS
+Motivazione:
 
-interface GigabitEthernet1/0/1
- description Trunk to Core
- switchport mode trunk
- switchport trunk allowed vlan 10,20,30,40,50,60,70,80,90
- switchport trunk native vlan 999
- spanning-tree portfast trunk
-!
-interface GigabitEthernet1/0/2
- description Access Staff
- switchport mode access
- switchport access vlan 10
- spanning-tree portfast
- switchport port-security maximum 2
- switchport port-security violation shutdown
-```
+* separare piano dati e piano di gestione
+* ridurre rischio di compromissione laterale
+* migliorare auditabilità
+* semplificare troubleshooting e change management
+* evitare che utenti normali possano anche solo raggiungere gli indirizzi di gestione degli apparati
 
-### 14.2 FortiGate – policy inter-VLAN (CLI)
+In altre parole, la rete di management non è “una VLAN in più”: è un dominio separato, con un livello di esposizione molto più basso.
 
-```fortinet
-config firewall policy
-    edit 1
-        set name "Staff_to_SAP"
-        set srcintf "VLAN10"
-        set dstintf "VLAN40"
-        set srcaddr "10.10.10.0/24"
-        set dstaddr "10.10.40.20"
-        set action accept
-        set schedule "always"
-        set service "SAP_3200" "SAP_3300"
-        set logtraffic all
-    next
-    edit 2
-        set name "Guest_to_Internet"
-        set srcintf "VLAN30"
-        set dstintf "wan1"
-        set srcaddr "172.16.30.0/24"
-        set dstaddr "all"
-        set action accept
-        set nat enable
-        set schedule "always"
-        set service "HTTP" "HTTPS" "DNS"
-    next
-end
-```
+10. IDS/IPS, NMS e piattaforma security
 
-### 14.3 OpenVPN server (accesso manager) – snippet `server.conf`
+Integrazione realistica:
 
-```openvpn
-port 443
-proto tcp
-dev tun
-server 172.16.200.0 255.255.255.0
-push "route 10.10.40.0 255.255.255.0"
-push "route 10.10.50.0 255.255.255.0"
-push "route 10.10.60.0 255.255.255.0"
-push "dhcp-option DNS 10.10.70.5"
-client-to-client
-duplicate-cn
-auth SHA256
-cipher AES-256-GCM
-tls-version-min 1.2
-<ldap>
-    URL ldap://10.10.70.10
-    BindDN cn=admin,dc=global,dc=local
-    Password secret
-    BaseDN ou=Users,dc=global,dc=local
-    SearchFilter "(cn=%u)"
-    RequireGroup CN=Managers,OU=Groups,dc=global,dc=local
-</ldap>
-```
+* NGFW con IPS inline
+* sensore NIDS per traffico est-ovest critico
+* NMS per availability, inventory, performance, syslog, SNMPv3, telemetria
+* piattaforma security per eventi IDS/IPS, log, correlazione
+* dashboard condivise o integrate tra monitoraggio operativo e monitoraggio di sicurezza
 
----
+Snort e Wazuh, sulla base della documentazione ufficiale verificata, sono riferimenti adatti per giustificare un’architettura di questo tipo. ([Snort][3])
 
-## 15. Checklist di verifica per studenti
+11. Big data interno
 
-| Area          | Elemento da verificare                                      | Fatto |
-|---------------|-------------------------------------------------------------|-------|
-| Layer 2       | VLAN definite e trunk configurati                           | ☐     |
-| Layer 2       | STP root bridge e portfast configurati                      | ☐     |
-| Layer 2       | WiFi con due SSID (802.1X e captive portal)                 | ☐     |
-| Layer 3       | Gateway SVI su firewall o router                            | ☐     |
-| Layer 3       | OSPF o routing statico tra sedi                             | ☐     |
-| Sicurezza     | Firewall policy tra VLAN (es. nessun accesso da guest)      | ☐     |
-| Sicurezza     | File server segreti con SMB over TLS e auditing             | ☐     |
-| Sicurezza     | MFA su VPN manager                                          | ☐     |
-| Geografica    | Bridge PTP funzionante (L2 o L3)                            | ☐     |
-| Geografica    | VPN site-to-site IPsec con altra sede                       | ☐     |
-| Cloud         | Tunnel VPN verso AWS/Azure/GCP                              | ☐     |
-| Cloud         | Reverse proxy on-prem che riceve chiamate dal cloud         | ☐     |
-| Gestione      | VLAN 70 isolata, console server, jump host                  | ☐     |
-| Remote access | Solo manager possono connettersi (verifica gruppo AD)       | ☐     |
+HDFS è un filesystem distribuito progettato per cluster e grandi dataset; la documentazione ufficiale Hadoop giustifica quindi una rete pensata per traffico intenso tra nodi e separazione topologica dei piani di comunicazione. ([Apache Hadoop][4])
 
----
+Scelta progettuale:
 
+* circa 10 nodi
+* 1 o 2 nodi di coordinamento / management
+* resto nodi worker / data
+* rete separata o fabric dedicata
+* separazione:
+
+  * ingest/client plane
+  * data/replication plane
+  * management plane
+* uplink più veloci della LAN office ordinaria
+* preferenza progettuale per 10/25 GbE sul blocco big data
+
+Questa scelta è importante perché un cluster big data non deve contendere banda con il traffico degli utenti d’ufficio.
+
+12. Confronto finale 2-layer vs 3-layer
+
+2-layer:
+
+* più semplice
+* più leggibile
+* meno costoso
+* ideale come reference architecture standard per tracce d’esame
+* realistico per organizzazioni medio-grandi ma non enormi
+
+3-layer:
+
+* più modulare
+* più scalabile
+* più adatto a campus grandi o multi-building
+* migliore fault isolation
+* più vicino ai campus enterprise più estesi
+
+Conclusione pratica:
+
+* usare il 2-layer come modello principale
+* usare il 3-layer come variante evoluta per campus più ampi
+
+13. Formula sintetica pronta da riusare
+
+Versione 2-layer
+
+L’architettura proposta è un campus 2-layer con access switch ridondati e collapsed core, protetto da cluster NGFW. La LAN è segmentata in VLAN separate per uffici, management utenti, WiFi corporate, WiFi guest, server interni, backend DB/SAP, documentale riservato management, MongoDB documentale ordinario, big data, security tools e management network. I servizi pubblici on-site sono pubblicati in DMZ tramite reverse proxy/WAF e API facade, senza esposizione diretta dei database interni. L’ufficio secondario a 600 metri viene collegato tramite ponte radio point-to-point in line-of-sight. La sede estera è collegata in site-to-site VPN. L’accesso remoto è consentito solo ai manager, tramite VPN con MFA e autorizzazione per gruppo. La rete di management è separata e accessibile solo da jump host amministrativi. IDS/IPS e NMS convergono su una piattaforma centralizzata di monitoraggio e sicurezza. Il cluster big data interno usa una rete server dedicata ad alta capacità per supportare il traffico distribuito tra i nodi. Questa impostazione è realistica, completa e didatticamente solida. ([Cisco][1])
+
+Versione 3-layer
+
+L’architettura proposta è un campus 3-layer con access, distribution e core separati. La segmentazione logica, i servizi pubblici e interni, le policy di sicurezza, la DMZ, la VPN intersede, il remote access per i soli manager, la management network, l’integrazione IDS/IPS-NMS e il cluster big data restano invariati rispetto alla versione 2-layer. La differenza principale è la presenza del distribution layer, che aggrega i blocchi di accesso, costituisce il confine L3 locale e migliora scalabilità, modularità e isolamento dei guasti. Questa versione è preferibile in campus più grandi o multi-building, mentre la 2-layer resta in genere la scelta più lineare per organizzazioni meno estese. ([Cisco][1])
+
+14. Alcuni riferimenti
+
+Cisco - Campus LAN and Wireless LAN Solution Design Guide
+[https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html](https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html)
+
+Cisco - Campus Wired LAN Technology Design Guide
+[https://www.cisco.com/c/dam/en/us/td/docs/solutions/CVD/Aug2014/CVD-CampusWiredLANDesignGuide-AUG14.pdf](https://www.cisco.com/c/dam/en/us/td/docs/solutions/CVD/Aug2014/CVD-CampusWiredLANDesignGuide-AUG14.pdf)
+
+NIST - SP 800-41 Rev. 1 Guidelines on Firewalls and Firewall Policy
+[https://csrc.nist.gov/pubs/sp/800/41/r1/final](https://csrc.nist.gov/pubs/sp/800/41/r1/final)
+
+AWS Compute Blog - Powering hybrid workloads with Amazon API Gateway
+[https://aws.amazon.com/blogs/compute/powering-hybrid-workloads-with-amazon-api-gateway/](https://aws.amazon.com/blogs/compute/powering-hybrid-workloads-with-amazon-api-gateway/)
+
+Apache Hadoop - HDFS Users Guide
+[https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html](https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html)
+
+Snort - official site
+[https://www.snort.org/](https://www.snort.org/)
+
+Wazuh - Network IDS integration
+[https://documentation.wazuh.com/current/proof-of-concept-guide/integrate-network-ids-suricata.html](https://documentation.wazuh.com/current/proof-of-concept-guide/integrate-network-ids-suricata.html)
+
+Nel messaggio successivo si può trasformare questo testo in una versione ancora più operativa, ad esempio:
+
+* versione “soluzione modello da maturità” più sintetica
+* versione con elenco dei flussi ammessi/negati tabellato
+* versione con addressing plan dettagliato host/gateway/broadcast
+* versione in file .md oppure .docx.
+
+[1]: https://www.cisco.com/c/en/us/td/docs/solutions/CVD/Campus/cisco-campus-lan-wlan-design-guide.html "Design Zone - Campus LAN and Wireless LAN Solution Design Guide - Cisco"
+[2]: https://csrc.nist.gov/pubs/sp/800/41/r1/final "SP 800-41 Rev. 1, Guidelines on Firewalls and Firewall Policy | CSRC"
+[3]: https://www.snort.org/ "
+      Snort - Network Intrusion Detection & Prevention System
+  "
+[4]: https://hadoop.apache.org/docs/stable/hadoop-project-dist/hadoop-hdfs/HdfsUserGuide.html "Apache Hadoop 3.3.5 – HDFS Users Guide"
+[5]: https://aws.amazon.com/blogs/compute/powering-hybrid-workloads-with-amazon-api-gateway/ "Powering hybrid workloads with Amazon API Gateway | AWS Compute Blog"

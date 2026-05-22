@@ -16,7 +16,7 @@ Esempi:
 
 ### Autorizzazione
 
-L’autorizzazione stabilisce quali risorse siano accessibili.
+L’autorizzazione stabilisce quali risorse siano accessibili (e anche quali operazioni possiamo effettuare su di esse).
 
 Esempio:
 
@@ -102,7 +102,7 @@ Nessun server centrale.
 
 #### Limiti
 
-* nessuna identità individuale;
+* nessuna identità individuale (ovvio, si usa solo una chiave, uguale per tutti);
 * difficile gestione utenti;
 * cambio password impatta tutti;
 * limitata scalabilità.
@@ -194,7 +194,7 @@ WPA3 migliora:
 * protezione contro attacchi offline;
 * sicurezza handshake.
 
-Esiste sia:
+Due versioni:
 
 * WPA3 Personal;
 * WPA3 Enterprise.
@@ -209,18 +209,12 @@ Esiste sia:
 
 Serve a consentire l’accesso solo dopo autenticazione.
 
-## Componenti principali
+## Componenti  
 
 ### Supplicant
 
 È il client che richiede accesso.
-
-Esempi:
-
-* notebook;
-* smartphone;
-* PC;
-* stampanti.
+Esempi: notebook, smartphone, PC, stampanti.
 
 ### Authenticator
 
@@ -353,7 +347,7 @@ Se authorized:
 * necessità di server dedicati;
 * configurazione più difficile.
 
-# Sezione 4 — RADIUS e AAA
+# 4 — RADIUS e AAA
 
 ## Overview
 
@@ -379,7 +373,6 @@ AAA significa:
 * Authorization: Definisce permessi. Esempio: assegnazione VLAN.
 * Accounting: Registra attività.     Esempio: tempo di connessione.
 
-## Architettura
 
 ```
 Client
@@ -585,8 +578,8 @@ Non sostituisce però TLS o altri meccanismi crittografici usati dai metodi EAP.
 
 ## Principali server RADIUS
 
-* FreeRADIUS;
-* Microsoft NPS;
+* FreeRADIUS: il server RADIUS open source più diffuso.
+* Microsoft NPS
 * Cisco ISE.
 
 ## FreeRADIUS
@@ -620,11 +613,11 @@ FreeRADIUS server
 Active Directory
 ```
 
-# Sezione 5 — LDAP e Active Directory
+# 5 — LDAP e Active Directory
 
 ## Overview
 
-LDAP e Active Directory sono concetti collegati ma diversi.
+LDAP e Active Directory sono concetti spesso collegati.
 
 ## LDAP
 
@@ -643,7 +636,7 @@ Serve a:
 * verificare credenziali tramite operazioni come il bind LDAP;
 * organizzare directory.
 
-È preferibile dire che LDAP può essere usato da un servizio applicativo, per esempio RADIUS, per verificare credenziali e leggere informazioni sugli utenti.
+LDAP può essere usato da un servizio applicativo, per esempio RADIUS, per verificare credenziali e leggere informazioni sugli utenti.
 
 LDAP da solo non rappresenta un sistema AAA completo come RADIUS.
 
@@ -728,13 +721,9 @@ Esempi:
 
 ## Active Directory
 
-Active Directory è una piattaforma Microsoft per la gestione centralizzata di utenti, computer, autenticazione e risorse di rete.
+Active Directory non è semplicemente un server LDAP, è una piattaforma Microsoft per la gestione centralizzata di utenti, computer, autenticazione e risorse di rete.
 
-Non è semplicemente un server LDAP.
-
-Active Directory utilizza LDAP, insieme ad altri protocolli e servizi come Kerberos, DNS e Group Policy.
-
-Active Directory include molte funzionalità enterprise, fra cui:
+Active Directory utilizza LDAP, insieme ad altri protocolli e servizi come Kerberos, DNS e Group Policy, e include molte funzionalità enterprise, fra cui:
 
 * directory utenti e gruppi;
 * autenticazione centralizzata;
@@ -769,7 +758,7 @@ Active Directory
 
 ## Overview
 
-Una rete Wi‑Fi enterprise integra:
+Una rete Wi‑Fi enterprise può integrare:
 
 * 802.1X;
 * EAP;
@@ -783,7 +772,7 @@ Questi elementi non svolgono lo stesso compito.
 * RADIUS permette all’access point di comunicare con il server di autenticazione;
 * Active Directory e LDAP forniscono directory utenti e informazioni sugli account.
 
-## Architettura completa
+## Architettura  
 
 ```
 Smartphone / PC
@@ -937,7 +926,7 @@ Alcuni attributi usati frequentemente sono:
   * contiene l’identificatore della VLAN da assegnare;
   * per esempio VLAN 10 oppure VLAN 20.
 
-In pratica il server RADIUS non si limita a dire “accesso consentito”, ma può anche indicare in quale VLAN collocare il dispositivo autenticato.
+In pratica il server RADIUS non si limita a dire “accesso consentito”, ma **può anche indicare in quale VLAN collocare il dispositivo autenticato**.
 
 Esempio:
 

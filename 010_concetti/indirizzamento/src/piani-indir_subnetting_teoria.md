@@ -1,4 +1,3 @@
----
 
 # Subnetting IPv4 e piani di indirizzamento
 
@@ -10,7 +9,8 @@ Nel lavoro con gli indirizzi IPv4 si presentano due contesti distinti, che richi
 
 Nel contesto degli esercizi, viene fornito un indirizzo di rete iniziale e si richiede di applicare tecniche di subnetting per suddividerlo in sottoreti. L’obiettivo è verificare la correttezza dei calcoli e la capacità di applicare regole formali.
 
-Nel contesto professionale, invece, spesso non esiste una rete assegnata. È necessario scegliere un blocco di indirizzi privati e progettare l’intera struttura della rete. In questo caso l’obiettivo non è solo la correttezza, ma anche:
+Nel contesto professionale, invece, spesso non esiste una rete assegnata. È necessario **scegliere** un blocco di indirizzi privati e progettare l’intera struttura della rete.  
+In questo caso l’obiettivo non è solo la correttezza, ma anche:
 
 * coerenza
 * leggibilità
@@ -31,9 +31,9 @@ Un indirizzo IPv4 è composto da:
 
 Esempio:
 
-```
+
 192.168.10.25
-```
+
 
 Ogni indirizzo è suddiviso logicamente in:
 
@@ -71,7 +71,7 @@ Limite principale:
 * rigidità
 * spreco di indirizzi
 
-Questo modello non è più utilizzato nella progettazione moderna, ma è utile per comprendere i fondamenti.
+Questo modello **non è più utilizzato** nella progettazione moderna, ma è utile per comprendere i fondamenti.
 
 ---
 
@@ -79,19 +79,13 @@ Questo modello non è più utilizzato nella progettazione moderna, ma è utile p
 
 CIDR introduce la notazione:
 
-```
-indirizzo/prefisso
-```
+indirizzo/**prefisso**
 
-Esempio:
-
-```
-192.168.10.0/27
-```
+Esempio: 192.168.10.0/**27**
 
 Significa che:
 
-* i primi 27 bit identificano la rete
+* i primi **27** bit identificano la rete
 * i restanti bit identificano gli host
 
 Vantaggi:
@@ -109,7 +103,7 @@ VLSM consente di:
 * creare sottoreti di dimensioni diverse
 * adattare ogni rete al numero reale di dispositivi
 
-È la tecnica utilizzata nella progettazione reale delle reti.
+È la tecnica **utilizzata nella progettazione reale** delle reti.
 
 ---
 
@@ -132,8 +126,8 @@ Formato tipico:
 
 Nota:
 
-* la colonna “Server” rappresenta indirizzi riservati a servizi statici
-* nei link punto-punto può essere non applicabile
+* la colonna “Server” rappresenta indirizzi riservati a servizi **statici**  
+* nei link punto-punto può essere non applicabile  
 
 ---
 
@@ -151,8 +145,8 @@ Per ottenere risultati coerenti è necessario adottare criteri fissi.
 
 ### 7.2 Dimensionamento
 
-* stimare il numero reale di dispositivi
-* aggiungere margine di crescita
+* stimare il numero reale di dispositivi   
+* aggiungere margine di crescita  
 * scegliere subnet con:
 
   host_utilizzabili >= host_richiesti
@@ -180,13 +174,15 @@ Nel mondo reale:
 Questa è la differenza più importante nella pratica professionale.
 
 
-Nel mondo reale non si ragiona più in termini di “classi” (A, B, C) ma di **blocchi CIDR**, tuttavia gli intervalli privati storici restano un riferimento pratico:
+Nel mondo reale **non si ragiona** più in termini di “classi” (A, B, C) ma di **blocchi CIDR**, tuttavia gli intervalli privati storici restano un riferimento pratico:
 
 * **10.0.0.0/8** → reti grandi e strutturate
 * **172.16.0.0/12** → reti medio-grandi
 * **192.168.0.0/16** → reti piccole o segmenti locali
 
 La scelta dipende principalmente da **dimensione, crescita prevista e organizzazione logica**.
+
+**NELLA SCUOLA E' CONSIGLIABILE SEGUIRE L'APPROCCIO DEL LIBRO DI TESTO E VERIFICARE ESPLICITAMENTE CON IL DOCENTE**  
 
 
 ---
@@ -202,8 +198,8 @@ Questa sezione è centrale per comprendere come si opera fuori dal contesto scol
 Gli indirizzi privati sono:
 
 * 10.0.0.0/8
-* 172.16.0.0/12
-* 192.168.0.0/16
+* 172.16.0.0/**12**   NB /**12**, non /16
+* 192.168.0.0/**16**  NB /**16**, non /24
 
 ---
 
@@ -235,12 +231,12 @@ Caratteristica chiave:
 * organizzazione gerarchica (es. terzo ottetto = VLAN o sede)
 * facile espansione senza ristrutturare la rete
 
+---  
 
----
+#### Uso di 172.16.0.0/**12**
 
-#### Uso di 172.16.0.0/12
-
-Offre un buon compromesso tra dimensione e semplicità. È molto usato quando il blocco 10 è già occupato o quando si vuole separare ambienti.
+Offre un buon compromesso tra dimensione e semplicità.  
+È molto usato quando il blocco 10 è già occupato o quando si vuole separare ambienti.
 
 Uso reale:
 
@@ -248,20 +244,79 @@ Uso reale:
 * reti corporate suddivise per regioni o business unit
 * ambienti separati (produzione, test, laboratorio)
 
-Esempio realistico:
+Il blocco 172.16.0.0/12 comprende tutti gli indirizzi da:
 
-```
+    172.16.0.0 a 172.31.255.255
+
+Contiene 16 reti /16 complete:
+
+    172.16.0.0/16
+    172.17.0.0/16
+    ...
+    172.31.0.0/16
+
+Oppure 4096 reti /24
+(4 bits e quindi 16 reti dal "resto" del secondo ottetto × 256 reti dal terzo ottetto)
+
+    172.16.0.0/24
+    172.16.1.0/24
+    ...
+    172.31.254.0/24
+    172.31.255.0/24
+
+
+---
+
+#### Esempi
+
+##### /24
+
 172.16.10.0/24 → sede Milano (uffici)
 172.16.20.0/24 → sede Roma (uffici)
 172.16.30.0/24 → laboratorio/test
 172.16.100.0/24 → DMZ (web server, reverse proxy)
 172.17.0.0/16 → infrastruttura server centralizzata
-```
 
-Caratteristica chiave:
+È una scelta pratica perché:
 
-* separazione logica per sedi o ambienti
-* meno “ingombrante” del 10/8 ma comunque molto scalabile
+* semplice da amministrare
+* broadcast limitato
+* facile separazione delle VLAN
+* buona leggibilità del piano IP
+
+##### /16
+
+
+172.16.0.0/16 → sede Milano (uffici)
+172.17.0.0/16 → sede Roma (uffici)
+172.18.0.0/16 → laboratorio/test
+172.19.0.0/16 → DMZ (web server, reverse proxy)
+172.20.0.0/16 → infrastruttura server centralizzata
+
+In questo caso ogni rete /16 contiene 65.536 indirizzi (circa 65533 disponibili)  
+
+
+#### Differenza pratica tra /24 e /16
+
+Le reti /24:
+
+* sono più piccole
+* limitano il traffico broadcast
+* sono più facili da segmentare
+* sono molto usate nelle VLAN aziendali
+
+Le reti /16:
+
+* sono enormi
+* possono contenere decine di migliaia di host
+* sono adatte a grandi sedi o macro-ambienti
+* possono aumentare traffico broadcast e complessità se usate direttamente in Layer 2
+
+Nella pratica reale:
+
+* /24 è molto comune per VLAN utenti
+* /16 viene spesso assegnata come blocco generale a una sede o regione
+* all’interno della /16 si creano poi sottoreti più piccole
 
 
 ---
@@ -296,7 +351,8 @@ Caratteristica chiave:
 
 ### 9.3 Criteri progettuali reali
 
-Nella progettazione reale si applicano criteri che non emergono negli esercizi.
+Nella progettazione reale si applicano criteri che **non** emergono negli esercizi.
+(il vostro insegnante vi ricorda che GLI INSEGNANTI SONO ABITUATI AL CONTESTO DEGLI ESERCIZI ... )
 
 * organizzazione gerarchica degli indirizzi
 * separazione per funzione (VLAN)
@@ -393,7 +449,7 @@ Questo approccio considera la rete utilizzando la **subnet mask di default della
 * rigidità
 * non adatto a reti moderne
 
-Per questo motivo viene utilizzato solo a scopo didattico.
+Per questo motivo **viene utilizzato solo a scopo didattico**.
 
 ---
 
@@ -473,7 +529,7 @@ Un indirizzo come 192.168.1.20 non può essere Network ID.
 
 ## 14. Piano di indirizzamento VLSM (subnetting variabile)
 
-È il metodo utilizzato nella progettazione reale.
+È il metodo **utilizzato nella progettazione reale**.
 
 Permette di assegnare a ogni rete una dimensione adeguata.
 
@@ -641,107 +697,3 @@ Questo tipo di struttura:
 * ma da una scelta progettuale
 
 ---
-
-# 19. Esercizi
-
-Le seguenti sezioni sono organizzate per livello:
-
-* A → Richiami e basi (classful)
-* B → Subnetting CIDR
-* C → Progettazione con VLSM
-
----
-
-## 19.1 Esercizi – Indirizzi Classful
-
-1. Data la rete 10.0.0.0, determinare classe, mask di default, numero host disponibili.
-2. La rete 172.16.0.0 appartiene a quale classe? Quanti host totali consente?
-3. Determinare se 192.168.5.10 è classe A, B o C e indicare la mask di default.
-4. Calcolare numero reti e host nella classe B.
-5. Data la rete 130.25.0.0, indicare classe e numero host per rete.
-6. Verificare se 200.10.5.0 è rete pubblica di classe C.
-7. Determinare intervallo indirizzi validi per rete 192.168.1.0 classful.
-8. Per 15.0.0.0 indicare classe e numero massimo di host.
-9. Per 180.20.0.0 indicare broadcast classful.
-10. Identificare la classe di 126.10.1.1.
-11. Identificare la classe di 191.255.1.1.
-12. Identificare la classe di 223.0.0.1.
-13. Quanti host utilizzabili in 172.20.0.0 classful?
-14. Quanti bit host in classe C?
-15. Data 150.10.10.10 indicare rete classful.
-16. Data 192.10.10.10 indicare rete classful.
-17. Data 11.5.6.7 indicare rete classful.
-18. Determinare se 224.0.0.1 è classe A, B o C.
-19. Spiegare perché 127.0.0.1 non è usabile come rete normale.
-20. Data la rete 12.0.0.0, determinare classe, mask di default, numero host disponibili.
-
----
-
-## 19.2 Esercizi – CIDR
-
-1. Data 192.168.10.0/26 determinare host utilizzabili.
-2. Data 192.168.10.0/27 determinare broadcast.
-3. Data 10.0.0.0/12 determinare numero reti possibili rispetto classful.
-4. Data 172.16.0.0/20 determinare range completo.
-5. Data 192.168.1.64/26 determinare primo e ultimo host.
-6. Data 192.168.1.128/25 determinare broadcast.
-7. Data 10.10.10.0/30 determinare host utilizzabili.
-8. Data 192.168.5.0/29 determinare numero sottoreti in una /24.
-9. Data 172.16.0.0/22 determinare numero host per sottorete.
-10. Data 192.168.1.0/28 determinare numero host.
-11. Data 192.168.1.16/28 determinare intervallo.
-12. Data 192.168.1.0/23 determinare totale host.
-13. Data 10.0.0.0/8 suddividere in /16: quante sottoreti?
-14. Data 172.16.0.0/24 rispetto a classful cosa cambia?
-15. Data 192.168.1.0/30 quanti host?
-16. Data 192.168.1.4/30 determinare broadcast.
-17. Data 192.168.100.0/21 determinare intervallo.
-18. Data 10.0.0.0/18 determinare host per rete.
-19. Data 172.16.0.0/26 determinare numero sottoreti in una /24.
-20. Data 192.168.0.0/19 determinare host totali.
-
----
-
-## 19.3 Esercizi – VLSM (Piani di indirizzamento)
-
-1. Progettare piano per rete 192.168.10.0/24 con: 60 host, 30 host, 10 host.
-2. Progettare piano per 10.0.0.0/24 con: 100 host, 50 host, 20 host.
-3. Progettare piano per 172.16.0.0/24 con 4 reti da 50 host.
-4. Progettare rete 192.168.1.0/24 con: 120 host, 60 host, 30 host.
-5. Progettare rete 10.0.0.0/23 con: 200 host, 100 host, 50 host, 20 host.
-6. Rete 192.168.0.0/24 con: 80 host, 40 host, 20 host, 10 host.
-7. Rete 172.16.10.0/24 con: 70 host, 30 host, 10 host.
-8. Rete 192.168.5.0/24 con: 2 link punto-punto (/30) e 1 LAN da 100 host.
-9. Rete 10.1.0.0/24 con: 120 host, 60 host, 60 host.
-10. Rete 192.168.50.0/24 con: 90 host, 40 host, 20 host.
-11. Rete 172.20.0.0/24 con: 4 reti da 30 host.
-12. Rete 10.0.10.0/24 con: 200 host, 20 host.
-13. Rete 192.168.200.0/24 con: 100 host, 50 host, 25 host, 10 host.
-14. Rete 172.16.5.0/24 con: 3 reti da 60 host.
-15. Rete 10.10.0.0/24 con: 120 host, 30 host, 30 host, 10 host.
-16. Rete 192.168.0.0/23 con: 300 host, 100 host, 50 host.
-17. Rete 172.16.0.0/23 con: 200 host, 60 host, 60 host.
-18. Rete 10.0.0.0/22 con: 500 host, 200 host, 100 host.
-19. Rete 192.168.100.0/24 con: 150 host, 50 host, 20 host.
-20. Rete 172.16.100.0/24 con: 100 host, 30 host, 10 host, 2 link p2p.
-
----
-
-## 19.4 Osservazioni sugli esercizi
-
-Gli esercizi sono organizzati con difficoltà crescente:
-
-* Classful → comprensione base
-* CIDR → capacità di calcolo
-* VLSM → progettazione
-
-Le ultime tracce introducono problemi realistici:
-
-* subnet insufficienti
-* necessità di cambiare rete di partenza
-* presenza di link punto-punto
-
----
-
-
-

@@ -1,0 +1,153 @@
+@startuml
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+skinparam roundcorner 16
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+
+cloud "Internet" as INTERNET
+
+node "ONT / CPE FTTH" as ONT
+
+node "Firewall / UTM" as FW
+note right of FW
+Funzioni:
+- routing inter-VLAN
+- NAT/PAT verso Internet
+- DHCP per VLAN interne
+- filtraggio tra VLAN
+- pubblicazione WEB server
+- isolamento DMZ
+end note
+
+rectangle "DMZ\n10.10.70.0/24" as DMZ {
+    node "WEB Server\n10.10.70.10\nGW 10.10.70.1" as WEB
+    database "DBMS Server\n10.10.70.20\nGW 10.10.70.1" as DB
+}
+
+package "Hotel - LAN interna" as HOTEL {
+
+    node "Core Switch gestito\nLayer 2" as CORE
+
+    package "VLAN 10 - UFFICI\n10.10.10.0/24\nGW 10.10.10.1\nDHCP dal firewall" as VLAN10 {
+        node "PC uffici / reception" as OFFPC
+        node "Stampante di rete" as PRN
+    }
+
+    package "VLAN 20 - SERVIZI INTERNI\n10.10.20.0/24\nGW 10.10.20.1\nDHCP dal firewall o IP statici" as VLAN20 {
+        node "Server gestionale\n10.10.20.10" as GEST
+        node "RADIUS / Controller Wi-Fi\n10.10.20.30" as RAD
+        node "NAS / Backup" as NAS
+    }
+
+    package "VLAN 30 - CONVEGNI\n10.10.30.0/24\nGW 10.10.30.1\nDHCP dal firewall" as VLAN30 {
+        node "Client convegni" as CONVCLI
+    }
+
+    package "VLAN 40 - OSPITI HOTEL\n10.10.40.0/24\nGW 10.10.40.1\nDHCP dal firewall" as VLAN40 {
+        node "Smart TV / Client camere" as GUESTCLI
+    }
+
+    package "VLAN 60 - COLONNINE EV\n10.10.60.0/24\nGW 10.10.60.1\nDHCP dal firewall o IP riservati" as VLAN60 {
+        node "Colonnine di ricarica 1..6" as EV
+    }
+
+    package "VLAN 80 - MANAGEMENT\n10.10.80.0/24\nGW 10.10.80.1\nIP statici" as VLAN80 {
+        node "Mgmt switch/AP\nCore 10.10.80.2\nAccess switch 10.10.80.10+" as MGMT
+    }
+
+    node "Access Switch camere/aree comuni" as ASW1
+    node "Access Switch uffici/servizi" as ASW2
+    node "Access Switch PoE per AP" as ASW3
+
+    node "AP Hotel\nSSID OSPITI-HOTEL -> VLAN 40\nSSID CONVEGNI -> VLAN 30\nSSID DIPENDENTI -> VLAN 10" as APH
+}
+
+folder "Ponte radio PTP 500 m" as PTP {
+    node "Bridge radio A\nlato hotel" as RA
+    node "Bridge radio B\nlato stabilimento" as RB
+}
+
+package "Stabilimento balneare" as BEACH {
+    node "Switch gestito stabilimento" as BSW
+
+    package "VLAN 90 - STAFF STABILIMENTO\n10.10.90.0/24\nGW 10.10.90.1\nDHCP dal firewall" as VLAN90 {
+        node "PC bar / cassa / personale" as STAFF
+    }
+
+    package "VLAN 50 - OSPITI SPIAGGIA\n10.10.50.0/24\nGW 10.10.50.1\nDHCP dal firewall" as VLAN50 {
+        node "Client spiaggia" as BEACHCLI
+    }
+
+    node "AP Spiaggia\nSSID OSPITI-SPIAGGIA -> VLAN 50" as APB
+}
+
+INTERNET -- ONT
+ONT -- FW : WAN
+
+FW -- DMZ : interfaccia DMZ\n10.10.70.1/24
+FW -- CORE : trunk 802.1Q\nVLAN 10,20,30,40,50,60,80,90
+
+CORE -- ASW1 : trunk 802.1Q\nVLAN 40,80
+CORE -- ASW2 : trunk 802.1Q\nVLAN 10,20,60,80
+CORE -- ASW3 : trunk 802.1Q\nVLAN 10,30,40,80
+
+ASW1 -- VLAN40 : porte access
+ASW2 -- VLAN10 : porte access
+ASW2 -- VLAN20 : porte access
+ASW2 -- VLAN60 : porte access
+ASW3 -- APH : trunk 802.1Q\nVLAN 10,30,40,80
+ASW3 -- VLAN80 : porte access / mgmt
+
+CORE -- RA : trunk 802.1Q\nVLAN 50,90
+RA -- RB : bridge Layer 2 trasparente
+RB -- BSW : trunk 802.1Q\nVLAN 50,90
+
+BSW -- VLAN90 : porte access
+BSW -- APB : trunk 802.1Q\nVLAN 50
+APB -- VLAN50 : SSID ospiti spiaggia
+
+WEB -- DB : TCP 3306 o 5432\nsolo WEB -> DB
+OFFPC -- GEST : accesso gestionale
+STAFF -- GEST : accesso gestionale
+GUESTCLI .. INTERNET : solo Internet
+BEACHCLI .. INTERNET : solo Internet
+CONVCLI .. INTERNET : solo Internet
+
+note top of CORE
+Il core switch è Layer 2.
+Non esegue routing.
+Il routing inter-VLAN è svolto dal firewall.
+end note
+
+note bottom of FW
+DHCP centralizzato sul firewall:
+- scope VLAN 10
+- scope VLAN 20
+- scope VLAN 30
+- scope VLAN 40
+- scope VLAN 50
+- scope VLAN 60
+- scope VLAN 90
+VLAN 80 e DMZ preferibilmente statiche.
+end note
+
+note right of WEB
+Pubblicazione tramite NAT/PAT:
+IP pubblico:80  -> 10.10.70.10:80
+IP pubblico:443 -> 10.10.70.10:443
+end note
+
+note right of DB
+DBMS non pubblicato su Internet.
+Accessibile solo dal WEB server.
+end note
+
+note bottom of BEACH
+Sul link radio transitano:
+- VLAN 50 Ospiti spiaggia
+- VLAN 90 Staff stabilimento
+end note
+
+@enduml

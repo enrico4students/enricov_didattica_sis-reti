@@ -1,0 +1,88 @@
+@startuml
+title Modello logico relazionale
+
+hide circle
+skinparam linetype ortho
+skinparam shadowing false
+
+entity "AZIENDA" as AZIENDA {
+  * id_azienda : PK
+  --
+  ragione_sociale
+  partita_iva
+  stato
+}
+
+entity "UTENTE" as UTENTE {
+  * id_utente : PK
+  --
+  id_azienda : FK
+  username : UNIQUE
+  password_hash
+  nome
+  cognome
+  email
+  attivo
+}
+
+entity "RUOLO" as RUOLO {
+  * id_ruolo : PK
+  --
+  nome_ruolo : UNIQUE
+  descrizione
+}
+
+entity "PERMESSO" as PERMESSO {
+  * id_permesso : PK
+  --
+  codice_permesso : UNIQUE
+  descrizione
+}
+
+entity "UTENTE_RUOLO" as UTENTE_RUOLO {
+  * id_utente : PK, FK
+  * id_ruolo : PK, FK
+}
+
+entity "RUOLO_PERMESSO" as RUOLO_PERMESSO {
+  * id_ruolo : PK, FK
+  * id_permesso : PK, FK
+}
+
+entity "VEICOLO" as VEICOLO {
+  * id_veicolo : PK
+  --
+  id_azienda : FK
+  targa : UNIQUE
+  modello
+  stato
+}
+
+entity "DISPOSITIVO" as DISPOSITIVO {
+  * id_dispositivo : PK
+  --
+  id_veicolo : FK, UNIQUE
+  seriale : UNIQUE
+  certificato
+  attivo
+}
+
+entity "AUDIT_ACCESSO" as AUDIT {
+  * id_accesso : PK
+  --
+  id_utente : FK
+  timestamp_login
+  ip_client
+  esito
+}
+
+AZIENDA ||--o{ UTENTE
+AZIENDA ||--o{ VEICOLO
+VEICOLO ||--|| DISPOSITIVO
+UTENTE ||--o{ AUDIT
+UTENTE ||--o{ UTENTE_RUOLO
+RUOLO ||--o{ UTENTE_RUOLO
+RUOLO ||--o{ RUOLO_PERMESSO
+PERMESSO ||--o{ RUOLO_PERMESSO
+
+@enduml

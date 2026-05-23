@@ -1,0 +1,139 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+
+skinparam rectangle {
+    RoundCorner 15
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam node {
+    RoundCorner 15
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam cloud {
+    RoundCorner 20
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam package {
+    BorderColor #555555
+    FontColor #111111
+    RoundCorner 20
+}
+
+skinparam note {
+    BackgroundColor #FFF8C6
+    BorderColor #B8A200
+    FontColor #222222
+}
+
+skinparam linetype ortho
+
+cloud "Internet" as INTERNET #E6F2FF
+
+node "Router dedicato\nsolo routing\n\nWAN: IP pubblico ISP\nLAN: 10.0.0.1/30" as ROUTER #D6EAF8
+
+node "Firewall dedicato\nsolo firewall/NAT/policy\n\nWAN: 10.0.0.2/30\nTRUNK LAN verso core\nDMZ GW: 192.168.50.1/24" as FIREWALL #FAD7A0
+
+rectangle "Core Switch\nVLAN + trunk 802.1Q" as CORE #D5F5E3
+
+package "DMZ - VLAN 50\n192.168.50.0/24" as DMZ #FDEDEC {
+    node "WEB Server\n192.168.50.10\nHTTP/HTTPS pubblici" as WEB #F5B7B1
+}
+
+package "Server interni - VLAN 40\n192.168.40.0/24" as SERVERLAN #FCF3CF {
+    node "RDBMS Server\n192.168.40.10" as DB #F9E79F
+    node "DHCP Server\n192.168.40.20" as DHCP #F9E79F
+}
+
+package "Reti utenti" as USERSIDE #EBDEF0 {
+
+    package "VLAN 10 - Amministrazione\n192.168.10.0/24" as VLAN10 #D6EAF8 {
+        node "Switch accesso\nAmministrazione" as SW_ADMIN #AED6F1
+        node "Host amministrazione" as HOST_ADMIN #EBF5FB
+    }
+
+    package "VLAN 20 - Camere ospiti\n192.168.20.0/24" as VLAN20 #D5F5E3 {
+        node "Switch accesso\nCamere" as SW_ROOMS #ABEBC6
+        node "Host camere / ospiti" as HOST_ROOMS #EAFAF1
+    }
+
+    package "VLAN 30 - Sale convegni\n192.168.30.0/24" as VLAN30 #FADBD8 {
+        node "Switch accesso\nSale convegni" as SW_CONF #F5B7B1
+        node "Host sale convegni" as HOST_CONF #FDEDEC
+    }
+}
+
+INTERNET -[#4A90E2]-> ROUTER : collegamento WAN
+ROUTER -[#5D6D7E]-> FIREWALL : rete transito 10.0.0.0/30
+
+FIREWALL -[#27AE60]-> CORE : trunk 802.1Q\nVLAN 10,20,30,40
+
+FIREWALL -[#C0392B]-> WEB : interfaccia DMZ\nrete 192.168.50.0/24
+
+CORE -[#2E86C1]-> SW_ADMIN : access/trunk secondo progetto
+SW_ADMIN -[#2E86C1]-> HOST_ADMIN : porte access VLAN 10
+
+CORE -[#239B56]-> SW_ROOMS : access/trunk secondo progetto
+SW_ROOMS -[#239B56]-> HOST_ROOMS : porte access VLAN 20
+
+CORE -[#CB4335]-> SW_CONF : access/trunk secondo progetto
+SW_CONF -[#CB4335]-> HOST_CONF : porte access VLAN 30
+
+CORE -[#B7950B]-> DB : porta access VLAN 40
+CORE -[#B7950B]-> DHCP : porta access VLAN 40
+
+WEB -[dashed,#8E44AD]-> DB : solo traffico applicativo DB\n(es. 3306 o 5432)
+DHCP -[dashed,#7D6608]-> FIREWALL : relay DHCP per VLAN 10/20/30/40
+
+note top of ROUTER
+Il router non contiene funzioni firewall.
+Svolgere solo routing verso ISP e verso il firewall.
+end note
+
+note top of FIREWALL
+Il firewall non contiene host applicativi.
+Svolgere NAT, filtraggio, policy e gateway delle VLAN interne.
+end note
+
+note right of CORE
+Tratta trunk 802.1Q:
+trasportare le VLAN interne tra firewall e core switch.
+
+In questa architettura il routing inter-VLAN
+è controllato dal firewall.
+end note
+
+note right of WEB
+Server esposto verso Internet
+tramite NAT / port forwarding sul firewall.
+Consentire solo HTTP/HTTPS dall'esterno.
+end note
+
+note right of DB
+Database non esposto su Internet.
+Consentire accesso solo dal WEB server.
+Negare accessi diretti da VLAN utenti e da Internet.
+end note
+
+legend right
+|= Colore |= Significato |
+|#E6F2FF| Internet / WAN |
+|#D6EAF8| Routing / amministrazione |
+|#FAD7A0| Firewall |
+|#D5F5E3| Core e rete camere |
+|#FDEDEC| DMZ / area esposta |
+|#FCF3CF| Server interni |
+|linea continua| collegamento fisico |
+|linea tratteggiata| relazione logica / accesso consentito |
+endlegend
+
+@enduml

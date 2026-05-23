@@ -1,0 +1,23 @@
+@startuml
+title Modello Concettuale (E-R)
+
+    hide methods
+    hide stereotypes
+    skinparam classAttributeIconSize 0
+
+    entity VISITATORE
+    entity BIGLIETTO
+    entity TARIFFA
+    entity POI
+    entity CONTENUTO
+    entity LINGUA
+    entity ACCESSO
+
+    ' Relazioni
+
+    VISITATORE "1" -- "0..*" BIGLIETTO : acquista
+    BIGLIETTO "0..*" -- "1" TARIFFA : ha
+    POI "1" -- "0..*" CONTENUTO : ha
+    BIGLIETTO "1" -- "0..*" ACCESSO : effettua
+    CONTENUTO "0..*" -- "1" LINGUA : in
+@enduml

@@ -1,0 +1,13 @@
+@startuml
+title Uso di LDAP in intranet
+
+actor "Utente" as U
+rectangle "Applicazione intranet" as APP
+rectangle "LDAP / Active Directory" as LDAP
+
+U --> APP : login
+APP --> LDAP : bind + query
+LDAP --> APP : esito + gruppi/ruoli
+APP --> U : accesso consentito o negato
+
+@enduml

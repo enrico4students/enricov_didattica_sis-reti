@@ -1,0 +1,44 @@
+@startuml
+entity Cliente {
+    +id_cliente : int <<PK>>
+    --
+    ragione_sociale : varchar
+    email : varchar
+    password_hash : varchar
+}
+
+entity Tecnico {
+    +id_tecnico : int <<PK>>
+    --
+    nome : varchar
+    competenza : varchar
+    ruolo : varchar
+}
+
+entity Ticket {
+    +id_ticket : int <<PK>>
+    --
+    data_apertura : date
+    data_chiusura : date
+    stato : varchar
+    tipo_intervento : varchar
+    descrizione : text
+    id_cliente : int <<FK>>
+    id_tecnico : int <<FK>>
+}
+
+entity Report {
+    +id_report : int <<PK>>
+    --
+    data_intervento : datetime
+    tempo_impiegato : int
+    descrizione_attivita : text
+    convalidato : boolean
+    commento_cliente : text
+    id_ticket : int <<FK>>
+}
+
+Cliente ||--o{ Ticket
+Tecnico ||--o{ Ticket
+Ticket ||--o{ Report
+@enduml

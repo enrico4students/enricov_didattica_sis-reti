@@ -1,0 +1,66 @@
+@startuml
+
+skinparam backgroundColor #ffffff
+
+cloud "Internet" as internet
+
+node "Router dedicato" as router {
+    interface WAN
+    interface LAN
+}
+
+node "Firewall dedicato" as fw {
+    interface WAN
+    interface LAN
+    interface DMZ
+}
+
+node "Core Switch" as core
+
+node "WEB Server\nDMZ\n192.168.50.10" as web
+node "RDBMS Server\n192.168.40.10" as db
+node "DHCP Server\n192.168.40.20" as dhcp
+
+node "Switch Camere" as sw_rooms
+node "Switch Sale Convegni" as sw_conf
+node "Switch Amministrazione" as sw_admin
+
+internet -- router
+router -- fw
+
+fw -- core
+
+core -- web
+core -- db
+core -- dhcp
+
+core -- sw_rooms
+core -- sw_conf
+core -- sw_admin
+
+note right of web
+VLAN 50
+DMZ
+end note
+
+note right of db
+VLAN 40
+server interni
+end note
+
+note right of sw_rooms
+VLAN 20
+camere
+end note
+
+note right of sw_conf
+VLAN 30
+sale
+end note
+
+note right of sw_admin
+VLAN 10
+amministrazione
+end note
+
+@enduml

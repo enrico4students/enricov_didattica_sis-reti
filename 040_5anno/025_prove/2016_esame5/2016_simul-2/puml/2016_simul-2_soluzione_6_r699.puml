@@ -1,0 +1,19 @@
+@startuml
+title Flusso accesso operatore
+
+start
+:Aprire pagina login;
+:Inserire username e password;
+:Inviare richiesta HTTPS;
+:Verificare utente;
+if (Credenziali valide?) then (si)
+  :Verificare utente attivo;
+  :Caricare tenant e ruoli;
+  :Creare sessione;
+  :Mostrare dashboard;
+else (no)
+  :Mostrare errore accesso;
+endif
+stop
+
+@enduml

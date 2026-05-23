@@ -1,0 +1,117 @@
+@startuml
+title Rete hotel con DMZ, VLAN interne e collegamento radio allo stabilimento
+
+    left to right direction
+    skinparam backgroundColor white
+    skinparam shadowing false
+    skinparam defaultTextAlignment center
+    skinparam linetype ortho
+    skinparam packageStyle rectangle
+    skinparam nodesep 35
+    skinparam ranksep 30
+    skinparam roundcorner 15
+
+    skinparam rectangle {
+    BorderColor #333333
+    FontColor #111111
+    FontSize 14
+    }
+
+    skinparam cloud {
+    BorderColor #333333
+    FontColor #111111
+    }
+
+    skinparam note {
+    BackgroundColor #FFF8DC
+    BorderColor #B8860B
+    FontSize 12
+    }
+
+    cloud "Internet" as INTERNET
+    rectangle "ONT / CPE FTTH" as ONT
+    rectangle "Firewall / UTM\nRouting inter-VLAN\nNAT / DHCP / Filtering" as FW
+    rectangle "DMZ\n10.10.70.0/24" as DMZ
+    rectangle "Web Server\n10.10.70.10" as WEB
+
+    rectangle "Core Switch L2\nTrunk 802.1Q" as CORE
+
+    package "LAN interna" {
+        rectangle "VLAN 10\nUffici\n10.10.10.0/24" as VLAN10
+        rectangle "VLAN 20\nServer interni\n10.10.20.0/24" as VLAN20
+        rectangle "VLAN 30\nConvegni\n10.10.30.0/24" as VLAN30
+        rectangle "VLAN 40\nOspiti hotel\n10.10.40.0/24" as VLAN40
+        rectangle "VLAN 60\nColonnine EV\n10.10.60.0/24" as VLAN60
+        rectangle "VLAN 80\nManagement\n10.10.80.0/24" as VLAN80
+        rectangle "DBMS\n10.10.20.20" as DBMS
+        rectangle "Gestionale hotel\n10.10.20.10" as GEST
+    }
+
+    package "Hotel - Access layer" {
+        rectangle "Access Switch camere / uffici" as SW1
+        rectangle "Access Switch servizi / AP" as SW2
+        rectangle "AP hotel\nSSID Ospiti / Convegni / Personale" as APH
+    }
+
+    package "Collegamento spiaggia" {
+        rectangle "Bridge radio PTP A\nHotel" as BRA
+        rectangle "Bridge radio PTP B\nStabilimento" as BRB
+        rectangle "Switch stabilimento" as SWS
+        rectangle "AP spiaggia\nSSID ospiti spiaggia" as APB
+        rectangle "PC staff stabilimento" as STAFF
+        rectangle "VLAN 50\nOspiti spiaggia\n10.10.50.0/24" as VLAN50
+        rectangle "VLAN 90\nStaff stabilimento\n10.10.90.0/24" as VLAN90
+    }
+
+    INTERNET --> ONT
+    ONT --> FW
+
+    FW --> DMZ
+    DMZ --> WEB
+
+    FW --> CORE : trunk 802.1Q\nVLAN 10,20,30,40,50,60,80,90
+
+    CORE --> SW1 : trunk 802.1Q
+    CORE --> SW2 : trunk 802.1Q
+    CORE --> BRA : trunk 802.1Q\nVLAN 50,90
+
+    SW1 --> VLAN10
+    SW1 --> VLAN40
+
+    SW2 --> VLAN20
+    SW2 --> VLAN30
+    SW2 --> VLAN60
+    SW2 --> VLAN80
+    SW2 --> APH : trunk 802.1Q\nSSID→VLAN
+
+    VLAN20 --> GEST
+    VLAN20 --> DBMS
+
+    BRA --> BRB : ponte radio PTP
+    BRB --> SWS : trunk 802.1Q
+    SWS --> APB
+    SWS --> STAFF
+    SWS --> VLAN50
+    SWS --> VLAN90
+
+    WEB ..> DBMS : solo traffico DB\nporta applicativa
+    STAFF ..> GEST : accesso autorizzato
+    APH ..> VLAN40
+    APH ..> VLAN30
+    APH ..> VLAN10
+    APB ..> VLAN50
+
+    note right of FW
+    Il firewall esegue:
+    - routing inter-VLAN
+    - NAT verso Internet
+    - DHCP per le VLAN client
+    - filtraggio tra reti
+    end note
+
+    note bottom of DMZ
+    Il DBMS non è in DMZ.
+    La DMZ contiene solo
+    il server esposto.
+    end note
+@enduml

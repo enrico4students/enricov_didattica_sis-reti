@@ -1,0 +1,188 @@
+@startuml
+left to right direction
+
+skinparam backgroundColor white
+skinparam shadowing false
+skinparam defaultFontName Arial
+skinparam linetype ortho
+
+skinparam rectangle {
+    RoundCorner 18
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam node {
+    RoundCorner 18
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam package {
+    RoundCorner 18
+    BorderColor #555555
+    FontColor #111111
+}
+
+skinparam cloud {
+    BorderColor #444444
+    FontColor #111111
+}
+
+skinparam note {
+    BackgroundColor #FFF8C6
+    BorderColor #B8A200
+    FontColor #222222
+}
+
+cloud "Internet" as INTERNET #EAF2FF
+
+node "Host dedicato Router\nsolo routing\nWAN: IP pubblico ISP\nLAN: 10.0.0.1/30" as ROUTER #D6EAF8
+
+node "Host dedicato Firewall\nsolo firewall / NAT / policy\nWAN: 10.0.0.2/30\nGW VLAN 10: 192.168.10.1\nGW VLAN 20: 192.168.20.1\nGW VLAN 30: 192.168.30.1\nGW VLAN 40: 192.168.40.1\nGW VLAN 60: 192.168.60.1\nGW VLAN 70: 192.168.70.1\nGW VLAN 80: 192.168.80.1\nDMZ: 192.168.50.1" as FIREWALL #FAD7A0
+
+rectangle "Core Switch\ntrunk 802.1Q verso firewall" as CORE #D5F5E3
+
+package "DMZ\n192.168.50.0/24" as DMZ #FDEDEC {
+    node "WEB Server\n192.168.50.10\nHTTP / HTTPS pubblici" as WEB #F5B7B1
+}
+
+package "Server interni - VLAN 40\n192.168.40.0/24" as SERVERLAN #FCF3CF {
+    node "RDBMS Server\n192.168.40.10" as DB #F9E79F
+    node "DHCP Server\n192.168.40.20" as DHCP #F9E79F
+    node "Server gestionale / app interne\n192.168.40.30" as APP #F9E79F
+    node "AAA / Captive Portal / Auth Wi-Fi\n192.168.40.40" as AAA #F9E79F
+}
+
+package "Amministrazione - VLAN 10\n192.168.10.0/24" as VLAN10 #D6EAF8 {
+    node "Switch accesso amministrazione" as SW_ADMIN #AED6F1
+    node "Host amministrazione" as HOST_ADMIN #EBF5FB
+}
+
+package "Camere / ospiti hotel - VLAN 20\n192.168.20.0/24" as VLAN20 #D5F5E3 {
+    node "Switch accesso camere" as SW_ROOMS #ABEBC6
+    node "Host camere / ospiti hotel" as HOST_ROOMS #EAFAF1
+    node "AP Wi-Fi hotel ospiti" as AP_HOTEL #ABEBC6
+}
+
+package "Sale convegni - VLAN 30\n192.168.30.0/24" as VLAN30 #FADBD8 {
+    node "Switch accesso sale convegni" as SW_CONF #F5B7B1
+    node "Host sale convegni" as HOST_CONF #FDEDEC
+}
+
+package "Spiaggia remota collegata via radio" as BEACHAREA #EBDEF0 {
+    node "Bridge radio lato hotel" as RADIO_HOTEL #D2B4DE
+    node "Bridge radio lato spiaggia" as RADIO_BEACH #D7BDE2
+    node "Switch spiaggia\ntrunk locale VLAN 60,70,80" as SW_BEACH #C39BD3
+
+    package "VLAN 60\nStaff stabilimento" as BEACH_STAFF #F5EEF8 {
+        node "PC / tablet staff spiaggia" as HOST_BEACH_STAFF #F5EEF8
+    }
+
+    package "VLAN 70\nBar / ristorante spiaggia" as BEACH_BAR #F4ECF7 {
+        node "PC / tablet / terminali ristorante" as HOST_BEACH_BAR #F4ECF7
+    }
+
+    package "VLAN 80\nWi-Fi ospiti spiaggia" as BEACH_GUEST #FDF2FF {
+        node "Access Point spiaggia ospiti" as AP_BEACH #E8DAEF
+        node "Client Wi-Fi ospiti spiaggia" as HOST_BEACH_GUEST #FCF3FF
+    }
+}
+
+INTERNET -[#4A90E2]-> ROUTER : WAN
+ROUTER -[#5D6D7E]-> FIREWALL : rete transito 10.0.0.0/30
+
+FIREWALL -[#27AE60]-> CORE : trunk 802.1Q\nVLAN 10,20,30,40,60,70,80
+FIREWALL -[#C0392B]-> WEB : rete DMZ 192.168.50.0/24
+
+CORE -[#2E86C1]-> SW_ADMIN : uplink VLAN 10
+SW_ADMIN -[#2E86C1]-> HOST_ADMIN : access VLAN 10
+
+CORE -[#239B56]-> SW_ROOMS : uplink VLAN 20
+SW_ROOMS -[#239B56]-> HOST_ROOMS : access VLAN 20
+SW_ROOMS -[#239B56]-> AP_HOTEL : access/trunk Wi-Fi hotel
+
+CORE -[#CB4335]-> SW_CONF : uplink VLAN 30
+SW_CONF -[#CB4335]-> HOST_CONF : access VLAN 30
+
+CORE -[#B7950B]-> DB : access VLAN 40
+CORE -[#B7950B]-> DHCP : access VLAN 40
+CORE -[#B7950B]-> APP : access VLAN 40
+CORE -[#B7950B]-> AAA : access VLAN 40
+
+CORE -[#8E44AD]-> RADIO_HOTEL : trunk VLAN 60,70,80
+RADIO_HOTEL -[dashed,#8E44AD,thickness=2]-> RADIO_BEACH : link radio point-to-point 500 m
+RADIO_BEACH -[#8E44AD]-> SW_BEACH : trunk VLAN 60,70,80
+
+SW_BEACH -[#7D3C98]-> HOST_BEACH_STAFF : access VLAN 60
+SW_BEACH -[#A569BD]-> HOST_BEACH_BAR : access VLAN 70
+SW_BEACH -[#BB8FCE]-> AP_BEACH : access/trunk VLAN 80
+AP_BEACH -[#BB8FCE]-> HOST_BEACH_GUEST : Wi-Fi ospiti
+
+WEB -[dashed,#7D3C98,thickness=2]-> DB : solo traffico DB
+HOST_BEACH_STAFF -[dashed,#566573]-> APP : accesso al gestionale
+HOST_BEACH_BAR -[dashed,#566573]-> APP : prenotazioni ristorante
+AP_BEACH -[dashed,#1F618D]-> AAA : stessa autenticazione Wi-Fi hotel
+AP_HOTEL -[dashed,#1F618D]-> AAA : autenticazione centralizzata
+DHCP -[dashed,#7D6608]-> FIREWALL : DHCP relay per VLAN remote/interne
+
+note top of ROUTER
+Host dedicato.
+Contenere solo il router.
+Nessun servizio applicativo.
+Nessuna funzione firewall.
+end note
+
+note top of FIREWALL
+Host dedicato.
+Contenere solo il firewall.
+Svolgere NAT, policy di sicurezza,
+routing inter-VLAN e relay DHCP.
+end note
+
+note right of BEACHAREA
+La spiaggia è un'area remota collegata
+con ponte radio point-to-point a 500 m.
+Il collegamento trasporta più VLAN:
+60 staff stabilimento
+70 bar/ristorante
+80 Wi-Fi ospiti
+end note
+
+note right of AP_BEACH
+Gli ospiti in spiaggia accedono a Internet
+con le stesse modalità di identificazione
+usate in albergo.
+end note
+
+note right of HOST_BEACH_STAFF
+Il personale verifica presenze giornaliere
+e usa il gestionale dell'hotel.
+end note
+
+note right of HOST_BEACH_BAR
+Il bar/ristorante consulta
+le prenotazioni ristorante.
+end note
+
+note right of DB
+Database non esposto su Internet.
+Consentire accesso diretto
+solo da server/app autorizzati.
+end note
+
+legend right
+|= Elemento |= Significato |
+|#EAF2FF| Internet / WAN |
+|#D6EAF8| Router e amministrazione |
+|#FAD7A0| Firewall |
+|#D5F5E3| Core e rete ospiti hotel |
+|#FADBD8| Sale convegni |
+|#FCF3CF| Server interni |
+|#FDEDEC| DMZ |
+|#EBDEF0| Area spiaggia remota |
+|linea continua| collegamento fisico |
+|linea tratteggiata| relazione logica / servizio autorizzato |
+endlegend
+
+@enduml

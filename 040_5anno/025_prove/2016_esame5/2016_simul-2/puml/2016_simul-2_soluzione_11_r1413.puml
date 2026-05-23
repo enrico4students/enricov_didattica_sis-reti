@@ -1,0 +1,31 @@
+@startuml
+title DMZ con doppio firewall (dual firewall)
+
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+cloud "Internet" as NET
+rectangle "Router" as RTR
+rectangle "Firewall esterno FW1" as FW1
+
+frame "DMZ" as DMZ {
+    rectangle "Reverse Proxy / WAF" as RP
+    rectangle "Broker MQTT" as MQTT
+}
+
+rectangle "Firewall interno FW2" as FW2
+
+frame "LAN interna" as LAN {
+    rectangle "Application Server" as APP
+    database "DB relazionale" as DB
+    database "TSDB" as TSDB
+}
+
+NET --> RTR
+RTR --> FW1
+FW1 --> DMZ
+DMZ --> FW2
+FW2 --> LAN
+
+@enduml

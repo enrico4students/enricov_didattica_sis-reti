@@ -1,0 +1,131 @@
+@startuml
+top to bottom direction
+skinparam shadowing false
+skinparam linetype polyline
+skinparam roundcorner 14
+skinparam defaultTextAlignment center
+skinparam packageStyle rectangle
+skinparam backgroundColor white
+
+skinparam node {
+    BackgroundColor #EAF2F8
+    BorderColor #4F81BD
+}
+
+skinparam rectangle {
+    BorderColor #666666
+}
+
+skinparam database {
+    BackgroundColor #FCE5CD
+    BorderColor #B45F06
+}
+
+skinparam cloud {
+    BackgroundColor #F4CCCC
+    BorderColor #CC0000
+}
+
+cloud "Internet" as INTERNET
+node "ONT / CPE FTTH" as ONT #D9EAD3
+node "Firewall / UTM\nrouting inter-VLAN\nNAT\nDHCP\nfiltraggio" as FW #F9CB9C
+
+rectangle "DMZ\n10.10.70.0/24" as DMZ #FDE9D9 {
+    node "WEB Server\n10.10.70.10" as WEB #FFF2CC
+    database "DBMS Server\n10.10.70.20" as DB
+}
+
+rectangle "Hotel - infrastruttura di switching" as HOTELSW #E2F0D9 {
+    node "Core Switch L2" as CORE #CFE2F3
+    node "Access Switch camere / aree comuni" as ASW1 #CFE2F3
+    node "Access Switch uffici / servizi" as ASW2 #CFE2F3
+    node "Switch PoE per Access Point" as ASW3 #CFE2F3
+}
+
+rectangle "Hotel - VLAN" as HOTELVLAN #FFFFFF {
+    rectangle "VLAN 10\nUFFICI\n10.10.10.0/24" as VLAN10 #D9EAD3
+    rectangle "VLAN 20\nSERVIZI\n10.10.20.0/24" as VLAN20 #D9EAD3
+    rectangle "VLAN 30\nCONVEGNI\n10.10.30.0/24" as VLAN30 #D9EAD3
+    rectangle "VLAN 40\nOSPITI HOTEL\n10.10.40.0/24" as VLAN40 #D9EAD3
+    rectangle "VLAN 60\nCOLONNINE EV\n10.10.60.0/24" as VLAN60 #D9EAD3
+    rectangle "VLAN 80\nMANAGEMENT\n10.10.80.0/24" as VLAN80 #D0E0E3
+}
+
+node "AP Hotel\nSSID dipendenti -> VLAN 10\nSSID convegni -> VLAN 30\nSSID ospiti hotel -> VLAN 40" as APH #D9D2E9
+
+rectangle "Ponte radio PTP 500 m" as PTP #EADCF8 {
+    node "Bridge radio A\nHotel" as RA #D9D2E9
+    node "Bridge radio B\nStabilimento" as RB #D9D2E9
+}
+
+rectangle "Stabilimento balneare" as BEACH #E2F0D9 {
+    node "Switch stabilimento" as BSW #CFE2F3
+    rectangle "VLAN 90\nSTAFF STABILIMENTO\n10.10.90.0/24" as VLAN90 #D9EAD3
+    rectangle "VLAN 50\nOSPITI SPIAGGIA\n10.10.50.0/24" as VLAN50 #D9EAD3
+    node "AP Spiaggia\nSSID ospiti spiaggia -> VLAN 50" as APB #D9D2E9
+}
+
+INTERNET --> ONT
+ONT --> FW
+FW --> DMZ : interfaccia DMZ\n10.10.70.1/24
+FW --> CORE : trunk 802.1Q\nVLAN 10,20,30,40,50,60,80,90
+
+CORE --> ASW1 : trunk 802.1Q
+CORE --> ASW2 : trunk 802.1Q
+CORE --> ASW3 : trunk 802.1Q
+CORE --> RA : trunk 802.1Q\nVLAN 50,90
+
+RA --> RB : bridge radio L2
+RB --> BSW : trunk 802.1Q\nVLAN 50,90
+
+ASW1 --> VLAN40 : porte access
+ASW2 --> VLAN10 : porte access
+ASW2 --> VLAN20 : porte access
+ASW2 --> VLAN60 : porte access
+ASW3 --> VLAN80 : porte access
+ASW3 --> APH : trunk 802.1Q\nVLAN 10,30,40,80
+
+BSW --> VLAN90 : porte access
+BSW --> APB : VLAN 50
+
+WEB ..> DB : solo porta DBMS
+VLAN10 ..> VLAN20 : accesso al gestionale
+VLAN90 ..> VLAN20 : accesso al gestionale
+VLAN40 ..> INTERNET : solo Internet
+VLAN50 ..> INTERNET : solo Internet
+VLAN30 ..> INTERNET : solo Internet
+
+note right of FW
+Il firewall svolge:
+- routing inter-VLAN
+- DHCP per le VLAN utenti
+- NAT verso Internet
+- filtraggio tra le reti
+end note
+
+note right of WEB
+Pubblicazione:
+IP pubblico:80  -> WEB:80
+IP pubblico:443 -> WEB:443
+end note
+
+note right of DB
+DBMS non pubblicato.
+Accessibile solo dal WEB server.
+end note
+
+legend right
+== Significato linee ==
+linea continua: collegamento di rete reale
+linea tratteggiata: flusso logico consentito
+
+== Significato colori ==
+rosato: Internet / DMZ
+arancione: sicurezza
+azzurro: switch
+verde: VLAN / reti utenti
+viola: Wi-Fi / ponte radio
+grigio-azzurro: management
+endlegend
+
+@enduml

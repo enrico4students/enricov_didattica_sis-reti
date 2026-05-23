@@ -1,0 +1,25 @@
+@startuml
+title Rete intranet aziendale - servizi principali
+
+left to right direction
+skinparam shadowing false
+skinparam linetype ortho
+
+rectangle "Client interni" as C
+rectangle "DNS" as DNS
+rectangle "DHCP" as DHCP
+rectangle "Portale intranet HTTPS" as WEB
+rectangle "File server SMB" as FILE
+rectangle "Directory LDAP / AD" as LDAP
+rectangle "Mail server" as MAIL
+rectangle "DB / applicazioni interne" as DB
+
+C --> DNS
+C --> DHCP
+C --> WEB
+C --> FILE
+C --> LDAP
+C --> MAIL
+C --> DB
+
+@enduml

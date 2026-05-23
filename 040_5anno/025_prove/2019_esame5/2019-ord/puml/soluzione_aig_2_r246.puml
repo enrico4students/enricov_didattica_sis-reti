@@ -1,0 +1,38 @@
+@startuml
+title Progetto base di dati - Modello logico (PlantUML)
+
+    hide methods
+    hide stereotypes
+    skinparam classAttributeIconSize 0
+
+    class TARIFFA {
+        +id_tariffa : int <<PK>>
+        +nome : string
+        +max_poi_avanzati : int
+    }
+
+    class BIGLIETTO {
+        +id_biglietto : int <<PK>>
+        +password : string
+        +data_validita : date
+        +id_tariffa : int <<FK>>
+    }
+
+    class POI {
+        +id_poi : int <<PK>>
+        +nome : string
+        +latitudine : decimal
+        +longitudine : decimal
+    }
+
+    class CONTENUTO {
+        +id_contenuto : int <<PK>>
+        +id_poi : int <<FK>>
+        +tipo : string
+        +lingua : string
+        +url_video : string
+    }
+
+    TARIFFA "1" <-- "0..*" BIGLIETTO : ha
+    POI "1" <-- "0..*" CONTENUTO : ha
+@enduml

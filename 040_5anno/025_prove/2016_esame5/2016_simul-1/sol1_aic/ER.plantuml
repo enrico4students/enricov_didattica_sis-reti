@@ -1,0 +1,88 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity "User" as USER {
+    * user_id : int
+    --
+    email : varchar
+    password_hash : varchar
+    full_name : varchar
+    status : enum(active, disabled)
+    created_at : datetime
+    last_login_at : datetime
+}
+
+entity "Role" as ROLE {
+    * role_id : int
+    --
+    name : enum(SUBSCRIBER, EDITOR, DIRECTOR)
+    description : varchar
+}
+
+entity "UserRole" as USERROLE {
+    * user_id : int
+    * role_id : int
+    --
+    assigned_at : datetime
+}
+
+entity "Subscription" as SUB {
+    * subscription_id : int
+    --
+    user_id : int
+    start_date : date
+    end_date : date
+    status : enum(active, expired, suspended)
+    payment_ref : varchar
+}
+
+entity "Issue" as ISSUE {
+    * issue_id : int
+    --
+    week_start : date
+    publish_date : date
+    title : varchar
+    status : enum(draft, published)
+}
+
+entity "Article" as ART {
+    * article_id : int
+    --
+    issue_id : int
+    title : varchar
+    summary : text
+    body : text
+    status : enum(draft, published)
+    created_at : datetime
+    updated_at : datetime
+    published_at : datetime
+}
+
+entity "Media" as MED {
+    * media_id : int
+    --
+    media_type : enum(image, video)
+    url : varchar
+    mime_type : varchar
+    size_bytes : bigint
+    created_at : datetime
+}
+
+entity "ArticleMedia" as ARTMED {
+    * article_id : int
+    * media_id : int
+    --
+    position : int
+    is_cover : boolean
+}
+
+USER ||--o{ USERROLE
+ROLE ||--o{ USERROLE
+
+USER ||--o{ SUB
+ISSUE ||--o{ ART
+ART ||--o{ ARTMED
+MED ||--o{ ARTMED
+
+@enduml

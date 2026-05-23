@@ -1,0 +1,43 @@
+@startuml
+title Modello ER concettuale - Hotel, prenotazioni e credenziali Wi-Fi
+
+    hide circle
+    skinparam backgroundColor white
+    skinparam shadowing false
+    skinparam linetype ortho
+    skinparam roundcorner 12
+
+    entity OSPITE {
+        id_ospite
+        nome
+        cognome
+        email
+        telefono
+        documento
+    }
+
+    entity CAMERA {
+        id_camera
+        numero
+        tipologia
+    }
+
+    entity PRENOTAZIONE {
+        id_prenotazione
+        data_check_in
+        data_check_out
+        stato
+    }
+
+    entity CREDENZIALE_WIFI {
+        id_wifi
+        username
+        password
+        data_attivazione
+        data_scadenza
+    }
+
+    OSPITE ||--o{ PRENOTAZIONE : effettua
+    CAMERA ||--o{ PRENOTAZIONE : riguarda
+    PRENOTAZIONE ||--|| CREDENZIALE_WIFI : genera
+@enduml

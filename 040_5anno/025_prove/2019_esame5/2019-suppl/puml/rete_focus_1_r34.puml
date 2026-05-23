@@ -1,0 +1,40 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+cloud "Internet" as NET
+
+node "Sede InfoService" {
+
+    node "Router ISP" as RTR
+    node "Firewall\n(NAT + VPN + ACL)" as FW
+
+    node "DMZ" {
+        node "Web Server\nSistema Ticketing" as WEB
+    }
+
+    node "LAN Interna" {
+
+        database "Database Server\nTicketing" as DB
+        node "Server Posta\n(SMTP)" as MAIL
+        node "PC Dipendenti\nHelpdesk / Amministrazione" as PC
+        node "Access Point WiFi\n(WPA2/WPA3-Enterprise)" as AP
+    }
+}
+
+NET -- RTR
+RTR -- FW
+FW -- WEB
+FW -- DB
+FW -- MAIL
+FW -- PC
+FW -- AP
+
+WEB -- DB
+
+note right of FW
+- Pubblicazione HTTPS (443)
+- VPN per tecnici
+- Regole ACL di sicurezza
+end note
+@enduml

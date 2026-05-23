@@ -1,0 +1,131 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+title Nuova sede - rete con dispositivi, mezzi trasmissivi e VLAN
+
+cloud "Internet" as INTERNET
+
+rectangle "Rete ISP\ninfrastruttura del provider" as ISP_NET
+
+rectangle "Mezzo trasmissivo WAN\nfibra ottica FTTH business" as WAN_MEDIUM
+
+node "Dispositivo ISP\nONT FTTH + Router/CPE business\n\nFunzioni:\n- terminazione WAN\n- accesso rete ISP\n- eventuale PPPoE/MPLS/BGP" as CPE
+
+node "Dispositivo aziendale\nFirewall / NGFW nuova sede\n\nFunzioni:\n- routing tra VLAN\n- routing verso Internet\n- routing verso VPN site-to-site\n- NAT/PAT\n- ACL inter-VLAN\n- IDS/IPS\n- filtraggio applicativo\n- logging" as FW
+
+node "Dispositivo aziendale\nCore Switch L3 / Distribution\n\nFunzioni:\n- switching centrale\n- trunk VLAN 802.1Q\n- aggregazione collegamenti\n- eventuale routing locale controllato" as CORE
+
+INTERNET --> ISP_NET
+ISP_NET --> WAN_MEDIUM
+WAN_MEDIUM --> CPE
+CPE --> FW
+FW --> CORE
+
+rectangle "LAN nuova sede - 10.24.0.0/16" as LAN {
+
+  rectangle "VLAN 10 - Utenti reparto A\n10.24.10.0/26" as VLAN10 {
+    node "PC sviluppo mobile" as PCA
+  }
+
+  rectangle "VLAN 11 - Servizi reparto A\n10.24.11.0/28" as VLAN11 {
+    node "File Server A" as FSA
+    node "Stampante A" as PRA
+  }
+
+  rectangle "VLAN 20 - Utenti reparto B\n10.24.20.0/26" as VLAN20 {
+    node "PC sviluppo web" as PCB
+  }
+
+  rectangle "VLAN 21 - Servizi reparto B\n10.24.21.0/28" as VLAN21 {
+    node "File Server B" as FSB
+    node "Stampante B" as PRB
+  }
+
+  rectangle "VLAN 30 - Utenti reparto C\n10.24.30.0/25" as VLAN30 {
+    node "PC sviluppo software" as PCC
+  }
+
+  rectangle "VLAN 31 - Servizi reparto C\n10.24.31.0/28" as VLAN31 {
+    node "File Server C" as FSC
+    node "Stampante C" as PRC
+  }
+
+  rectangle "VLAN 40 - Reparto D Test QA\n10.24.40.0/27" as VLAN40 {
+    node "PC tester QA" as PCD
+  }
+
+  rectangle "VLAN 50 - Project Management\n10.24.50.0/28" as VLAN50 {
+    node "PC project manager" as PCE
+  }
+
+  rectangle "VLAN 60 - Amministrazione\n10.24.60.0/27" as VLAN60 {
+    node "PC amministrazione" as PCF
+  }
+
+  rectangle "VLAN 70 - Servizi infrastrutturali\n10.24.70.0/27" as VLAN70 {
+    node "AD / LDAP" as AD
+    node "DNS" as DNS
+    node "DHCP" as DHCP
+    node "RADIUS" as RADIUS
+    node "Logging server" as LOG
+  }
+
+  rectangle "VLAN 80 - Management apparati\n10.24.80.0/28" as VLAN80 {
+    node "Console amministrazione" as ADMIN
+    node "Management\nswitch / firewall / AP" as MGMT
+  }
+
+  rectangle "VLAN 90 - WiFi ospiti\n10.24.90.0/24" as VLAN90 {
+    node "Client WiFi ospiti\nsolo Internet" as GUEST
+  }
+
+  rectangle "VLAN 99 - Backup\n10.24.99.0/27" as VLAN99 {
+    node "Backup server" as BACKUP
+    node "Replica dati" as REPLICA
+  }
+}
+
+CORE --> VLAN10 : VLAN 10
+CORE --> VLAN11 : VLAN 11
+CORE --> VLAN20 : VLAN 20
+CORE --> VLAN21 : VLAN 21
+CORE --> VLAN30 : VLAN 30
+CORE --> VLAN31 : VLAN 31
+CORE --> VLAN40 : VLAN 40
+CORE --> VLAN50 : VLAN 50
+CORE --> VLAN60 : VLAN 60
+CORE --> VLAN70 : VLAN 70
+CORE --> VLAN80 : VLAN 80
+CORE --> VLAN90 : VLAN 90
+CORE --> VLAN99 : VLAN 99
+
+cloud "VPN IPsec site-to-site\nsu Internet / WAN" as VPN
+
+node "Dispositivo aziendale\nFirewall sede centrale" as FW_HQ
+
+rectangle "Sede centrale - 10.10.0.0/16" as HQ {
+  node "Project repository remoto" as REPO
+  node "Sistema gestionale remoto" as ERP
+}
+
+FW --> VPN
+VPN --> FW_HQ
+FW_HQ --> HQ
+
+PCD --> FSA : accesso controllato
+PCD --> FSB : accesso controllato
+PCD --> FSC : accesso controllato
+
+PCE --> FSA : accesso PM
+PCE --> FSB : accesso PM
+PCE --> FSC : accesso PM
+PCE --> REPO : versioni finali
+
+PCF --> ERP : gestionale remoto
+
+PCA --> PRA : stampa A
+PCB --> PRB : stampa B
+PCC --> PRC : stampa C
+
+@enduml

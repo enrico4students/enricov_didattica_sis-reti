@@ -1,0 +1,45 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity OSPITE {
+    * id_ospite : INT
+    --
+    nome : VARCHAR
+    cognome : VARCHAR
+    email : VARCHAR
+    telefono : VARCHAR
+    documento : VARCHAR
+}
+
+entity CAMERA {
+    * id_camera : INT
+    --
+    numero : VARCHAR
+    tipologia : VARCHAR
+}
+
+entity PRENOTAZIONE {
+    * id_prenotazione : INT
+    --
+    data_check_in : DATE
+    data_check_out : DATE
+    stato : VARCHAR
+    id_ospite : INT
+    id_camera : INT
+}
+
+entity CREDENZIALE_WIFI {
+    * id_wifi : INT
+    --
+    username : VARCHAR
+    password : VARCHAR
+    data_attivazione : DATETIME
+    data_scadenza : DATETIME
+    id_prenotazione : INT
+}
+
+OSPITE ||--o{ PRENOTAZIONE : effettua
+CAMERA ||--o{ PRENOTAZIONE : riguarda
+PRENOTAZIONE ||--|| CREDENZIALE_WIFI : genera
+@enduml

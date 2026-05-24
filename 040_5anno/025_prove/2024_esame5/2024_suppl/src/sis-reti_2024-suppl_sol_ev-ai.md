@@ -18,9 +18,9 @@ Il candidato svolga la prima parte della prova e due tra i quesiti proposti nell
 
 ##### Gestione eventi con grandi folle
 
-Una città italiana di interesse turistico internazionale ha deciso di sperimentare un nuovo sistema di monitoraggio del flusso delle persone in occasione di grandi eventi (culturali, artistici, sportivi). A tali eventi, che si svolgono in un preciso luogo della città, si potrà accedere unicamente mediante biglietti a pagamento o anche gratuiti.
+Una città italiana di interesse turistico internazionale ha deciso di sperimentare un nuovo sistema di monitoraggio del flusso delle persone in occasione di grandi eventi (culturali, artistici, sportivi). A tali eventi, che si svolgono **in un preciso luogo della città**, si potrà accedere **unicamente mediante biglietti** a pagamento o anche gratuiti.
 
-Nell’intera area del comune saranno presenti punti di informazione automatici (totem), basati su touch screen, dove l’utente potrà informarsi su uno o più eventi e acquistare il biglietto in autonomia.
+Nell’**intera area del comune** saranno presenti punti di informazione automatici (totem), basati su touch screen, dove l’utente potrà informarsi su uno o più eventi e acquistare il biglietto in autonomia.
 
 Per la gestione del sistema di monitoraggio del flusso delle persone in occasione di un evento, viene messa a disposizione una sede operativa composta da due piani; al primo piano sarà presente un’area dedicata all’assistenza pre- e post-vendita dei biglietti, dove gli operatori potranno svolgere le loro mansioni; al secondo piano sarà presente la sala di controllo dove il personale addetto, attraverso telecamere di sorveglianza, potrà visionare le immagini in diretta dei luoghi interessati dagli eventi.
 
@@ -127,9 +127,14 @@ Si progetta un sistema composto da:
 * dispositivi mobili per il personale sul posto;
 * piattaforma centrale applicativa.
 
-La soluzione scelta è ibrida: server applicativi e database principali in cloud, sede operativa collegata tramite VPN, dispositivi remoti connessi tramite rete 4G/5G o fibra dove disponibile.
+La soluzione scelta è ibrida: 
+- server applicativi e database principali in cloud, 
+- sede operativa collegata tramite VPN, 
+- dispositivi remoti connessi tramite rete 4G/5G o fibra dove disponibile.
 
-Si scarta una soluzione solo locale perché richiederebbe server, storage, alimentazione ridondata e manutenzione nella sede operativa. Si scarta anche una soluzione completamente distribuita sui singoli dispositivi perché sarebbe più difficile da aggiornare, controllare e proteggere.
+Si scarta una soluzione solo locale perché richiederebbe server, storage, alimentazione ridondata e manutenzione nella sede operativa. 
+Si scarta anche una soluzione completamente distribuita sui singoli dispositivi perché sarebbe più difficile da aggiornare, controllare e proteggere.
+
 
 ## Schema logico
 
@@ -179,9 +184,12 @@ Esempio:
 | 40   | videosorveglianza locale    | 192.168.40.0/24 |
 | 50   | Wi-Fi ospiti                | 192.168.50.0/24 |
 
-Le VLAN permettono di separare gli operatori dell’assistenza dagli addetti alla sala controllo. Questo riduce il rischio che un problema su una postazione comprometta tutta la rete.
+Le VLAN permettono di separare gli operatori dell’assistenza dagli addetti alla sala controllo.  
+Questo riduce il rischio che un problema su una postazione comprometta tutta la rete.
 
-Il routing tra VLAN può essere svolto da uno switch Layer 3 o da un firewall. Scelgo uno switch Layer 3 per il traffico ordinario interno, perché è più veloce; uso il firewall per filtrare traffico verso Internet, VPN, cloud e reti sensibili.
+Il routing tra VLAN può essere svolto da uno switch Layer 3 o da un firewall. 
+Si sceglie uno switch Layer 3 per il traffico ordinario interno, perché è più veloce; 
+il firewall viene usato per filtrare traffico verso Internet, VPN, cloud e reti sensibili.
 
 ## Componenti principali
 
@@ -196,15 +204,21 @@ La sede operativa richiede:
 * UPS per continuità elettrica;
 * sistema di autenticazione centralizzato.
 
-NGFW significa firewall di nuova generazione: oltre a filtrare IP e porte può controllare applicazioni, utenti e traffico cifrato. UPS significa gruppo di continuità: mantiene alimentati gli apparati per alcuni minuti o ore in caso di mancanza di corrente.
+**NGFW** (firewall di nuova generazione):  
+oltre a filtrare IP e porte può controllare applicazioni, utenti e traffico cifrato. 
+**UPS**: gruppo di continuità  
+mantiene alimentati gli apparati per alcuni minuti o ore in caso di mancanza di corrente.
 
 ## Collegamento con telecamere e dispositivi remoti
 
 Le telecamere IP trasmettono video verso la piattaforma centrale tramite HTTPS, RTSP su VPN o protocollo sicuro del produttore.
 
-RTSP è un protocollo usato per lo streaming video. In una soluzione scolastica è sufficiente indicare che il flusso video deve essere cifrato o protetto da VPN.
+**RTSP**:  
+protocollo usato per lo streaming video.  
+Dovrebbe essere sufficiente indicare che il flusso video deve essere cifrato o protetto da VPN.
 
-I dispositivi remoti azionabili hanno un piccolo server HTTP/HTTPS interno. La sede o la piattaforma cloud invia comandi autenticati, ad esempio:
+I dispositivi remoti azionabili hanno un piccolo server HTTP/HTTPS interno.  
+La sede o la piattaforma cloud invia comandi autenticati, ad esempio:
 
 ```
 POST /api/barriera/12/comando
@@ -214,7 +228,8 @@ POST /api/barriera/12/comando
 }
 ```
 
-Si usa POST perché modifica lo stato del dispositivo. Si evita GET per i comandi critici, perché GET dovrebbe essere usato solo per leggere informazioni.
+Si usa POST perché modifica lo stato del dispositivo.  
+Si evita GET per i comandi critici, perché GET dovrebbe essere usato solo per leggere informazioni.
 
 ## Comunicazione con personale in loco
 
@@ -249,7 +264,7 @@ I totem sono distribuiti nell’intera area comunale. Possono collegarsi:
 * tramite router 4G/5G con SIM dati;
 * tramite VPN verso il cloud o la sede.
 
-Scelgo principalmente 4G/5G con VPN, perché i totem sono distribuiti in luoghi diversi e non sempre è disponibile cablaggio fisico.
+Si sceglie principalmente 4G/5G con VPN, perché i totem sono distribuiti in luoghi diversi e non sempre è disponibile cablaggio fisico.
 
 Il totem funziona come client web:
 
@@ -259,14 +274,17 @@ Totem -> HTTPS -> Web application cloud -> Database
 
 Questa scelta semplifica gli aggiornamenti, perché l’applicazione viene aggiornata sul server e non su ogni totem.
 
-Si scarta una soluzione con applicazione locale completa su ogni totem perché richiederebbe aggiornamenti separati, manutenzione maggiore e maggiore rischio di incoerenza dei dati.
+Si scarta una soluzione con applicazione locale completa su ogni totem perché richiederebbe aggiornamenti separati e quindi manutenzione maggiore e maggiore rischio di incoerenza dei dati. 
+(Sarebbe più veloce e potrebbe operare anche in caso di perdità di connettività, limitatamente all'ultima sincronizzazione)
 
 ## Continuità di servizio
 
 Per evitare interruzioni di servizio si adottano più livelli di ridondanza:
 
-* doppia connessione Internet nella sede operativa: fibra principale e 4G/5G di backup;
-* router dual WAN con failover automatico;
+* doppia connessione Internet nella sede operativa: 
+  * fibra **principale** e 
+  * 4G/5G **di backup**;
+* router dual WAN con **failover** automatico;
 * cloud con server replicati;
 * database con backup automatici;
 * storage video ridondato;
@@ -274,7 +292,8 @@ Per evitare interruzioni di servizio si adottano più livelli di ridondanza:
 * doppia SIM per dispositivi critici;
 * monitoraggio continuo di telecamere, totem e dispositivi IoT.
 
-Failover significa passaggio automatico a una linea o sistema di riserva quando quello principale non funziona.
+**Failover**  
+passaggio automatico a una linea o sistema di riserva quando quello principale non funziona.
 
 La soluzione alternativa sarebbe affidarsi a una sola connessione Internet, ma viene scartata perché un guasto alla linea isolerebbe la sede operativa durante l’evento.
 
@@ -286,7 +305,16 @@ I filmati possono essere salvati in sede centrale oppure nel cloud.
 
 Nel salvataggio locale si usano server NAS o NVR nella sede operativa.
 
-NAS significa archivio di rete. NVR significa registratore video di rete per telecamere IP.
+**NAS** (network attached storage):  
+dispositivo di storage disponibile tramite rete. 
+
+**NVR** (Network Video Recorder):  
+registratore video di rete, dispositivo usato negli impianti di videosorveglianza IP per:
+- ricevere i flussi video dalle telecamere di rete;
+- registrarli su disco;
+- consentire ricerca, riproduzione e gestione dei video;
+- centralizzare il controllo delle telecamere.
+
 
 Vantaggi del salvataggio locale:
 
@@ -320,7 +348,8 @@ La scelta più equilibrata è ibrida: registrazione locale temporanea dei flussi
 
 ## Quesito II - Gestione dispositivi remoti con HTTP
 
-I dispositivi remoti hanno un server HTTP interno. Le operazioni possono essere modellate con metodi HTTP.
+I dispositivi remoti hanno un server HTTP interno.  
+Le operazioni possono essere modellate con metodi HTTP, in particolare con un'API REST.
 
 Esempi:
 
@@ -372,7 +401,8 @@ Per sicurezza si usa HTTPS, autenticazione con token, log dei comandi e autorizz
 
 ## Quesito III - RFID e NFC
 
-RFID è una tecnologia di identificazione a radiofrequenza. Un tag RFID contiene un codice letto da un reader senza contatto fisico diretto.
+RFID è una tecnologia di identificazione a radiofrequenza.  
+Un **tag** RFID contiene un codice letto da un reader senza contatto fisico diretto.
 
 Applicazioni:
 
@@ -382,9 +412,11 @@ Applicazioni:
 * biglietti elettronici;
 * inventario.
 
-Nel caso dell’evento, RFID può essere usato per braccialetti o pass di servizio. È utile perché la lettura è rapida e può funzionare anche con molte persone.
+Nel caso dell’evento, RFID può essere usato per braccialetti o pass di servizio.  
+È utile perché la lettura è rapida e può funzionare anche con molte persone.
 
-NFC è una tecnologia wireless a cortissimo raggio, normalmente pochi centimetri. È usata in smartphone, pagamenti contactless e badge digitali.
+NFC è una tecnologia wireless a cortissimo raggio (near field), normalmente pochi centimetri.  
+È usata in smartphone, pagamenti contactless e badge digitali.
 
 Applicazioni:
 
@@ -393,7 +425,8 @@ Applicazioni:
 * accesso tramite smartphone;
 * identificazione rapida presso un varco.
 
-RFID è più adatto quando si vogliono leggere molti tag rapidamente o a distanza maggiore. NFC è più adatto quando si vuole un’interazione volontaria e ravvicinata, ad esempio avvicinare lo smartphone al lettore.
+RFID è più adatto quando si vogliono leggere molti tag rapidamente o a distanza maggiore.   
+NFC è più adatto quando si vuole un’interazione volontaria e ravvicinata, ad esempio avvicinare lo smartphone al lettore.
 
 ## Quesito IV - Problema ping IP riuscito ma ping nome fallito
 
@@ -475,16 +508,15 @@ Soluzione:
 
 Si scarta l’ipotesi di problema fisico o di routing perché il ping all’indirizzo IP funziona.
 
-# Soluzioni online trovate
+# Altre soluzioni
 
-Dopo lo svolgimento ex novo, risultano disponibili queste risorse online:
 
 * Testo ufficiale MIM della prova: [https://www.istruzione.it/esame_di_stato/202324/Istituti%20tecnici/Suppletiva/A038_SUP24.pdf](https://www.istruzione.it/esame_di_stato/202324/Istituti%20tecnici/Suppletiva/A038_SUP24.pdf) ([Istruzione][1])
 * Soluzione Mauro De Berardis, pagina download: [https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&cid=636&option=com_jdownloads&view=viewdownload](https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&cid=636&option=com_jdownloads&view=viewdownload) ([maurodeberardis.it][2])
 * Pagina raccolta soluzioni Mauro De Berardis: [https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&option=com_jdownloads&view=viewcategory](https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&option=com_jdownloads&view=viewcategory) ([maurodeberardis.it][3])
 * Pagina articolo Mauro De Berardis: [https://www.maurodeberardis.it/index.php?Itemid=328&catid=12&id=127%3Asoluzione-prova-scritta-di-sistemi-e-reti-esame-2024-sessione-suppletiva&option=com_content&view=article](https://www.maurodeberardis.it/index.php?Itemid=328&catid=12&id=127%3Asoluzione-prova-scritta-di-sistemi-e-reti-esame-2024-sessione-suppletiva&option=com_content&view=article) ([maurodeberardis.it][4])
 
-[1]: https://www.istruzione.it/esame_di_stato/202324/Istituti%20tecnici/Suppletiva/A038_SUP24.pdf?utm_source=chatgpt.com "Suppletiva"
-[2]: https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&cid=636&option=com_jdownloads&view=viewdownload&utm_source=chatgpt.com "Soluzione della seconda prova scritta di Sistemi e Reti Esame ..."
-[3]: https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&option=com_jdownloads&view=viewcategory&utm_source=chatgpt.com "Soluzioni prove scritte Esame di Stato Sistemi e Reti e ..."
-[4]: https://www.maurodeberardis.it/index.php?Itemid=328&catid=12&id=127%3Asoluzione-prova-scritta-di-sistemi-e-reti-esame-2024-sessione-suppletiva&option=com_content&view=article&utm_source=chatgpt.com "Soluzione prova scritta di Sistemi e Reti 2024 Sessione ..."
+[1]: https://www.istruzione.it/esame_di_stato/202324/Istituti%20tecnici/Suppletiva/A038_SUP24.pdf "Suppletiva"
+[2]: https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&cid=636&option=com_jdownloads&view=viewdownload "Soluzione della seconda prova scritta di Sistemi e Reti Esame ..."
+[3]: https://www.maurodeberardis.it/index.php?Itemid=338&catid=18&option=com_jdownloads&view=viewcategory "Soluzioni prove scritte Esame di Stato Sistemi e Reti e ..."
+[4]: https://www.maurodeberardis.it/index.php?Itemid=328&catid=12&id=127%3Asoluzione-prova-scritta-di-sistemi-e-reti-esame-2024-sessione-suppletiva&option=com_content&view=article "Soluzione prova scritta di Sistemi e Reti 2024 Sessione ..."

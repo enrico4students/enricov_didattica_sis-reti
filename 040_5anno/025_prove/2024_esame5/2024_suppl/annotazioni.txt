@@ -1,0 +1,18 @@
+
+# prima lettura
+
+eventi in un'area della città, non un singolo punto sembra ma un'area  ???
+
+totem informazione eventi in tutta la citta
+
+una sede operativa su due piani:
+- assistenza clienti
+- telecamerere sorveglianza
+
+in vari punti della città semafori e altri dispositivi controllabili a distanza
+- ogni dispositivo ha un server HTTP accessibile da remoto  ## internet ??
+
+Area dell'evento personale con dispositivi mobili
+- devono consentire di controllare lo stato dei dispositivi smart-city
+
+

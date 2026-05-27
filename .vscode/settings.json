@@ -1,7 +1,9 @@
 {
     "markdown.marp.themes": [
-        "./005_authoring/themes/portrait_marp.css"
-],
+        "./005_authoring_gen/themes/portrait.css",
+        "./005_authoring_gen/themes/portrait_marp.css",
+        "./005_authoring_gen/themes/scuola-a4-portrait.css",
+    ],
 "markdown.styles": [
     "./005_authoring_gen/themes/portrait.css"
 ],

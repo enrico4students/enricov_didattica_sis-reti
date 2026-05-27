@@ -1,0 +1,28 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+cloud "Backbone Regionale" {
+
+    node "Data Center Regionale\n(FSE, DB, Storage)" as DC
+
+    frame "VRF SANITA PRIVATA" {
+        node "Struttura 1" as S1
+        node "Struttura 2" as S2
+        node "Struttura N" as SN
+    }
+
+    frame "Altri domini" {
+        node "Enti locali"
+        node "Scuole"
+        node "Sanità pubblica"
+    }
+}
+
+S1 --> DC
+S2 --> DC
+SN --> DC
+
+S1 -[hidden]-> S2
+
+@enduml

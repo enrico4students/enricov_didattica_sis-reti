@@ -1,0 +1,14 @@
+@startuml
+skinparam linetype ortho
+skinparam shadowing false
+
+node "Router Internet" as R
+node "LAN interna\n192.168.x.x" as LAN
+node "CPE regionale\n10.100.x.x" as CPE
+node "Backbone regionale" as BB
+
+R --> LAN
+LAN --> CPE
+CPE --> BB
+
+@enduml

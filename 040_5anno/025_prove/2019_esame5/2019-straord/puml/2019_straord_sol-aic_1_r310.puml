@@ -1,0 +1,73 @@
+@startuml
+hide circle
+skinparam linetype ortho
+
+entity "MEDICO" as MEDICO {
+  * id_medico : int <<PK>>
+  --
+  nome : varchar
+  cognome : varchar
+  id_reparto : int <<FK>>
+}
+
+entity "REPARTO" as REPARTO {
+  * id_reparto : int <<PK>>
+  --
+  nome : varchar
+  piano : int
+}
+
+entity "PAZIENTE" as PAZIENTE {
+  * id_paziente : int <<PK>>
+  --
+  nome : varchar
+  cognome : varchar
+  data_nascita : date
+}
+
+entity "VISITA" as VISITA {
+  * id_visita : int <<PK>>
+  --
+  data_ora : datetime
+  note : text
+  id_medico : int <<FK>>
+  id_paziente : int <<FK>>
+}
+
+entity "PARAMETRI" as PARAMETRI {
+  * id_visita : int <<PK,FK>>
+  --
+  pressione_min : int
+  pressione_max : int
+  temperatura : decimal
+  freq_cardiaca : int
+}
+
+entity "PRESCRIZIONE" as PRESCRIZIONE {
+  * id_prescrizione : int <<PK>>
+  --
+  id_visita : int <<FK>>
+}
+
+entity "FARMACO" as FARMACO {
+  * id_farmaco : int <<PK>>
+  --
+  nome : varchar
+  descrizione : text
+}
+
+entity "PRESCRIZIONE_FARMACO" as PF {
+  * id_prescrizione : int <<PK,FK>>
+  * id_farmaco : int <<PK,FK>>
+  --
+  posologia : varchar
+}
+
+REPARTO ||--o{ MEDICO : "assegna"
+MEDICO  ||--o{ VISITA : "effettua"
+PAZIENTE||--o{ VISITA : "riceve"
+VISITA  ||--|| PARAMETRI : "ha"
+VISITA  ||--o{ PRESCRIZIONE : "genera"
+PRESCRIZIONE ||--o{ PF : "include"
+FARMACO      ||--o{ PF : "composto da"
+@enduml

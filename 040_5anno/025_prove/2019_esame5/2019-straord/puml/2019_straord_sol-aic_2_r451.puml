@@ -1,0 +1,66 @@
+@startuml
+hide methods
+hide stereotypes
+skinparam linetype ortho
+
+class REPARTO {
+  +id_reparto : int <<PK>>
+  nome : varchar
+  piano : int
+}
+
+class MEDICO {
+  +id_medico : int <<PK>>
+  nome : varchar
+  cognome : varchar
+  id_reparto : int <<FK>>
+}
+
+class PAZIENTE {
+  +id_paziente : int <<PK>>
+  nome : varchar
+  cognome : varchar
+  data_nascita : date
+}
+
+class VISITA {
+  +id_visita : int <<PK>>
+  data_ora : datetime
+  note : text
+  id_medico : int <<FK>>
+  id_paziente : int <<FK>>
+}
+
+class PARAMETRI {
+  +id_visita : int <<PK,FK>>
+  pressione_min : int
+  pressione_max : int
+  temperatura : decimal
+  freq_cardiaca : int
+}
+
+class PRESCRIZIONE {
+  +id_prescrizione : int <<PK>>
+  id_visita : int <<FK>>
+}
+
+class FARMACO {
+  +id_farmaco : int <<PK>>
+  nome : varchar
+  descrizione : text
+}
+
+class PRESCRIZIONE_FARMACO {
+  +id_prescrizione : int <<PK,FK>>
+  +id_farmaco : int <<PK,FK>>
+  posologia : varchar
+}
+
+REPARTO "1" -- "0..*" MEDICO : id_reparto
+MEDICO "1" -- "0..*" VISITA : id_medico
+PAZIENTE "1" -- "0..*" VISITA : id_paziente
+VISITA "1" -- "1" PARAMETRI : id_visita
+VISITA "1" -- "0..*" PRESCRIZIONE : id_visita
+PRESCRIZIONE "1" -- "0..*" PRESCRIZIONE_FARMACO : id_prescrizione
+FARMACO "1" -- "0..*" PRESCRIZIONE_FARMACO : id_farmaco
+@enduml

@@ -236,7 +236,7 @@ Caratteristica chiave:
 #### Uso di 172.16.0.0/**12**
 
 Offre un buon compromesso tra dimensione e semplicità.  
-È molto usato quando il blocco 10 è già occupato o quando si vuole separare ambienti.
+È molto usato quando il blocco 10 è già occupato.  
 
 Uso reale:
 
@@ -271,11 +271,11 @@ Oppure 4096 reti /24
 
 ##### /24
 
-172.16.10.0/24 → sede Milano (uffici)
-172.16.20.0/24 → sede Roma (uffici)
-172.16.30.0/24 → laboratorio/test
-172.16.100.0/24 → DMZ (web server, reverse proxy)
-172.17.0.0/16 → infrastruttura server centralizzata
+172.16.10.0/24 → sede Milano (uffici)  
+172.16.20.0/24 → sede Roma (uffici)  
+172.16.30.0/24 → laboratorio/test  
+172.16.100.0/24 → DMZ (web server, reverse proxy)  
+172.17.0.0/16 → infrastruttura server centralizzata  
 
 È una scelta pratica perché:
 
@@ -287,11 +287,11 @@ Oppure 4096 reti /24
 ##### /16
 
 
-172.16.0.0/16 → sede Milano (uffici)
-172.17.0.0/16 → sede Roma (uffici)
-172.18.0.0/16 → laboratorio/test
-172.19.0.0/16 → DMZ (web server, reverse proxy)
-172.20.0.0/16 → infrastruttura server centralizzata
+172.16.0.0/16 → sede Milano (uffici)  
+172.17.0.0/16 → sede Roma (uffici)  
+172.18.0.0/16 → laboratorio/test  
+172.19.0.0/16 → DMZ (web server, reverse proxy)  
+172.20.0.0/16 → infrastruttura server centralizzata  
 
 In questo caso ogni rete /16 contiene 65.536 indirizzi (circa 65533 disponibili)  
 
@@ -441,6 +441,8 @@ Questo approccio considera la rete utilizzando la **subnet mask di default della
 
   2^(bit_host) − 2
 
+dobbiamo ricordare che il router ed eventuali server hanno bisogno di IP che quindi non sono disponibili per dispositivi utente
+
 ---
 
 ### 12.3 Limiti dell’approccio classful
@@ -532,6 +534,8 @@ Un indirizzo come 192.168.1.20 non può essere Network ID.
 È il metodo **utilizzato nella progettazione reale**.
 
 Permette di assegnare a ogni rete una dimensione adeguata.
+
+In una traccia di un test importante, ex. esame di stato, usarlo se effettivamente necessario.  
 
 ---
 

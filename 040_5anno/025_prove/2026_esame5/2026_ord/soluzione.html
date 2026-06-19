@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>soluzione.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+<link rel="stylesheet" href="file://c:\00_data\08_dev\08_dev-didattica\enricov_didattica_sis-reti\005_authoring_gen\themes\portrait.css" type="text/css">
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> or <div class="page"></div> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+<link rel="stylesheet" href="file://c:\00_data\08_dev\08_dev-didattica\enricov_didattica_sis-reti\authoring\themes\portrait.css" type="text/css">
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h2 id="ipotesi-di-soluzione">IPOTESI DI SOLUZIONE</h2>
+<h1 id="da-rivedere-probabilmente-contiene-molti-errori-e-imprecisioni-può-essere-utile-per-spunti-puntuali">Da rivedere, probabilmente contiene molti errori e imprecisioni, può essere utile per spunti puntuali</h1>
+<h2 id="ipotesi-iniziali">Ipotesi iniziali</h2>
+<p>Si ipotizza che la società abbia una sede centrale con alcuni uffici tecnici e che possa gestire contemporaneamente 2 o 3 cantieri.</p>
+<p>Per ogni cantiere si ipotizza la presenza di:</p>
+<ul>
+<li>alcuni tablet rugged usati dagli operatori;</li>
+<li>uno o due dispositivi di scansione 3D;</li>
+<li>alcune fotocamere timelapse;</li>
+<li>vari sensori di sicurezza;</li>
+<li>una piccola infrastruttura di rete temporanea;</li>
+<li>un collegamento verso Internet e verso la sede centrale.</li>
+</ul>
+<p>Il sistema BIM non viene trattato dal punto di vista edilizio, ma dal punto di vista informatico.
+Per la rete, infatti, il problema principale è trasferire dati tra cantiere e sede centrale in modo sicuro e affidabile.</p>
+<h2 id="prima-parte">PRIMA PARTE</h2>
+<h2 id="1-infrastruttura-di-rete-da-realizzare-in-un-cantiere">1. Infrastruttura di rete da realizzare in un cantiere</h2>
+<p>In ogni cantiere si può realizzare una rete locale temporanea, installata in un piccolo armadio di rete. La rete deve collegare tablet, scanner 3D/LiDAR, fotocamere, sensori, gateway e apparati di trasmissione verso la sede centrale.</p>
+<p>Le fotocamere devono essere considerate a tutti gli effetti sensori digitali, in particolare sensori ottici. La distinzione principale non è quindi tra fotocamere e sensori, ma tra dispositivi che si collegano direttamente alla rete IP e dispositivi che richiedono un gateway.</p>
+<p>Uno schema generale può essere il seguente:</p>
+<pre class="hljs"><code><div>Tablet rugged / scanner 3D / LiDAR
+             |
+          Wi-Fi
+             |
+      Access point
+             |
+      Switch gestito
+             |
+      Router / Firewall del cantiere
+             |
+      CPE / modem / ONT / apparato FWA / router 4G-5G
+             |
+      Collegamento Internet
+      fibra / FWA / 4G / 5G
+             |
+      Internet
+             |
+      Tunnel VPN site-to-site
+             |
+      Firewall sede centrale
+             |
+      Rete sede centrale
+</div></code></pre>
+<p>Il CPE è l’apparato che collega fisicamente il cantiere alla rete dell’operatore.<br>
+Può essere, ad esempio, un modem fibra, un ONT, un apparato FWA oppure un router 4G/5G.</p>
+<p>Il router/firewall può essere un apparato separato dal CPE oppure può coincidere con esso, se si usa un dispositivo integrato. Nel primo caso il CPE fornisce l’accesso a Internet, mentre il router/firewall gestisce la rete locale, le regole di sicurezza, il NAT, le eventuali VLAN e la VPN verso la sede centrale.</p>
+<p>Per le VPN verso la sede centrale il protocollo consigliato è IPsec con IKEv2, in modalità <strong>site-to-site</strong>: IPsec/IKEv2 è uno standard molto diffuso nei firewall aziendali, supporta cifratura forte, autenticazione tra apparati e collegamento stabile tra due reti diverse.<br>
+<em>(Viene invece scartata una VPN del tipo “client-to-site”, perché questa tipologia è volta a collegare un singolo utente alla sede centrale).</em></p>
+<p>Alla stessa rete locale possono essere collegati anche dispositivi IP collegati via cavo:</p>
+<pre class="hljs"><code><div>Fotocamere IP / timelapse / sensori IP
+             |
+      Cavo Ethernet
+             |
+      Switch gestito
+</div></code></pre>
+<p>Oppure dispositivi IP collegati via Wi-Fi:</p>
+<pre class="hljs"><code><div>Fotocamere IP / timelapse / sensori IP
+             |
+          Wi-Fi
+             |
+      Access point
+             |
+      Switch gestito
+</div></code></pre>
+<p>I sensori non IP non sono in grado di connettersi direttamente alla rete. Si collegano quindi a dispositivi ausiliari che si occupano di mediare tra sensori non IP e rete IP.  Questi dispositivi sono qui chiamati genericamente gateway.</p>
+<pre class="hljs"><code><div>Sensori non IP
+ad esempio ambientali, strutturali o di sicurezza
+             |
+      Gateway sensori
+             |
+      Switch gestito
+             |
+      Router / Firewall
+</div></code></pre>
+<p>Lo switch permette di collegare più apparati tramite cavo. Gli access point permettono il collegamento Wi-Fi dei tablet e degli altri dispositivi mobili.</p>
+<p>Per alimentare access point, fotocamere IP e alcuni sensori di rete può essere utile uno switch PoE, cioè Power over Ethernet. Il PoE permette di alimentare alcuni dispositivi usando lo stesso cavo Ethernet usato per i dati.</p>
+<h2 id="suddivisione-della-rete-del-cantiere">Suddivisione della rete del cantiere</h2>
+<p>Per evitare che tutti i dispositivi siano nella stessa rete, conviene usare VLAN diverse.
+Una VLAN è una rete logica separata creata sugli switch gestiti.</p>
+<p>La sola creazione delle VLAN non basta però a garantire la sicurezza. È necessario anche configurare regole di routing e firewall tra le VLAN, in modo che ogni gruppo di dispositivi possa comunicare solo con i sistemi necessari.</p>
+<p>Esempio di indirizzamento per il cantiere 1:</p>
+<pre class="hljs"><code><div>Rete aggregata del cantiere 1:
+    10.10.1.0/24
+
+VLAN 10 - Tablet e strumenti BIM:
+    10.10.1.0/26
+
+VLAN 20 - Fotocamere timelapse:
+    10.10.1.64/26
+
+VLAN 30 - Sensori di sicurezza:
+    10.10.1.128/26
+
+VLAN 40 - Gestione apparati:
+    10.10.1.192/27
+
+VLAN 50 - Servizi locali / NAS temporaneo:
+    10.10.1.224/28
+
+Spazio libero per espansioni future:
+    10.10.1.240/28
+</div></code></pre>
+<p>La rete 10.10.1.0/24 rappresenta la rete complessiva assegnata al cantiere 1. Al suo interno vengono poi ricavate le singole sottoreti usate dalle VLAN.</p>
+<p>Per il cantiere 2 si può usare:</p>
+<pre class="hljs"><code><div>Rete aggregata del cantiere 2:
+    10.10.2.0/24
+</div></code></pre>
+<p>Per il cantiere 3:</p>
+<pre class="hljs"><code><div>Rete aggregata del cantiere 3:
+    10.10.3.0/24
+</div></code></pre>
+<p>In questo modo ogni cantiere ha una rete privata diversa e non si creano conflitti di indirizzi.</p>
+<h2 id="servizi-di-rete-nel-cantiere">Servizi di rete nel cantiere</h2>
+<p>Nel cantiere si possono usare i seguenti servizi:</p>
+<pre class="hljs"><code><div>DHCP
+    per assegnare automaticamente gli indirizzi IP ai dispositivi
+
+DNS
+    per risolvere i nomi dei server e dei servizi interni
+
+NTP
+    per mantenere sincronizzato l’orario dei dispositivi
+
+VPN site-to-site
+    per collegare in modo sicuro la rete del cantiere alla sede centrale
+
+HTTPS / SFTP
+    per trasferire dati e file in modo sicuro
+
+Syslog
+    per inviare log alla sede centrale
+</div></code></pre>
+<p>Per i sensori si può usare un gateway locale che raccoglie i dati e li invia alla sede centrale. Il gateway è utile perché molti sensori non devono comunicare direttamente con Internet.</p>
+<h2 id="sicurezza-della-rete-del-cantiere">Sicurezza della rete del cantiere</h2>
+<p>La rete Wi-Fi deve essere protetta almeno con WPA2 o WPA3. Se possibile, è meglio usare autenticazione personale degli utenti, non una password unica condivisa.</p>
+<p>Il firewall deve permettere solo il traffico necessario. Ad esempio:</p>
+<ul>
+<li>i tablet possono accedere al server BIM;</li>
+<li>le fotocamere possono inviare immagini al repository;</li>
+<li>i sensori possono inviare dati al server di monitoraggio;</li>
+<li>gli apparati di rete possono essere gestiti solo dagli amministratori.</li>
+</ul>
+<p>È utile prevedere anche un piccolo NAS o mini-server locale. Questo serve a salvare temporaneamente i dati nel caso in cui il collegamento Internet cada. Quando il collegamento torna disponibile, i dati possono essere inviati alla sede centrale.</p>
+<p>Il NAS locale non deve essere visto come sostituto del backup centrale, ma come spazio temporaneo di appoggio e continuità operativa.</p>
+<h2 id="2-rete-pre-esistente-nella-sede-centrale-e-proposte-di-potenziamento">2. Rete pre-esistente nella sede centrale e proposte di potenziamento</h2>
+<p>La sede centrale dispone già di una rete locale e di una connessione ADSL. Si può ipotizzare una situazione iniziale di questo tipo:</p>
+<pre class="hljs"><code><div>Internet ADSL
+      |
+   Router
+      |
+   Switch
+      |
+PC uffici tecnici
+</div></code></pre>
+<p>Questa rete può essere sufficiente per un normale ufficio, ma <strong>non è sufficiente per gestire più cantieri e grandi quantità di dati BIM</strong>.</p>
+<p>Si propone quindi di potenziare la rete in questo modo:</p>
+<pre class="hljs"><code><div>Internet fibra
+      |
+CPE / modem / ONT
+      |
+Firewall aziendale
+      |
+Switch core gestito
+      |
+--------------------------------
+|              |               |
+Server BIM     PC uffici       Wi-Fi aziendale
+NAS/Backup     tecnici         Access point
+</div></code></pre>
+<p>Inoltre si può mantenere una linea secondaria di backup, ad esempio ADSL o 5G, da usare se la linea principale non funziona.</p>
+<h2 id="miglioramenti-necessari">Miglioramenti necessari</h2>
+<p>La sede centrale dovrebbe avere:</p>
+<ul>
+<li>connessione in fibra al posto della sola ADSL;</li>
+<li>firewall aziendale;</li>
+<li>switch gestiti;</li>
+<li>server per il sistema BIM;</li>
+<li>NAS o server di archiviazione;</li>
+<li>sistema di backup;</li>
+<li>server di autenticazione;</li>
+<li>separazione della rete tramite VLAN;</li>
+<li>sistema di monitoraggio e raccolta log.</li>
+</ul>
+<p>L’ADSL è considerata datata perché ha capacità limitata, maggiore latenza e prestazioni spesso non adeguate al trasferimento di grandi quantità di dati. Inoltre è una tecnologia asimmetrica: l’upload è generalmente molto inferiore al download.</p>
+<p>Nel caso dei cantieri è importante soprattutto l’upload dal cantiere verso la sede, perché scansioni, immagini e dati devono essere inviati dal cantiere. Nella sede centrale, invece, è importante avere una buona banda complessiva, in particolare in download per ricevere dati da più cantieri e in upload per backup cloud, sincronizzazioni e condivisione verso l’esterno.</p>
+<h2 id="vlan-nella-sede-centrale">VLAN nella sede centrale</h2>
+<p>Anche nella sede centrale conviene dividere la rete:</p>
+<pre class="hljs"><code><div>VLAN 10 - Uffici tecnici
+VLAN 20 - Server BIM
+VLAN 30 - Amministrazione apparati
+VLAN 40 - Terminazione VPN e traffico proveniente dai cantieri
+VLAN 50 - Wi-Fi ospiti
+</div></code></pre>
+<p>Questa separazione migliora la sicurezza. Ad esempio, un dispositivo ospite non deve poter accedere direttamente ai server BIM.</p>
+<p>Anche nella sede centrale, le VLAN devono essere accompagnate da regole di firewalling. Ad esempio, la VLAN ospiti deve poter accedere solo a Internet, mentre la VLAN dei server BIM deve essere raggiungibile solo dagli utenti autorizzati.</p>
+<h2 id="3-canali-di-comunicazione-tra-cantieri-e-sede-centrale">3. Canali di comunicazione tra cantieri e sede centrale</h2>
+<p>Il traffico tra cantieri e sede centrale è composto da dati diversi.</p>
+<p>I dati dei sensori sono generalmente piccoli, ma devono essere inviati in modo affidabile.
+Le immagini delle fotocamere timelapse sono più pesanti.
+Le nuvole di punti generate dagli scanner 3D possono essere molto grandi.</p>
+<p>Per questo motivo il collegamento tra cantiere e sede deve avere buona banda, soprattutto in upload dal cantiere verso la sede centrale.</p>
+<p>Si può stimare in modo semplice:</p>
+<pre class="hljs"><code><div>sensori:
+    tipicamente meno di 1 Mbps, salvo molti sensori o invii molto frequenti
+
+fotocamere timelapse:
+    alcuni Mbps, in base a risoluzione, compressione e frequenza degli scatti
+
+scansioni 3D:
+    traffico molto più pesante, da centinaia di MB fino a diversi GB per sessione
+</div></code></pre>
+<p>Per ogni cantiere si può prevedere:</p>
+<ul>
+<li>collegamento principale in fibra, se disponibile;</li>
+<li>in alternativa FWA o 5G;</li>
+<li>connessione di backup, ad esempio tramite SIM 4G/5G;</li>
+<li>VPN site-to-site verso la sede centrale.</li>
+</ul>
+<p>FWA significa collegamento radio fisso. La VPN site-to-site è un tunnel cifrato permanente tra due reti, ad esempio tra il cantiere e la sede centrale.</p>
+<p>Per la sede centrale si propone una connessione più potente, ad esempio fibra FTTH/FTTC business. Sarebbe opportuno avere almeno alcune centinaia di Mbps, perché la sede deve ricevere dati da più cantieri e deve garantire accesso stabile ai server BIM, ai backup e ai servizi aziendali.</p>
+<p>Il trasferimento dei file più grandi può essere programmato in orari di minore utilizzo, ad esempio a fine giornata o di notte. Invece i dati dei sensori devono avere priorità maggiore perché possono riguardare la sicurezza.</p>
+<p>Per gestire le priorità si può usare QoS. Il QoS permette di dare precedenza ad alcuni tipi di traffico rispetto ad altri.</p>
+<h2 id="apparati-da-adottare">Apparati da adottare</h2>
+<p>Nel cantiere:</p>
+<ul>
+<li>router/firewall con supporto VPN;</li>
+<li>CPE, modem, ONT, apparato FWA o router 4G/5G, a seconda del tipo di collegamento disponibile;</li>
+<li>switch gestito;</li>
+<li>access point Wi-Fi;</li>
+<li>eventuale gateway per sensori;</li>
+<li>eventuale NAS locale;</li>
+<li>eventuale connessione 4G/5G di backup;</li>
+<li>UPS.</li>
+</ul>
+<p>Nella sede centrale:</p>
+<ul>
+<li>CPE, modem o ONT per il collegamento principale;</li>
+<li>firewall aziendale;</li>
+<li>router verso Internet, se separato dal firewall;</li>
+<li>switch core gestito;</li>
+<li>server BIM;</li>
+<li>NAS o storage;</li>
+<li>server di autenticazione;</li>
+<li>sistema di backup;</li>
+<li>sistema di monitoraggio.</li>
+</ul>
+<h2 id="4-autenticazione-degli-operatori">4. Autenticazione degli operatori</h2>
+<p>Gli operatori devono potersi autenticare sia quando si trovano nella sede centrale sia quando lavorano dai cantieri.</p>
+<p>Si può usare un sistema centralizzato di gestione utenti, ad esempio Active Directory o LDAP. In questo modo ogni operatore ha un proprio account personale.</p>
+<p>Esempio di gestione:</p>
+<pre class="hljs"><code><div>progettisti:
+    accesso ai modelli BIM e ai documenti tecnici
+
+operatori di cantiere:
+    caricamento scansioni, immagini e dati
+
+responsabili sicurezza:
+    accesso ai dati dei sensori e agli allarmi
+
+amministratori:
+    gestione degli apparati e dei server
+</div></code></pre>
+<p>Per l’accesso Wi-Fi si può usare WPA2/WPA3 Enterprise, che consente di autenticare gli utenti tramite credenziali personali.</p>
+<p>Per il collegamento permanente tra cantiere e sede si usa una VPN site-to-site. Questa VPN è normalmente configurata tra apparati di rete e può usare certificati digitali, chiavi precondivise o altre credenziali tecniche.</p>
+<p>Per l’accesso remoto dei singoli utenti, invece, si può usare una VPN utente. In questo caso la VPN deve richiedere:</p>
+<ul>
+<li>username personale;</li>
+<li>password robusta;</li>
+<li>eventualmente autenticazione a due fattori;</li>
+<li>permessi in base al ruolo.</li>
+</ul>
+<p>L’autenticazione a due fattori richiede un secondo controllo, ad esempio un codice temporaneo, e rende l’accesso più sicuro.</p>
+<p>Tutti gli accessi devono essere registrati nei log, in modo da poter controllare eventuali problemi di sicurezza.</p>
+<h2 id="seconda-parte">SECONDA PARTE</h2>
+<p>La traccia chiede di svolgere due quesiti, ma qui vengono svolti tutti e quattro.</p>
+<h2 id="quesito-i---archiviazione-on-premise-e-cloud-based">Quesito I - Archiviazione on premise e cloud-based</h2>
+<p>Per archiviare scansioni, immagini, dati dei sensori e modelli BIM si possono usare soluzioni on premise oppure cloud-based.</p>
+<p>Una soluzione on premise significa che i server e i dati sono conservati nella sede centrale dell’azienda.</p>
+<p>Una soluzione cloud-based significa che i dati sono conservati presso un fornitore esterno e raggiunti tramite Internet.</p>
+<h2 id="soluzione-on-premise">Soluzione on premise</h2>
+<p>Nella soluzione on premise l’azienda installa nella sede centrale:</p>
+<ul>
+<li>server BIM;</li>
+<li>NAS o storage;</li>
+<li>sistema di backup;</li>
+<li>firewall;</li>
+<li>sistemi di autenticazione.</li>
+</ul>
+<p>Vantaggi:</p>
+<ul>
+<li>maggiore controllo diretto sui dati;</li>
+<li>velocità buona per gli utenti nella sede centrale;</li>
+<li>minore dipendenza da servizi esterni;</li>
+<li>possibilità di configurare direttamente server e permessi.</li>
+</ul>
+<p>Svantaggi:</p>
+<ul>
+<li>costo iniziale più alto;</li>
+<li>necessità di manutenzione interna;</li>
+<li>maggiore responsabilità su backup e sicurezza;</li>
+<li>scalabilità più difficile.</li>
+</ul>
+<h2 id="soluzione-cloud-based">Soluzione cloud-based</h2>
+<p>Nella soluzione cloud i dati vengono salvati su piattaforme esterne accessibili tramite Internet.</p>
+<p>Vantaggi:</p>
+<ul>
+<li>accesso più semplice da cantieri diversi;</li>
+<li>maggiore scalabilità;</li>
+<li>backup e ridondanza spesso già disponibili;</li>
+<li>collaborazione più facile tra utenti in luoghi diversi.</li>
+</ul>
+<p>Svantaggi:</p>
+<ul>
+<li>dipendenza dalla connessione Internet;</li>
+<li>costi mensili o annuali;</li>
+<li>necessità di controllare sicurezza e privacy;</li>
+<li>possibile lentezza nel trasferimento di file molto grandi.</li>
+</ul>
+<h2 id="soluzione-proposta">Soluzione proposta</h2>
+<p>Una soluzione equilibrata è ibrida.</p>
+<p>Si può mantenere nella sede centrale un server/NAS per i dati usati più spesso e usare il cloud per backup o condivisione esterna.</p>
+<p>Schema:</p>
+<pre class="hljs"><code><div>Cantieri
+   |
+   | VPN site-to-site
+   |
+Sede centrale
+   |
+Server / NAS BIM
+   |
+Backup cloud cifrato
+</div></code></pre>
+<p>Questa scelta è realistica perché unisce controllo locale e maggiore sicurezza in caso di guasto grave nella sede.</p>
+<p>Il cloud non deve essere usato senza adeguate misure di protezione. I dati devono essere protetti con autenticazione forte, permessi corretti, cifratura e backup controllati.</p>
+<h2 id="quesito-ii---sicurezza-informatica-e-continuità-trasmissiva">Quesito II - Sicurezza informatica e continuità trasmissiva</h2>
+<p>Oltre all’autenticazione, servono altre misure di sicurezza.</p>
+<h2 id="sicurezza-nei-cantieri">Sicurezza nei cantieri</h2>
+<p>Nei cantieri si possono adottare:</p>
+<ul>
+<li>rete Wi-Fi protetta;</li>
+<li>VLAN separate;</li>
+<li>regole firewall tra le VLAN;</li>
+<li>firewall locale;</li>
+<li>password robuste;</li>
+<li>aggiornamento degli apparati;</li>
+<li>accesso agli apparati solo agli amministratori;</li>
+<li>cifratura delle comunicazioni;</li>
+<li>raccolta dei log.</li>
+</ul>
+<p>Le VLAN sono utili perché separano tablet, sensori, fotocamere e apparati di gestione. In questo modo, se un dispositivo ha un problema, non compromette automaticamente tutta la rete.</p>
+<p>La separazione tramite VLAN deve essere accompagnata da regole di firewalling. Ad esempio, le fotocamere devono poter inviare immagini al repository, ma non devono poter amministrare gli apparati di rete o accedere liberamente ai server.</p>
+<h2 id="sicurezza-nella-sede-centrale">Sicurezza nella sede centrale</h2>
+<p>Nella sede centrale si devono usare:</p>
+<ul>
+<li>firewall;</li>
+<li>VPN;</li>
+<li>antivirus o soluzioni di protezione endpoint sui PC;</li>
+<li>backup;</li>
+<li>permessi differenziati;</li>
+<li>aggiornamenti periodici;</li>
+<li>monitoraggio;</li>
+<li>log centralizzati.</li>
+</ul>
+<p>I server BIM devono essere accessibili solo agli utenti autorizzati. Non devono essere pubblicati direttamente su Internet.</p>
+<h2 id="sicurezza-della-comunicazione-remota">Sicurezza della comunicazione remota</h2>
+<p>La comunicazione tra cantiere e sede deve avvenire tramite VPN cifrata. Si possono usare tecnologie come IPsec o OpenVPN.</p>
+<p>La VPN protegge i dati durante il passaggio su Internet. Se qualcuno intercettasse il traffico, non dovrebbe poter leggere i dati in chiaro, perché il contenuto viaggia cifrato.</p>
+<h2 id="continuità-del-collegamento">Continuità del collegamento</h2>
+<p>Per garantire continuità trasmissiva si possono usare:</p>
+<ul>
+<li>doppia connessione Internet nella sede centrale;</li>
+<li>collegamento di backup nei cantieri, ad esempio 5G;</li>
+<li>router con failover automatico;</li>
+<li>UPS per router, firewall, CPE, switch e access point;</li>
+<li>salvataggio temporaneo locale dei dati;</li>
+<li>monitoraggio della linea.</li>
+</ul>
+<p>Il failover è il passaggio automatico alla connessione di riserva quando quella principale non funziona.</p>
+<p>Per i sensori di sicurezza è importante che gli allarmi locali funzionino anche se la sede centrale non è raggiungibile. Il cantiere deve quindi avere un sistema locale capace di generare almeno gli avvisi più importanti.</p>
+<h2 id="quesito-iii---blocco-delle-piattaforme-di-intelligenza-artificiale-in-una-scuola">Quesito III - Blocco delle piattaforme di Intelligenza Artificiale in una scuola</h2>
+<p>In questo quesito il contesto è diverso dalla prima parte. Non si tratta di una rete aziendale, ma di una rete didattica scolastica.</p>
+<p>In una scuola la soluzione deve essere proporzionata, semplice da gestire e limitata ai laboratori o agli orari in cui serve. Non si deve progettare una infrastruttura troppo complessa come quella di una grande azienda.</p>
+<p>Il problema è impedire agli studenti, durante certe attività di laboratorio, di usare piattaforme di Intelligenza Artificiale per farsi generare il codice.</p>
+<h2 id="struttura-della-rete-scolastica">Struttura della rete scolastica</h2>
+<p>La rete della scuola può essere divisa in reti separate:</p>
+<pre class="hljs"><code><div>VLAN 10 - Segreteria
+VLAN 20 - Docenti
+VLAN 30 - Laboratorio informatico 1
+VLAN 31 - Laboratorio informatico 2
+VLAN 40 - Wi-Fi studenti
+VLAN 50 - Ospiti
+</div></code></pre>
+<p>Il blocco delle piattaforme AI deve essere applicato soprattutto alle VLAN dei laboratori durante verifiche o esercitazioni specifiche.</p>
+<h2 id="misure-tecniche">Misure tecniche</h2>
+<p>Si possono usare:</p>
+<ul>
+<li>firewall scolastico;</li>
+<li>filtro DNS;</li>
+<li>proxy web;</li>
+<li>blocco di categorie di siti;</li>
+<li>blocco di domini specifici;</li>
+<li>regole per fascia oraria;</li>
+<li>regole per laboratorio;</li>
+<li>autenticazione degli utenti.</li>
+</ul>
+<p>Il filtro DNS impedisce ai computer di raggiungere certi nomi di dominio. Il proxy web controlla il traffico web degli utenti.</p>
+<p>Esempio:</p>
+<pre class="hljs"><code><div>Laboratorio 1
+dalle 10:00 alle 12:00
+blocco siti AI attivo
+
+Laboratorio 2
+nessun blocco, se non ci sono verifiche
+
+rete docenti
+accesso consentito
+</div></code></pre>
+<p>Si può anche impedire agli studenti di usare DNS esterni, obbligandoli a usare il DNS della scuola. Altrimenti potrebbero aggirare facilmente alcuni blocchi.</p>
+<p>Se si usa un filtro DNS, occorre considerare anche DNS over HTTPS e DNS over TLS, perché possono permettere ad alcuni dispositivi di aggirare il DNS scolastico.</p>
+<h2 id="schedulazione-del-blocco">Schedulazione del blocco</h2>
+<p>Il blocco può essere programmato nel firewall o nel proxy.</p>
+<p>Esempio:</p>
+<pre class="hljs"><code><div>lunedì 3ª e 4ª ora
+VLAN laboratorio 1
+bloccare piattaforme AI
+
+martedì 1ª ora
+VLAN laboratorio 2
+bloccare piattaforme AI
+</div></code></pre>
+<p>Alla fine della fascia oraria il blocco viene rimosso automaticamente.</p>
+<p>In una soluzione scolastica è utile permettere ai docenti o all’amministratore di attivare/disattivare il blocco in base al calendario delle verifiche.</p>
+<h2 id="limiti-della-soluzione">Limiti della soluzione</h2>
+<p>Queste misure non sono perfette. Uno studente potrebbe usare:</p>
+<ul>
+<li>smartphone personale con rete mobile;</li>
+<li>VPN;</li>
+<li>siti non ancora bloccati;</li>
+<li>proxy esterni;</li>
+<li>nuovi servizi AI;</li>
+<li>DNS cifrato o servizi non ancora classificati dal filtro.</li>
+</ul>
+<p>Per questo la soluzione tecnica deve essere accompagnata da regole didattiche e organizzative:</p>
+<ul>
+<li>spiegare chiaramente quando l’uso dell’AI è vietato;</li>
+<li>controllare i laboratori durante le prove;</li>
+<li>valutare anche la spiegazione orale del codice;</li>
+<li>usare esercizi in cui lo studente deve dimostrare di capire quello che scrive;</li>
+<li>eventualmente disattivare Internet durante alcune verifiche pratiche, se compatibile con l’attività richiesta.</li>
+</ul>
+<p>Quindi la rete può aiutare, ma non risolve da sola tutto il problema.</p>
+<h2 id="quesito-iv---comando-ssh-e-port-forwarding">Quesito IV - Comando SSH e port forwarding</h2>
+<p>Il comando è:</p>
+<pre class="hljs"><code><div>ssh -p 25500 administrator@200.1.1.1
+</div></code></pre>
+<p>SSH è un protocollo che permette di accedere da remoto a un dispositivo tramite terminale in modo cifrato.</p>
+<p>L’opzione:</p>
+<pre class="hljs"><code><div>-p 25500
+</div></code></pre>
+<p>indica che non si usa la porta standard di SSH, che è la 22, ma la porta 25500.</p>
+<p>L’indirizzo:</p>
+<pre class="hljs"><code><div>200.1.1.1
+</div></code></pre>
+<p>è il dispositivo raggiungibile dall’esterno, probabilmente un router o firewall con indirizzo pubblico.</p>
+<p>La traccia dice che su questo dispositivo è configurata una regola che reindirizza il traffico in ingresso sulla porta 25500 verso il dispositivo interno:</p>
+<pre class="hljs"><code><div>172.16.1.100
+</div></code></pre>
+<p>Quindi, quando viene dato il comando, succede questo:</p>
+<pre class="hljs"><code><div>il client tenta una connessione SSH verso 200.1.1.1 porta 25500;
+il router/firewall riceve la richiesta;
+la regola di port forwarding inoltra il traffico al dispositivo interno 172.16.1.100;
+il traffico viene inoltrato normalmente verso la porta SSH interna 22,
+salvo diversa configurazione;
+l’utente administrator tenta di autenticarsi sul dispositivo interno.
+</div></code></pre>
+<p>Il dispositivo 172.16.1.100 ha un indirizzo privato, quindi normalmente non è raggiungibile direttamente da Internet.</p>
+<p>Lo scopo del port forwarding è permettere di raggiungere dall’esterno un servizio che si trova dentro una rete privata.</p>
+<p>Schema:</p>
+<pre class="hljs"><code><div>PC remoto
+   |
+   | ssh -p 25500 administrator@200.1.1.1
+   |
+Router pubblico / firewall
+200.1.1.1:25500
+   |
+   | port forwarding
+   |
+Host interno
+172.16.1.100:22
+</div></code></pre>
+<p>Questa configurazione può servire per amministrare da remoto un server interno. Tuttavia deve essere usata con attenzione, perché espone un accesso SSH verso Internet.</p>
+<p>Per renderla più sicura si dovrebbe:</p>
+<ul>
+<li>usare password robuste;</li>
+<li>meglio ancora usare chiavi SSH;</li>
+<li>permettere l’accesso solo da indirizzi IP autorizzati;</li>
+<li>registrare i log;</li>
+<li>aggiornare il sistema;</li>
+<li>disabilitare l’accesso dell’utente root, se presente;</li>
+<li>preferire una VPN quando possibile.</li>
+</ul>
+<p>La soluzione più sicura sarebbe collegarsi prima alla VPN e poi accedere via SSH all’indirizzo interno.</p>
+<h2 id="conclusione-generale">Conclusione generale</h2>
+<p>La soluzione proposta prevede una rete di cantiere semplice ma ordinata, con router/firewall, CPE, switch, access point, sensori, fotocamere e collegamento sicuro alla sede centrale.</p>
+<p>La sede centrale deve essere potenziata perché la vecchia connessione ADSL e una rete non segmentata non sono adatte a gestire il nuovo sistema BIM.</p>
+<p>Le comunicazioni tra cantieri e sede devono usare VPN, banda sufficiente e collegamenti di backup. Nei cantieri è importante soprattutto la banda in upload, perché i dati devono essere inviati verso la sede. Nella sede centrale serve invece una connessione stabile e più potente, capace di ricevere dati da più cantieri e di sostenere backup, sincronizzazioni e accessi degli utenti.</p>
+<p>I dati più pesanti, come scansioni e immagini, possono essere trasferiti anche in modo programmato, mentre i dati dei sensori devono avere maggiore priorità.</p>
+<p>Nel quesito scolastico, invece, non serve una soluzione aziendale complessa: è più corretto proporre firewall, filtro DNS, proxy, VLAN dei laboratori e blocchi programmati, sempre accompagnati da regole didattiche chiare.</p>
+
+</body>
+</html>

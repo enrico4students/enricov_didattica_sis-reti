@@ -1,4 +1,6 @@
-# IPOTESI DI SOLUZIONE 
+## IPOTESI DI SOLUZIONE 
+
+# Da rivedere, probabilmente contiene molti errori e imprecisioni, può essere utile per spunti puntuali
 
 ## Ipotesi iniziali
 

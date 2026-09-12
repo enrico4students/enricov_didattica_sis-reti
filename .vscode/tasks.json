@@ -28,6 +28,13 @@
             "options": {
                 "cwd": "${workspaceFolder}/udp"
             }
+        },
+        {
+            "label": "Sync submodule 005_authoring_gen",
+            "type": "shell",
+            "command": "git submodule update --init --remote --merge",
+            "runOptions": { "runOn": "folderOpen" },
+            "presentation": { "reveal": "silent" }
         }
     ]
 }

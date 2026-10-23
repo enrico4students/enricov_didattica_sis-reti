@@ -5,7 +5,7 @@
                 "name": "-> .md loc. Py modulare",
                 "type": "debugpy",
                 "request": "launch",
-                "program": "${workspaceFolder}/005_authoring_gen/python/md_processor_modular/md_processor.py",
+                "program": "${workspaceFolder}/005_authoring_gen/util_programs/md_processor_modular/md_processor.py",
                 "console": "integratedTerminal",
                 "args": [
                     "--yes",

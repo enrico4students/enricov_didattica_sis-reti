@@ -323,7 +323,9 @@ Internet
 
 ---   
 
+
 ```plantuml
+@startuml
 title Architettura 2 layers - dispositivi fisici e funzionalità logiche
 
 skinparam shadowing false

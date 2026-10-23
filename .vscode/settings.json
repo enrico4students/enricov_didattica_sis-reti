@@ -10,5 +10,6 @@
 "python-envs.defaultPackageManager": "ms-python.python:conda",
 "plantuml.render": "Local",
 "plantuml.jar": "",
-"plantuml.server": "https://www.plantuml.com/plantuml"
+"plantuml.server": "https://www.plantuml.com/plantuml",
+"python-envs.defaultEnvManager": "ms-python.python:conda"
 }

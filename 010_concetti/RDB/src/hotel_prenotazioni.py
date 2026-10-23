@@ -30,7 +30,7 @@ class HotelBookingApp:
 
         cur.execute("""
             CREATE TABLE IF NOT EXISTS stanza (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                id INTEGER PRIMARY KEY AUTOINCREMENT,pymupdf
                 numero TEXT NOT NULL UNIQUE,
                 tipo TEXT NOT NULL,
                 capienza INTEGER NOT NULL CHECK (capienza > 0)
